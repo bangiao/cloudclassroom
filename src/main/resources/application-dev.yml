@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/dx_cloud_cr?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai    #mysql8
+    url: jdbc:mysql://182.61.61.83:3306/ykt?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai    #mysql8
     username: root
-    password: 123456
+    password: yyq!@apache.
     name: test
     type: com.alibaba.druid.pool.DruidDataSource
     initial-size: 5
