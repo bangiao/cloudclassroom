@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.cloudclassroom.mapper.MenuMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.dingxin.cloudclassroom.entity.Menu">
+		<id column="id" property="id" />
+		<result column="parent_id" property="parentId" />
+		<result column="name" property="name" />
+		<result column="url" property="url" />
+		<result column="perms" property="perms" />
+		<result column="type" property="type" />
+		<result column="icon" property="icon" />
+		<result column="order_num" property="orderNum" />
+	</resultMap>
+
+
+	<select id="getCasUserPermissions" resultType="String" parameterType="java.lang.String">
+		select DISTINCT(m.perms) from sys_menu m where
+		    id in
+		        (select rm.menu_id from sys_role_menu rm where
+		            rm.role_id in
+		                (select ur.role_id from sys_user_role ur where
+		                    ur.cas_user_id = #{id})) and type = 2 AND m.perms is not null and m.perms !=''
+	</select>
+</mapper>
