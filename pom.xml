@@ -12,7 +12,7 @@
     <artifactId>cloud-classroom</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cloud-classroom</name>
-    <description>云课堂</description>
+    <description>南科大云课堂</description>
 
     <properties>
         <java.version>1.8</java.version>
