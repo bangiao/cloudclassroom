@@ -29,12 +29,14 @@
 
 ---
 
+**可修改ShiroConfiguration禁用拦截器方便测试**
+
 ### Shiro 认证过程
 
 1. CAS 认证  
 
    URL : http://ip:port/cas?ticket =xx
-   1. 使用Shiro Cas Relam 进行验证 CAS 验证。验证成功后重定向到前端页面（不适合前后端分离项目）
+   1. 使用Shiro Cas Relam 进行验证 CAS 验证。验证成功后重定向到前端页面
       认证.
 
       ```java
@@ -236,4 +238,5 @@
         }
         return false;
     }
+
 
