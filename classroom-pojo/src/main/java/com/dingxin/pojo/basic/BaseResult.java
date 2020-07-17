@@ -19,7 +19,7 @@ public class BaseResult<T> {
     private String msg = "";
     private T data = null;
 
-    private static BaseResult SUCCESS = new BaseResult();
+    private static final BaseResult SUCCESS = new BaseResult();
 
     public static BaseResult success() {
         return SUCCESS;
