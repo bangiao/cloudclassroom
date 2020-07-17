@@ -1,0 +1,75 @@
+spring:
+  ## 数据源配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3307/somnus?serverTimezone=CTT&characterEncoding=utf-8&allowMultiQueries=true&rewriteBatchedStatements=true&connectTimeout=2000&socketTimeout=15000
+    username: repl
+    password: repl
+    # druid连接池参数
+    druid:
+      initialSize: 4
+      minIdle: 4
+      maxActive: 12
+      maxWait: 3000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: false
+      maxPoolPreparedStatementPerConnectionSize: -1
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      useGlobalDataSourceStat: true
+
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    # Redis服务器地址
+    host: 127.0.0.1
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password:
+    # 连接超时时间（毫秒）
+    timeout: 6000
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1000
+
+    ## mybatis-plus配置
+mybatis-plus:
+  # 自定义mapper配置文件存放路径
+  mapper-locations: classpath*:mapper/*.xml
+  # 扫描此包下pojo类生成短别名,在xml中可以使用类名,不用输全路径类名
+  type-aliases-package: com.dingxin.pojo.po
+  # 此包下的类会由SqlSessionFactoryBean注册成TypeHandler
+  type-handlers-package:
+  global-config:
+    # 数据库配置
+    db-config:
+      # 默认值是ID_WORKER(框架生成的分布式唯一ID,Long型),其他选项AUTO(数据库自增),INPUT(自定义),UUID(框架生成uuid),ID_WORKER_STR(框架生成的分布式唯一ID,String型)
+      id-type: auto
+      # 字段策略：涉及insert,update及wrapper内部的entity属性生成的where条件;有4个选项IGNORED(不判断),NOT_NULL(非null即可),NOT_EMPTY(非null且非空串),DEFAULT(非null即可)
+      # 比如User对象name是""空串,调用insert接口,IGNORED会插入空串,NOT_NULL会插入空串,NOT_EMPTY不会插入name字段
+      field-strategy: NOT_EMPTY
+
+
+#jwt
+jwt:
+  id: gyskdatacagejwt
+  secret: 7786df7fc3a34e26a61c034d5ec8245d
+  refresh-interval: 604800000
+  refresh-ttl: 604800000
+  enable: true
+  ttl: 604800000
+  token:
+    secret: mySecret
+    expiration: 86400
