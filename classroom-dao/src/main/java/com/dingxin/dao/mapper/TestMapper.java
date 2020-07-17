@@ -9,4 +9,6 @@ import com.dingxin.pojo.po.Test1;
  */
 public interface TestMapper extends BaseMapper<Test1> {
 
+
+
 }
