@@ -2,9 +2,12 @@ spring:
   ## 数据源配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3307/somnus?serverTimezone=CTT&characterEncoding=utf-8&allowMultiQueries=true&rewriteBatchedStatements=true&connectTimeout=2000&socketTimeout=15000
-    username: repl
-    password: repl
+#    url: jdbc:mysql://127.0.0.1:3307/somnus?serverTimezone=CTT&characterEncoding=utf-8&allowMultiQueries=true&rewriteBatchedStatements=true&connectTimeout=2000&socketTimeout=15000
+#    username: repl
+#    password: repl
+    url: jdbc:mysql://182.61.61.83:3306/ykt?serverTimezone=CTT&characterEncoding=utf-8&allowMultiQueries=true&rewriteBatchedStatements=true&connectTimeout=2000&socketTimeout=15000
+    username: root
+    password: yyq!@apache.
     # druid连接池参数
     druid:
       initialSize: 4
