@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.StduentClassSeeRecordMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.StduentClassSeeRecord">
+                    <id column="id" property="id" />
+                    <result column="s_id" property="sId" />
+                    <result column="s_name" property="sName" />
+                    <result column="s_code" property="sCode" />
+                    <result column="s_colleges" property="sColleges" />
+                    <result column="s_major" property="sMajor" />
+                    <result column="s_class" property="sClass" />
+                    <result column="t_id" property="tId" />
+                    <result column="t_name" property="tName" />
+                    <result column="class_id" property="classId" />
+                    <result column="class_name" property="className" />
+                    <result column="study_length" property="studyLength" />
+                    <result column="create_time" property="createTime" />
+                    <result column="yn" property="yn" />
+        </resultMap>
+
+</mapper>
