@@ -1,0 +1,100 @@
+package ${package.Controller};
+    #if(${superControllerClassPackage})
+    import ${superControllerClassPackage};
+    #end
+    #if(${superControllerClassPackage})
+    import ${superControllerClassPackage};
+    #end
+import ${package.Entity}.${entity};
+import ${package.Service}.${table.serviceName};
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.pojo.basic.BaseQuery;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import com.dingxin.pojo.basic.BaseResult;
+
+/**
+ * ${table.comment}
+ */
+@RestController
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/${table.entityPath}")
+#if(${superControllerClass})
+@Api(value = "${table.comment}接口")
+public class ${table.controllerName} extends ${superControllerClass} {
+#else
+@Api(value = "${table.comment}接口")
+public class ${table.controllerName} {
+#end
+
+#foreach($field in ${table.fields})
+    #if(${field.keyFlag})
+        #set($keyPropertyName=${field.propertyName})
+        #set($keyPropertyAttr=${field.propertyType})
+    #end
+#end
+
+#set ($servicePropertyName = $table.serviceName.substring(1,2).toLowerCase() + $table.serviceName.substring(2,$table.serviceName.length()))
+#set ($classname = $entity.substring(0,1).toLowerCase() + $entity.substring(1,$entity.length()))
+    @Autowired
+    private ${table.serviceName} ${servicePropertyName};
+
+
+    /**
+     * 列表
+     */
+    @GetMapping
+    @ApiOperation(value = "获取${table.comment}列表")
+    public BaseResult<Page<${entity}>>list(BaseQuery baseQuery){
+        //查询列表数据
+        Page page=new Page(baseQuery.getCurrentPage(),baseQuery.getPageSize());
+        IPage pageList = ${servicePropertyName}.page(page);
+        if(CollectionUtils.isEmpty(pageList.getRecords())){
+            return BaseResult.success();
+        }
+        return BaseResult.success(pageList);
+    }
+
+    /**
+     * 信息
+     */
+    @GetMapping("/{${keyPropertyName}}")
+    @ApiOperation(value = "获取${table.comment}详情信息")
+    public BaseResult<${entity}> info(@PathVariable("${keyPropertyName}") ${keyPropertyAttr} ${keyPropertyName}){
+        ${entity} ${classname} = ${servicePropertyName}.getById(${keyPropertyName});
+        return BaseResult.success(${classname});
+    }
+
+    /**
+     * 保存
+     */
+    @PostMapping
+    @ApiOperation(value = "新增${table.comment}信息")
+    public BaseResult save(@RequestBody  ${entity} ${classname}){
+        boolean retFlag= ${servicePropertyName}.save(${classname});
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 修改
+     */
+    @PutMapping
+    @ApiOperation(value = "修改${table.comment}信息")
+    public BaseResult update(@RequestBody @PathVariable("${classname}") ${entity} ${classname}){
+        BaseResult<${entity}> baseResult=new BaseResult<>();
+        boolean retFlag= ${servicePropertyName}.updateById(${classname});
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 删除
+     */
+    @DeleteMapping("/{${keyPropertyName}}")
+    @ApiOperation(value = "删除${table.comment}信息")
+    public BaseResult delete(@PathVariable("${keyPropertyName}") ${keyPropertyAttr} ${keyPropertyName}){
+        boolean retFlag= ${servicePropertyName}.removeById(${keyPropertyName});
+        return BaseResult.success(retFlag);
+    }
+}

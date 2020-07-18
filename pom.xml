@@ -21,6 +21,7 @@
         <module>classroom-dao</module>
         <module>classroom-common</module>
         <module>classroom-pojo</module>
+        <module>classroom-generator</module>
     </modules>
 
     <properties>
