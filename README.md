@@ -31,6 +31,15 @@
 
 **可修改ShiroConfiguration禁用拦截器方便测试**
 
+---
+接口文档查看方式：http://ip:port/doc.html 用户名密码 :
+
+nkdykt nkdykt
+
+---
+
+
+
 ### Shiro 认证过程
 
 1. CAS 认证  
