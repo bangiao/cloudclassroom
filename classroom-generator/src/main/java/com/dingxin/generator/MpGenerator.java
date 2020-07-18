@@ -23,7 +23,10 @@ import java.util.Map;
  */
 public class MpGenerator {
 
-    public static final String prefix = "D:\\ycx\\idea\\workspace\\";
+    /**
+     * 建议填写项目根路径
+     */
+    public static final String prefix = "D:\\ycx\\idea\\workspace\\cloudclassroom\\";
 
     public static final String[] tabs = {};
 
@@ -37,7 +40,7 @@ public class MpGenerator {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir(prefix+"cloudclassroom\\classroom-generator\\src\\main\\resources\\output");
+        gc.setOutputDir(prefix+"generator\\output");
         gc.setFileOverride(true);
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存
