@@ -8,6 +8,7 @@ package ${package.Controller};
 import ${package.Entity}.${entity};
 import ${package.Service}.${table.serviceName};
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +44,14 @@ public class ${table.controllerName} {
 
 
     /**
-     * 列表
+     * 列表查询
      */
-    @GetMapping
+    @PostMapping("/list")
     @ApiOperation(value = "获取${table.comment}列表")
-    public BaseResult<Page<${entity}>>list(BaseQuery baseQuery){
+    public BaseResult<Page<${entity}>>list(@RequestBody BaseQuery<${entity}> query){
         //查询列表数据
-        Page page=new Page(baseQuery.getCurrentPage(),baseQuery.getPageSize());
-        IPage pageList = ${servicePropertyName}.page(page);
+        Page<${entity}> page = new Page(query.getCurrentPage(),query.getPageSize());
+        IPage pageList = ${servicePropertyName}.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -58,13 +59,13 @@ public class ${table.controllerName} {
     }
 
     /**
-     * 信息
+     * 单个查询
      */
-    @GetMapping("/{${keyPropertyName}}")
+    @PostMapping("/search")
     @ApiOperation(value = "获取${table.comment}详情信息")
-    public BaseResult<${entity}> info(@PathVariable("${keyPropertyName}") ${keyPropertyAttr} ${keyPropertyName}){
-        ${entity} ${classname} = ${servicePropertyName}.getById(${keyPropertyName});
-        return BaseResult.success(${classname});
+    public BaseResult<${entity}> search(@RequestBody  ${entity} ${classname}){
+        ${entity} result = ${servicePropertyName}.getOne(Wrappers.query(${classname}));
+        return BaseResult.success(result);
     }
 
     /**
@@ -80,10 +81,9 @@ public class ${table.controllerName} {
     /**
      * 修改
      */
-    @PutMapping
+    @PostMapping("/update")
     @ApiOperation(value = "修改${table.comment}信息")
-    public BaseResult update(@RequestBody @PathVariable("${classname}") ${entity} ${classname}){
-        BaseResult<${entity}> baseResult=new BaseResult<>();
+    public BaseResult update(@RequestBody ${entity} ${classname}){
         boolean retFlag= ${servicePropertyName}.updateById(${classname});
         return BaseResult.success(retFlag);
     }
@@ -91,10 +91,10 @@ public class ${table.controllerName} {
     /**
      * 删除
      */
-    @DeleteMapping("/{${keyPropertyName}}")
+    @PostMapping("/delete}")
     @ApiOperation(value = "删除${table.comment}信息")
-    public BaseResult delete(@PathVariable("${keyPropertyName}") ${keyPropertyAttr} ${keyPropertyName}){
-        boolean retFlag= ${servicePropertyName}.removeById(${keyPropertyName});
+    public BaseResult delete(@RequestBody ${entity} ${classname}){
+        boolean retFlag= ${servicePropertyName}.remove(Wrappers.query(${classname}));
         return BaseResult.success(retFlag);
     }
 }
