@@ -3,14 +3,35 @@ import ${package.Entity}.${entity};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${table.serviceName};
 import ${superServiceImplClassPackage};
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Objects;
+#set ($mapperPropertyName = $table.mapperName.substring(0,1).toLowerCase() + $table.mapperName.substring(1,$table.mapperName.length()))
 
 /**
  * ${table.comment} 服务接口实现类
  */
 @Service
-@Transactional
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+    @Autowired
+    private ${table.mapperName} ${mapperPropertyName};
+
+
+    @Override
+    public List<${entity}> like(${entity} data) {
+        LambdaQueryWrapper<${entity}> query = Wrappers.<${entity}>lambdaQuery()
+            #foreach($field in ${table.fields})
+                #set ($getMethodName = 'get'+$field.propertyName.substring(0,1).toUpperCase() + $field.propertyName.substring(1,$field.propertyName.length()))
+                .like(
+                    Objects.nonNull(data.${getMethodName}()),
+                    StduentClassSeeRecord::${getMethodName},
+                    data.${getMethodName}())
+            #end;
+        return ${mapperPropertyName}.selectList(query);
+
+
+    }
 
 }
