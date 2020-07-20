@@ -26,7 +26,7 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
                 #set ($getMethodName = 'get'+$field.propertyName.substring(0,1).toUpperCase() + $field.propertyName.substring(1,$field.propertyName.length()))
                 .like(
                     Objects.nonNull(data.${getMethodName}()),
-                    StduentClassSeeRecord::${getMethodName},
+                    ${entity}::${getMethodName},
                     data.${getMethodName}())
             #end;
         return ${mapperPropertyName}.selectList(query);
