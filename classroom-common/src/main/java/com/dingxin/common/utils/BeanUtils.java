@@ -5,6 +5,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author jianghuaidi
@@ -50,6 +56,30 @@ public class BeanUtils implements ApplicationContextAware {
             log.error("applicaitonContext未注入,实现ApplicationContextAware的类必须被spring管理");
         }
         return flag;
+    }
+
+    /**
+     * 获取当前访问请求对象
+     * @return
+     */
+    public static HttpServletRequest getCurrentHttpRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            return ((ServletRequestAttributes) requestAttributes).getRequest();
+        }
+        return null;
+    }
+
+    /**
+     * 获取当前访问返回对象
+     * @return
+     */
+    public static HttpServletResponse getCurrentHttpResponse() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            return ((ServletRequestAttributes) requestAttributes).getResponse();
+        }
+        return null;
     }
 
     /**

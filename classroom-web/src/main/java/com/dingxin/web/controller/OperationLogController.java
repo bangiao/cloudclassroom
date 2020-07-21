@@ -1,5 +1,6 @@
 package com.dingxin.web.controller;
 import com.dingxin.pojo.po.OperationLog;
+import com.dingxin.web.annotaion.OperationWatcher;
 import com.dingxin.web.service.IOperationLogService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -29,6 +30,7 @@ public class OperationLogController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
+    @OperationWatcher(operateDesc = "获取日志列表")
     public BaseResult<Page<OperationLog>>list(@RequestBody BaseQuery<OperationLog> query){
         //查询列表数据
         Page<OperationLog> page = new Page(query.getCurrentPage(),query.getPageSize());

@@ -23,15 +23,15 @@ public class OperationLog extends Model<OperationLog> {
     /**
      * 操作日志表主键
      */
-    private String id;
+    private Integer id;
     /**
      * 操作人
      */
-    private Integer userId;
+    private String userId;
     /**
      * 操作时间
      */
-    private LocalDateTime operateTime;
+    private String operateTime;
     /**
      * 操作内容
      */
