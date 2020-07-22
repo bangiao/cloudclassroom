@@ -12,6 +12,8 @@ import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
 
+import java.util.List;
+
 /**
  * 
  */
@@ -51,33 +53,43 @@ public class OperationLogController {
         return BaseResult.success(result);
     }
 
-    /**
-     * 保存
-     */
-    @PostMapping
-    @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  OperationLog operationLog){
-        boolean retFlag= operationLogService.save(operationLog);
-        return BaseResult.success(retFlag);
-    }
+//    /**
+//     * 保存
+//     */
+//    @PostMapping
+//    @ApiOperation(value = "新增信息")
+//    public BaseResult save(@RequestBody  OperationLog operationLog){
+//        boolean retFlag= operationLogService.save(operationLog);
+//        return BaseResult.success(retFlag);
+//    }
 
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody OperationLog operationLog){
-        boolean retFlag= operationLogService.updateById(operationLog);
-        return BaseResult.success(retFlag);
-    }
+//    /**
+//     * 修改
+//     */
+//    @PostMapping("/update")
+//    @ApiOperation(value = "修改信息")
+//    public BaseResult update(@RequestBody OperationLog operationLog){
+//        boolean retFlag= operationLogService.updateById(operationLog);
+//        return BaseResult.success(retFlag);
+//    }
 
     /**
      * 删除
      */
-    @PostMapping("/delete}")
+    @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
     public BaseResult delete(@RequestBody OperationLog operationLog){
         boolean retFlag= operationLogService.remove(Wrappers.query(operationLog));
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 批量删除
+     */
+    @PostMapping("/delete/batch")
+    @ApiOperation(value = "删除信息")
+    public BaseResult batchDelete(@RequestBody List<Integer> operationLogs){
+        boolean retFlag= operationLogService.removeByIds(operationLogs);
         return BaseResult.success(retFlag);
     }
 }
