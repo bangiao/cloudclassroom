@@ -1,8 +1,8 @@
-package com.dingxin.web.controller;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+package com.dingxin.web.web.controller;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +25,14 @@ public class ClassEvaluateController {
 
 
     /**
-     * 列表
+     * 列表查询
      */
-    @GetMapping
+    @PostMapping("/list")
     @ApiOperation(value = "获取课程评价表列表")
-    public BaseResult<Page<ClassEvaluate>>list(BaseQuery baseQuery){
+    public BaseResult<Page<ClassEvaluate>>list(@RequestBody BaseQuery<ClassEvaluate> query){
         //查询列表数据
-        Page page=new Page(baseQuery.getCurrentPage(),baseQuery.getPageSize());
-        IPage pageList = classEvaluateService.page(page,new QueryWrapper<ClassEvaluate>().eq("yn",0));
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
+        IPage pageList = classEvaluateService.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -40,13 +40,13 @@ public class ClassEvaluateController {
     }
 
     /**
-     * 信息
+     * 单个查询
      */
-    @GetMapping("/{id}")
+    @PostMapping("/search")
     @ApiOperation(value = "获取课程评价表详情信息")
-    public BaseResult<ClassEvaluate> info(@PathVariable("id") Integer id){
-        ClassEvaluate classEvaluate = classEvaluateService.getById(id);
-        return BaseResult.success(classEvaluate);
+    public BaseResult<ClassEvaluate> search(@RequestBody  ClassEvaluate classEvaluate){
+        ClassEvaluate result = classEvaluateService.getOne(Wrappers.query(classEvaluate));
+        return BaseResult.success(result);
     }
 
     /**
@@ -62,29 +62,20 @@ public class ClassEvaluateController {
     /**
      * 修改
      */
-    @PutMapping
+    @PostMapping("/update")
     @ApiOperation(value = "修改课程评价表信息")
-    public BaseResult update(@RequestBody @PathVariable("classEvaluate") ClassEvaluate classEvaluate){
-        BaseResult<ClassEvaluate> baseResult=new BaseResult<>();
+    public BaseResult update(@RequestBody ClassEvaluate classEvaluate){
         boolean retFlag= classEvaluateService.updateById(classEvaluate);
-        return BaseResult.success(retFlag);
-    }
-    /**
-     * 修改  点赞数
-     */    @PutMapping(value = "/upOrDown")
-    @ApiOperation(value = "修改课程评价表点赞信息")
-    public BaseResult updateUp(Boolean upOrDown,Integer id){
-        boolean retFlag=classEvaluateService.updateUp(upOrDown,id);
         return BaseResult.success(retFlag);
     }
 
     /**
      * 删除
      */
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete}")
     @ApiOperation(value = "删除课程评价表信息")
-    public BaseResult delete(@PathVariable("id") Integer id){
-        boolean retFlag= classEvaluateService.removeById(id);
+    public BaseResult delete(@RequestBody ClassEvaluate classEvaluate){
+        boolean retFlag= classEvaluateService.remove(Wrappers.query(classEvaluate));
         return BaseResult.success(retFlag);
     }
 }

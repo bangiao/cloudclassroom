@@ -29,35 +29,35 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
     /**
      * 学生id
      */
-    private Integer sId;
+    private Integer studentId;
     /**
      * 学生姓名
      */
-    private String sName;
+    private String studentName;
     /**
      * 学校
      */
-    private String sCode;
+    private String studentCode;
     /**
      * 院校
      */
-    private String sColleges;
+    private String studentColleges;
     /**
      * 专业
      */
-    private String sMajor;
+    private String studentMajor;
     /**
      * 班级
      */
-    private String sClass;
+    private String studentClass;
     /**
      * 教师ID
      */
-    private Integer tId;
+    private Integer teacherId;
     /**
      * 教师姓名
      */
-    private String tName;
+    private String teacherName;
     /**
      * 课程id
      */
@@ -75,9 +75,13 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      */
     private LocalDateTime createTime;
     /**
+     * 修改时间
+     */
+    private LocalDateTime modifyTime;
+    /**
      * 是否有效
      */
-    private String yn;
+    private Integer delFlag;
 
 
     @Override
