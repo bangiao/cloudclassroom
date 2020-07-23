@@ -91,7 +91,7 @@ public class ${table.controllerName} {
     /**
      * 删除
      */
-    @PostMapping("/delete}")
+    @PostMapping("/delete")
     @ApiOperation(value = "删除${table.comment}信息")
     public BaseResult delete(@RequestBody ${entity} ${classname}){
         boolean retFlag= ${servicePropertyName}.remove(Wrappers.query(${classname}));
