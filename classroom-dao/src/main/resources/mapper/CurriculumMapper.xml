@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.CurriculumMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.Curriculum">
+                    <id column="id" property="id" />
+                    <result column="curriculum_name" property="curriculumName" />
+                    <result column="curriculum_type" property="curriculumType" />
+                    <result column="curriculum_desc" property="curriculumDesc" />
+                    <result column="topic_id" property="topicId" />
+                    <result column="teacher_id" property="teacherId" />
+                    <result column="add_video_flag" property="addVideoFlag" />
+                    <result column="video_name" property="videoName" />
+                    <result column="video_duration" property="videoDuration" />
+                    <result column="video_attachment" property="videoAttachment" />
+                    <result column="live_video" property="liveVideo" />
+        </resultMap>
+
+</mapper>
