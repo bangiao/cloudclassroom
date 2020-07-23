@@ -1,14 +1,15 @@
 package com.dingxin.web.controller;
-<<<<<<< HEAD
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-=======
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
->>>>>>> f6099f4f7da655bb4ea8ea0f1f74a5590c5c7c37
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.ClassEvaluate;
+import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.vo.ThumbsUpVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -29,36 +30,36 @@ public class ClassEvaluateController {
     @Autowired
     private IClassEvaluateService classEvaluateService;
 
-
     /**
-     * 列表
+     * 列表查询
      */
-    @GetMapping
+    @PostMapping("/list")
     @ApiOperation(value = "获取课程评价表列表")
-    public BaseResult<Page<ClassEvaluate>>list(BaseQuery baseQuery){
+    public BaseResult<Page<ClassEvaluate>>list(@RequestBody BaseQuery<ClassEvaluate> query){
         //查询列表数据
-        Page page=new Page(baseQuery.getCurrentPage(),baseQuery.getPageSize());
-        IPage pageList = classEvaluateService.page(page,new QueryWrapper<ClassEvaluate>().eq("yn",0));
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
+        QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
+        qw.like("student_name",query.getData()).or().like("student_code",query.getData()).or().like("class_name",query.getData());
+        IPage pageList = classEvaluateService.page(page, qw);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
         return BaseResult.success(pageList);
     }
-
     /**
      * 信息
      */
-    @GetMapping("/{id}")
+    @PostMapping("/get")
     @ApiOperation(value = "获取课程评价表详情信息")
-    public BaseResult<ClassEvaluate> info(@PathVariable("id") Integer id){
-        ClassEvaluate classEvaluate = classEvaluateService.getById(id);
+    public BaseResult<ClassEvaluate> info(@RequestBody Id id){
+        ClassEvaluate classEvaluate = classEvaluateService.getById(id.getId());
         return BaseResult.success(classEvaluate);
     }
 
     /**
      * 保存
      */
-    @PostMapping
+    @PostMapping("/insert")
     @ApiOperation(value = "新增课程评价表信息")
     public BaseResult save(@RequestBody  ClassEvaluate classEvaluate){
         boolean retFlag= classEvaluateService.save(classEvaluate);
@@ -68,29 +69,39 @@ public class ClassEvaluateController {
     /**
      * 修改
      */
-    @PutMapping
+    @PostMapping("/update")
     @ApiOperation(value = "修改课程评价表信息")
     public BaseResult update(@RequestBody @PathVariable("classEvaluate") ClassEvaluate classEvaluate){
-        BaseResult<ClassEvaluate> baseResult=new BaseResult<>();
         boolean retFlag= classEvaluateService.updateById(classEvaluate);
         return BaseResult.success(retFlag);
     }
     /**
      * 修改  点赞数
-     */    @PutMapping(value = "/upOrDown")
+     */
+    @PostMapping(value = "/upOrDown")
     @ApiOperation(value = "修改课程评价表点赞信息")
-    public BaseResult updateUp(Boolean upOrDown,Integer id){
-        boolean retFlag=classEvaluateService.updateUp(upOrDown,id);
+    public BaseResult updateUp(@RequestBody ThumbsUpVo thumbsUpVo){
+        boolean retFlag=classEvaluateService.updateUp(thumbsUpVo);
         return BaseResult.success(retFlag);
     }
 
     /**
      * 删除
      */
-    @DeleteMapping("/{id}")
+    @PostMapping("/delete")
     @ApiOperation(value = "删除课程评价表信息")
-    public BaseResult delete(@PathVariable("id") Integer id){
-        boolean retFlag= classEvaluateService.removeById(id);
+    public BaseResult delete(@RequestBody Id id){
+        boolean retFlag= classEvaluateService.removeById(id.getId());
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 删除
+     */
+    @PostMapping("/delete/batch")
+    @ApiOperation(value = "删除课程评价表信息")
+    public BaseResult deleteBatch(@RequestBody List<Integer> list){
+        boolean retFlag= classEvaluateService.removeByIds(list);
         return BaseResult.success(retFlag);
     }
 
