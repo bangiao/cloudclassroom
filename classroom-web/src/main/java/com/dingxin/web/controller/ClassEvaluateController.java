@@ -85,7 +85,7 @@ public class ClassEvaluateController {
     /**
      * 审核
      */
-    @PostMapping
+    @PostMapping("/audit")
     @ApiOperation(value = "审核")
     public BaseResult audit(@RequestBody  ClassEvaluate classEvaluate){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
@@ -97,7 +97,7 @@ public class ClassEvaluateController {
     /**
      * 批量审核
      */
-    @PostMapping
+    @PostMapping("/auditBatch")
     @ApiOperation(value = "批量审核")
     public BaseResult auditBatch(@RequestBody List<Integer> ids){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
