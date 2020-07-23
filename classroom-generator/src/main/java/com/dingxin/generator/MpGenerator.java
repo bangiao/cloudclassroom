@@ -23,12 +23,7 @@ import java.util.Map;
  */
 public class MpGenerator {
 
-    /**
-     * 建议填写项目根路径
-     */
-    public static final String prefix = "D:\\ycx\\idea\\workspace\\cloudclassroom\\";
-
-    public static final String[] tabs = {};
+    public static final String prefix = "D:\\studyJava\\space\\jkt\\";
 
     /**
      * <p>
@@ -40,7 +35,7 @@ public class MpGenerator {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir(prefix+"generator\\output");
+        gc.setOutputDir(prefix+"cloudclassroom\\classroom-generator\\src\\main\\resources\\output");
         gc.setFileOverride(true);
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存
@@ -91,8 +86,8 @@ public class MpGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         strategy.setTablePrefix(new String[]{"nkd_", "sys_", "ccr_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(tabs); // 需要生成的表
-//        strategy.setExclude(new String[]{}); // 排除生成的表
+                strategy.setInclude(new String[]{"ccr_class_evaluate","ccr_stduent_class_see_record"}); // 需要生成的表
+        strategy.setExclude(new String[]{}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
         // 自定义实体，公共字段

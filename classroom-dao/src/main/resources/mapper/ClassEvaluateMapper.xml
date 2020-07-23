@@ -7,18 +7,20 @@
                     <id column="id" property="id" />
                     <result column="class_id" property="classId" />
                     <result column="class_name" property="className" />
-                    <result column="t_id" property="tId" />
-                    <result column="t_name" property="tName" />
+                    <result column="teacher_id" property="teacherId" />
+                    <result column="teacher_name" property="teacherName" />
                     <result column="study_length" property="studyLength" />
-                    <result column="s_id" property="sId" />
-                    <result column="s_name" property="sName" />
-                    <result column="s_code" property="sCode" />
+                    <result column="student_id" property="studentId" />
+                    <result column="student_name" property="studentName" />
+                    <result column="student_code" property="studentCode" />
                     <result column="evaluate_time" property="evaluateTime" />
                     <result column="evaluate_content" property="evaluateContent" />
                     <result column="evaluate_score" property="evaluateScore" />
                     <result column="evaluate_count" property="evaluateCount" />
                     <result column="create_time" property="createTime" />
-                    <result column="yn" property="yn" />
+                    <result column="modify_time" property="modifyTime" />
+                    <result column="status" property="status" />
+                    <result column="del_flag" property="delFlag" />
         </resultMap>
 
 </mapper>

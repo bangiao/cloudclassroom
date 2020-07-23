@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.io.Serializable;
@@ -35,11 +37,11 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 讲师id
      */
-    private Integer tId;
+    private Integer teacherId;
     /**
      * 讲师姓名
      */
-    private String tName;
+    private String teacherName;
     /**
      * 学习时长
      */
@@ -47,15 +49,15 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 学生id
      */
-    private Integer sId;
+    private Integer studentId;
     /**
      * 学生姓名
      */
-    private String sName;
+    private String studentName;
     /**
      * 学生编号
      */
-    private String sCode;
+    private String studentCode;
     /**
      * 评价时间
      */
@@ -77,9 +79,17 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      */
     private LocalDateTime createTime;
     /**
+     * 最后修改时间
+     */
+    private LocalDateTime modifyTime;
+    /**
+     * 审核状态0为未审核1为已审核
+     */
+    private Integer status;
+    /**
      * 是否删除
      */
-    private Integer yn;
+    private Integer delFlag;
 
 
     @Override

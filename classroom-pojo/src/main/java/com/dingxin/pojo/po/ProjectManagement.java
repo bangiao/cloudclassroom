@@ -12,64 +12,56 @@ import java.io.Serializable;
 import java.io.Serializable;
 
 /**
- * 学生记录表 实体类
+ *  实体类
  */
-@TableName("ccr_stduent_class_see_record")
+@TableName("ccr_project_management")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
+public class ProjectManagement extends Model<ProjectManagement> {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 逐渐
+     * id
      */
     private Integer id;
     /**
-     * 学生id
+     * 专题名称
      */
-    private Integer studentId;
+    private String projectName;
     /**
-     * 学生姓名
+     * 讲师
      */
-    private String studentName;
+    private Integer lecturerId;
     /**
-     * 学校
+     * 专题描述
      */
-    private String studentCode;
+    private String projectDescription;
     /**
-     * 院校
+     * 课程数量统计
      */
-    private String studentColleges;
+    private Integer courseNum;
     /**
-     * 专业
+     * 观看次数
      */
-    private String studentMajor;
+    private Integer watchNum;
     /**
-     * 班级
+     * 是否禁用 0：启用 -1：禁用
      */
-    private String studentClass;
+    private Boolean enable;
     /**
-     * 教师ID
+     * 审核状态 0：待审核 1：审核通过 -1：审核未通过
      */
-    private Integer teacherId;
+    private Boolean auditStatus;
     /**
-     * 教师姓名
+     * 是否删除 0：未删除 -1 ：删除
      */
-    private String teacherName;
+    private Boolean delFlag;
     /**
-     * 课程id
+     * 课程关联id
      */
-    private Integer classId;
-    /**
-     * 课程名字
-     */
-    private String className;
-    /**
-     * 学习时长
-     */
-    private String studyLength;
+    private Integer courseId;
     /**
      * 创建时间
      */
@@ -78,10 +70,6 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      * 修改时间
      */
     private LocalDateTime modifyTime;
-    /**
-     * 是否有效
-     */
-    private Integer delFlag;
 
 
     @Override
