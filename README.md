@@ -250,4 +250,8 @@ nkdykt nkdykt
 ``` 
 
 ***
+## 访问日志管理
+记得在controller内的映射方法加上注解
+```
+@OperationWatcher(operateDesc = "xxx操作描述")
 

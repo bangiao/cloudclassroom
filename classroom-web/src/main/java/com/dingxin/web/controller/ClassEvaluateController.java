@@ -1,5 +1,9 @@
 package com.dingxin.web.controller;
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+=======
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+>>>>>>> f6099f4f7da655bb4ea8ea0f1f74a5590c5c7c37
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
+
+import java.util.List;
 
 /**
  * 课程评价表
@@ -86,5 +92,30 @@ public class ClassEvaluateController {
     public BaseResult delete(@PathVariable("id") Integer id){
         boolean retFlag= classEvaluateService.removeById(id);
         return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 审核
+     */
+    @PostMapping("/audit")
+    @ApiOperation(value = "审核")
+    public BaseResult audit(@RequestBody  ClassEvaluate classEvaluate){
+        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
+        wrapper.set("status",1);
+        wrapper.eq("id",classEvaluate.getId());
+        classEvaluateService.update(wrapper);
+        return BaseResult.success("审核成功！");
+    }
+    /**
+     * 批量审核
+     */
+    @PostMapping("/auditBatch")
+    @ApiOperation(value = "批量审核")
+    public BaseResult auditBatch(@RequestBody List<Integer> ids){
+        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
+        wrapper.set("status",1);
+        wrapper.in("id",ids);
+        classEvaluateService.update(wrapper);
+        return BaseResult.success("批量审核成功！");
     }
 }
