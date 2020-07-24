@@ -20,6 +20,7 @@ public enum ExceptionEnum {
 
     //3.参数校验
     PARAMTER_ERROR("3001","参数校验失败"),
+    VERIFY_EXCEL_ERROR("3002","EXCEL内容错误"),
 
     //4.业务流程校验异常
 
