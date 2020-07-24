@@ -1,21 +1,29 @@
 package com.dingxin.web.controller;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.ProjectManagement;
+import com.dingxin.pojo.po.Teachers;
+import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.IProjectManagementService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.web.service.ITeachersService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +37,8 @@ public class ProjectManagementController {
 
     @Autowired
     private IProjectManagementService projectManagementService;
-
+    @Autowired
+    private ITeachersService teachersService;
 
     /**
      * 列表查询
@@ -39,11 +48,38 @@ public class ProjectManagementController {
     public BaseResult<Page<ProjectManagement>>list(@RequestBody BaseQuery<ProjectManagement> query){
         //查询列表数据
         Page<ProjectManagement> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = projectManagementService.page(page,Wrappers.query(query.getData()));
+        IPage<ProjectManagement> pageList = projectManagementService.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
-        return BaseResult.success(pageList);
+        ArrayList<ProjectManagementVo> resultVo = new ArrayList<>();
+        List<ProjectManagement> records = pageList.getRecords();
+        for (ProjectManagement projectManagement: records ) {
+            ProjectManagementVo projectManagementVo = new ProjectManagementVo();
+            Integer lecturerId = projectManagement.getLecturerId();
+            QueryWrapper<Teachers> teacherQuery = Wrappers.query();
+            Teachers teachers = teachersService.getOne(teacherQuery.eq("JG0101ID", lecturerId));
+            projectManagementVo.setId(projectManagement.getId());
+            projectManagementVo.setLecturerName(teachers.getXm());
+            projectManagementVo.setModifyTime(projectManagement.getModifyTime());
+            projectManagementVo.setCreateTime(projectManagement.getCreateTime());
+            projectManagementVo.setAuditStatus(projectManagement.getAuditStatus());
+            projectManagementVo.setCourseId(projectManagement.getCourseId());
+            projectManagementVo.setCourseNum(projectManagement.getCourseNum());
+            projectManagementVo.setDelFlag(projectManagement.getDelFlag());
+            projectManagementVo.setEnable(projectManagement.getEnable());
+            projectManagementVo.setLecturerId(projectManagement.getLecturerId());
+            projectManagementVo.setProjectDescription(projectManagement.getProjectDescription());
+            projectManagementVo.setProjectName(projectManagement.getProjectName());
+            projectManagementVo.setWatchNum(projectManagement.getWatchNum());
+            resultVo.add(projectManagementVo);
+        }
+        Page<ProjectManagementVo> voPage = new Page<>();
+        voPage.setRecords(resultVo);
+        voPage.setSize(pageList.getSize());
+        voPage.setTotal(pageList.getTotal());
+        voPage.setPages(pageList.getPages());
+        return BaseResult.success(voPage);
     }
 
     /**
@@ -61,19 +97,7 @@ public class ProjectManagementController {
      */
     @PostMapping
     @ApiOperation(value = "新增专题管理信息")
-    public BaseResult save(@RequestBody  ProjectManagement projectManagement){
-        String projectName = projectManagement.getProjectName();
-        if (StringUtils.isEmpty(projectName)){
-            return BaseResult.success().setMsg("专题名称不能为空");
-        }
-        String projectDescription = projectManagement.getProjectDescription();
-        if (StringUtils.isEmpty(projectDescription)){
-            return BaseResult.success().setMsg("专题描述不能为空");
-        }
-        Integer lecturerId = projectManagement.getLecturerId();
-        if (null == lecturerId){
-            return BaseResult.success().setMsg("讲师不能为空");
-        }
+    public BaseResult save( @Validated @RequestBody ProjectManagement projectManagement){
         projectManagement.setCreateTime(LocalDateTime.now());
         projectManagement.setModifyTime(LocalDateTime.now());
         boolean retFlag= projectManagementService.save(projectManagement);

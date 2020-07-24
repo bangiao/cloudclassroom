@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.TeachersMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.Teachers">
+                    <id column="JG0101ID" property="jg0101id" />
+                    <result column="JGH" property="jgh" />
+                    <result column="XM" property="xm" />
+                    <result column="XMPY" property="xmpy" />
+                    <result column="CYM" property="cym" />
+                    <result column="XBM" property="xbm" />
+                    <result column="CSRQ" property="csrq" />
+                    <result column="CSDM" property="csdm" />
+                    <result column="JG" property="jg" />
+                    <result column="GJDQM" property="gjdqm" />
+                    <result column="MZM" property="mzm" />
+                    <result column="SFZJLXM" property="sfzjlxm" />
+                    <result column="SFZJH" property="sfzjh" />
+                    <result column="SFZJYXQ" property="sfzjyxq" />
+                    <result column="BZLBM" property="bzlbm" />
+                    <result column="JZGLBM" property="jzglbm" />
+                    <result column="DQZTM" property="dqztm" />
+                    <result column="WHCDM" property="whcdm" />
+                    <result column="CJGZNY" property="cjgzny" />
+                    <result column="LXRQ" property="lxrq" />
+                    <result column="CJNY" property="cjny" />
+                    <result column="DWH" property="dwh" />
+        </resultMap>
+
+</mapper>
