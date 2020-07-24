@@ -25,8 +25,11 @@ public enum ExceptionEnum {
     //4.业务流程校验异常
 
     //5.系统级
-    SYSTEM_ERROR("5001","系统内部异常");
+    SYSTEM_ERROR("5001","系统内部异常"),
 
+
+    //unknown
+    UNKNOWN_ERROR("9999","未知异常");
 
     private String code;
 
@@ -36,7 +39,7 @@ public enum ExceptionEnum {
         return Arrays.stream(values())
                 .filter(exceptionEnum -> exceptionEnum.getCode().equals(code))
                 .findFirst()
-                .orElse(null);
+                .orElse(UNKNOWN_ERROR);
     }
 
 }
