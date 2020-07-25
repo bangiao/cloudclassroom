@@ -51,7 +51,7 @@ public class MpGenerator {
         // gc.setControllerName("%sAction");
         mpg.setGlobalConfig(gc);
 
-        GlobalConfig finalGc = gc;
+        final GlobalConfig finalGc = gc;
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.MYSQL);
