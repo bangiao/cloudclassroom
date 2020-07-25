@@ -1,4 +1,6 @@
 package com.dingxin.web.service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.OperationLog;
@@ -18,4 +20,11 @@ public interface IClassEvaluateService extends IService<ClassEvaluate> {
      * @return
      */
     boolean updateUp(ThumbsUpVo thumbsUpVo);
+
+    /**
+     * 查询数据列表
+     * @param query
+     * @return
+     */
+    IPage queryPage(BaseQuery<ClassEvaluate> query);
 }

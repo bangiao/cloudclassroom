@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.ClassTypeMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.ClassType">
+                    <id column="id" property="id" />
+                    <result column="type_name" property="typeName" />
+                    <result column="data_name" property="dataName" />
+                    <result column="create_person_id" property="createPersonId" />
+                    <result column="create_person_name" property="createPersonName" />
+                    <result column="create_time" property="createTime" />
+                    <result column="modify_time" property="modifyTime" />
+                    <result column="del_flag" property="delFlag" />
+        </resultMap>
+
+</mapper>

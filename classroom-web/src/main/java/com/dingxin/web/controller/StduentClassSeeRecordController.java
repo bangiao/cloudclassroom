@@ -7,6 +7,7 @@ import com.dingxin.web.service.IStduentClassSeeRecordService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -33,7 +34,7 @@ public class StduentClassSeeRecordController {
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取学生记录表列表")
+    @ApiOperation(value = "获取学生记录表列表" )
     public BaseResult<Page<StduentClassSeeRecord>>list(@RequestBody BaseQuery<StduentClassSeeRecord> query){
         //查询列表数据
         Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(),query.getPageSize());
@@ -41,13 +42,13 @@ public class StduentClassSeeRecordController {
         StduentClassSeeRecord data = query.getData();
         if (null!=data){
             String queryStr = data.getQueryStr();
-            qw.like("student_name",queryStr).or().like("student_code",queryStr).or().like("student_class",queryStr);
+            if (StringUtils.isNoneBlank(queryStr))qw.like("student_name",queryStr).or().like("student_code",queryStr).or().like("student_class",queryStr);
         }
-        qw.eq("del_flag",0);
-        IPage pageList = stduentClassSeeRecordService.page(page, qw);
+        IPage pageList = stduentClassSeeRecordService.page(page, qw.eq("del_falg",0).orderByAsc("study_length"));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
+        pageList.setTotal(pageList.getRecords().size());
         return BaseResult.success(pageList);
     }
 
@@ -67,13 +68,7 @@ public class StduentClassSeeRecordController {
     @PostMapping("/insert")
     @ApiOperation(value = "新增学生记录表信息")
     public BaseResult save(@RequestBody  StduentClassSeeRecord stduentClassSeeRecord){
-        StduentClassSeeRecord entity = stduentClassSeeRecordService.query().eq("class_id", stduentClassSeeRecord.getClassId()).eq("student_id", stduentClassSeeRecord.getStudentId()).getEntity();
-        if (null!=entity){
-            entity.setModifyTime(null);
-            entity.setStudyLength(stduentClassSeeRecord.getStudyLength());
-        }
-        stduentClassSeeRecord=entity;
-        boolean retFlag= stduentClassSeeRecordService.saveOrUpdate(stduentClassSeeRecord);
+        boolean retFlag=stduentClassSeeRecordService.saveOrUpdateRecord(stduentClassSeeRecord);
         return BaseResult.success(retFlag);
     }
 

@@ -1,6 +1,7 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
@@ -90,5 +91,24 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
         return stduentClassSeeRecordMapper.selectList(query);
 
 
+    }
+
+    /**
+     * 观看视频记录新增
+     * @param stduentClassSeeRecord
+     * @return
+     */
+    @Override
+    public boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord) {
+        StduentClassSeeRecord entity = query().eq("class_id", stduentClassSeeRecord.getClassId()).eq("student_id", stduentClassSeeRecord.getStudentId()).getEntity();
+        if (null!=entity){
+            entity.setModifyTime(null);
+            entity.setStudyLength(stduentClassSeeRecord.getStudyLength());
+            stduentClassSeeRecord=entity;
+        }
+//        学习时长格式化
+        stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
+        boolean retFlag= saveOrUpdate(stduentClassSeeRecord);
+        return retFlag;
     }
 }

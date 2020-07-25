@@ -32,10 +32,11 @@ public class ClassCollectionController {
     public BaseResult<Page<ClassCollection>>list(@RequestBody BaseQuery<ClassCollection> query){
         //查询列表数据
         Page<ClassCollection> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = classCollectionService.page(page,Wrappers.query(query.getData()));
+        IPage pageList = classCollectionService.page(page,Wrappers.query(query.getData()).eq("del_flag",0).orderByDesc("create_time").select(""));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
+        pageList.setTotal(pageList.getRecords().size());
         return BaseResult.success(pageList);
     }
 
@@ -52,10 +53,15 @@ public class ClassCollectionController {
     /**
      * 保存
      */
-    @PostMapping
+    @PostMapping("/insert")
     @ApiOperation(value = "新增课程收藏表信息")
     public BaseResult save(@RequestBody  ClassCollection classCollection){
-        boolean retFlag= classCollectionService.save(classCollection);
+        ClassCollection entity = classCollectionService.query().eq("class_id", classCollection.getClassId()).eq("person_id", classCollection.getClassId()).getEntity();
+        if (null!=entity){
+            entity.setModifyTime(null);
+            classCollection=entity;
+        }
+        boolean retFlag= classCollectionService.saveOrUpdate(classCollection);
         return BaseResult.success(retFlag);
     }
 

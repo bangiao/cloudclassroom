@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.models.auth.In;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -36,16 +37,8 @@ public class ClassEvaluateController {
     @PostMapping("/list")
     @ApiOperation(value = "获取课程评价表列表")
     public BaseResult<Page<ClassEvaluate>>list(@RequestBody BaseQuery<ClassEvaluate> query){
-        //查询列表数据
-        Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
-        QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
-        ClassEvaluate data = query.getData();
-        if (null!=data) {
-            String queryStr = data.getQueryStr();
-            qw.like("student_name", queryStr).or().like("student_code", queryStr).or().like("class_name", queryStr);
-        }
-        qw.eq("del_flag",0);
-        IPage pageList = classEvaluateService.page(page, qw);
+
+        IPage pageList = classEvaluateService.queryPage(query);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }

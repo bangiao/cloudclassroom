@@ -9,4 +9,11 @@ import java.util.List;
  */
 public interface IStduentClassSeeRecordService extends IService<StduentClassSeeRecord> {
     List<StduentClassSeeRecord> like(StduentClassSeeRecord data);
+
+    /**
+     * 记录新增
+     * @param stduentClassSeeRecord
+     * @return
+     */
+    boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord);
 }
