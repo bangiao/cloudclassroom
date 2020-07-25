@@ -1,5 +1,6 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.io.Serializable;
@@ -29,18 +32,33 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 课程id
      */
+    @NotNull(message="classId must not be null")
     private Integer classId;
     /**
      * 课程名字
      */
+    @NotNull(message = "className must not be null")
     private String className;
+
+    /**
+     * 课程类型
+     */
+    @NotNull(message = "classType must not be null")
+    private String classType;
+    /**
+     * 课程类型
+     */
+    @NotNull(message = "classTypeStr must not be null")
+    private String classTypeStr;
     /**
      * 讲师id
      */
+    @NotNull(message = "teacherId must not be null")
     private Integer teacherId;
     /**
      * 讲师姓名
      */
+    @NotNull(message = "teacherName must not be null")
     private String teacherName;
     /**
      * 学习时长
@@ -49,14 +67,17 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 学生id
      */
+    @NotNull(message = "studentId must not be null")
     private Integer studentId;
     /**
      * 学生姓名
      */
+    @NotNull(message = "studentName must not be null")
     private String studentName;
     /**
      * 学生编号
      */
+    @NotNull(message = "studentCode must not be null")
     private String studentCode;
     /**
      * 评价时间
@@ -65,6 +86,7 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 评价内容
      */
+    @NotNull(message = "evaluateContent must not be null")
     private String evaluateContent;
     /**
      * 评价分数
@@ -90,6 +112,9 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      * 是否删除
      */
     private Integer delFlag;
+
+    @TableField(exist = false)
+    private String queryStr;
 
 
     @Override

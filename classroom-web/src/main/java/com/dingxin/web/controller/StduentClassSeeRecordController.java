@@ -38,7 +38,12 @@ public class StduentClassSeeRecordController {
         //查询列表数据
         Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(),query.getPageSize());
         QueryWrapper<StduentClassSeeRecord> qw = new QueryWrapper<>();
-        qw.like("student_name",query.getData()).or().like("student_code",query.getData()).or().like("student_class",query.getData());
+        StduentClassSeeRecord data = query.getData();
+        if (null!=data){
+            String queryStr = data.getQueryStr();
+            qw.like("student_name",queryStr).or().like("student_code",queryStr).or().like("student_class",queryStr);
+        }
+        qw.eq("del_flag",0);
         IPage pageList = stduentClassSeeRecordService.page(page, qw);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
@@ -62,7 +67,13 @@ public class StduentClassSeeRecordController {
     @PostMapping("/insert")
     @ApiOperation(value = "新增学生记录表信息")
     public BaseResult save(@RequestBody  StduentClassSeeRecord stduentClassSeeRecord){
-        boolean retFlag= stduentClassSeeRecordService.save(stduentClassSeeRecord);
+        StduentClassSeeRecord entity = stduentClassSeeRecordService.query().eq("class_id", stduentClassSeeRecord.getClassId()).eq("student_id", stduentClassSeeRecord.getStudentId()).getEntity();
+        if (null!=entity){
+            entity.setModifyTime(null);
+            entity.setStudyLength(stduentClassSeeRecord.getStudyLength());
+        }
+        stduentClassSeeRecord=entity;
+        boolean retFlag= stduentClassSeeRecordService.saveOrUpdate(stduentClassSeeRecord);
         return BaseResult.success(retFlag);
     }
 

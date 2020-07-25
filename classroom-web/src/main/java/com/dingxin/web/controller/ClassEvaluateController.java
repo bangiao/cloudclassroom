@@ -39,7 +39,12 @@ public class ClassEvaluateController {
         //查询列表数据
         Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
         QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
-        qw.like("student_name",query.getData()).or().like("student_code",query.getData()).or().like("class_name",query.getData());
+        ClassEvaluate data = query.getData();
+        if (null!=data) {
+            String queryStr = data.getQueryStr();
+            qw.like("student_name", queryStr).or().like("student_code", queryStr).or().like("class_name", queryStr);
+        }
+        qw.eq("del_flag",0);
         IPage pageList = classEvaluateService.page(page, qw);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
@@ -71,7 +76,7 @@ public class ClassEvaluateController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改课程评价表信息")
-    public BaseResult update(@RequestBody @PathVariable("classEvaluate") ClassEvaluate classEvaluate){
+    public BaseResult update(@RequestBody  ClassEvaluate classEvaluate){
         boolean retFlag= classEvaluateService.updateById(classEvaluate);
         return BaseResult.success(retFlag);
     }
@@ -99,7 +104,7 @@ public class ClassEvaluateController {
      * 删除
      */
     @PostMapping("/delete/batch")
-    @ApiOperation(value = "删除课程评价表信息")
+    @ApiOperation(value = "批量删除课程评价表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list){
         boolean retFlag= classEvaluateService.removeByIds(list);
         return BaseResult.success(retFlag);
