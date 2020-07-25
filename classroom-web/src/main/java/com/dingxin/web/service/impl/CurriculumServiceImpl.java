@@ -40,18 +40,6 @@ public class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curricu
                     Curriculum::getCurriculumDesc,
                     data.getCurriculumDesc())
                 .like(
-                    Objects.nonNull(data.getTopicId()),
-                    Curriculum::getTopicId,
-                    data.getTopicId())
-                .like(
-                    Objects.nonNull(data.getTeacherId()),
-                    Curriculum::getTeacherId,
-                    data.getTeacherId())
-                .like(
-                    Objects.nonNull(data.getAddVideoFlag()),
-                    Curriculum::getAddVideoFlag,
-                    data.getAddVideoFlag())
-                .like(
                     Objects.nonNull(data.getVideoName()),
                     Curriculum::getVideoName,
                     data.getVideoName())
@@ -67,6 +55,34 @@ public class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curricu
                     Objects.nonNull(data.getLiveVideo()),
                     Curriculum::getLiveVideo,
                     data.getLiveVideo())
+                .like(
+                    Objects.nonNull(data.getAddVideoFlag()),
+                    Curriculum::getAddVideoFlag,
+                    data.getAddVideoFlag())
+                .like(
+                    Objects.nonNull(data.getDisableFlag()),
+                    Curriculum::getDisableFlag,
+                    data.getDisableFlag())
+                .like(
+                    Objects.nonNull(data.getDepartmentId()),
+                    Curriculum::getDepartmentId,
+                    data.getDepartmentId())
+                .like(
+                    Objects.nonNull(data.getTopicId()),
+                    Curriculum::getTopicId,
+                    data.getTopicId())
+                .like(
+                    Objects.nonNull(data.getTeacherId()),
+                    Curriculum::getTeacherId,
+                    data.getTeacherId())
+                .like(
+                    Objects.nonNull(data.getWatchAmount()),
+                    Curriculum::getWatchAmount,
+                    data.getWatchAmount())
+                .like(
+                    Objects.nonNull(data.getDeleteFlag()),
+                    Curriculum::getDeleteFlag,
+                    data.getDeleteFlag())
 ;
         return curriculumMapper.selectList(query);
 

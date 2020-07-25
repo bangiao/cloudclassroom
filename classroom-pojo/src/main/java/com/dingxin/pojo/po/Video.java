@@ -13,36 +13,24 @@ import java.io.Serializable;
 /**
  *  实体类
  */
-@TableName("ccr_curriculum")
+@TableName("ccr_video")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Curriculum extends Model<Curriculum> {
+public class Video extends Model<Video> {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 主键
+     * 视频表主键
      */
     private Integer id;
-    /**
-     * 课程名称
-     */
-    private String curriculumName;
-    /**
-     * 课程类型
-     */
-    private String curriculumType;
-    /**
-     * 课程介绍
-     */
-    private String curriculumDesc;
     /**
      * 视频名称
      */
     private String videoName;
     /**
-     * 视频时长(时长为该课程下所有视频的累计时长)
+     * 视频时长
      */
     private String videoDuration;
     /**
@@ -52,35 +40,23 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 直播视频
      */
-    private String liveVideo;
-    /**
-     * 是否添加视频
-     */
-    private Integer addVideoFlag;
-    /**
-     * 是否禁用(是否有效)
-     */
-    private Integer disableFlag;
-    /**
-     * 所属院系
-     */
-    private Integer departmentId;
-    /**
-     * 所属专题
-     */
-    private Integer topicId;
+    private String liveVideoId;
     /**
      * 讲师
      */
-    private Integer teacherId;
+    private String teacherId;
     /**
-     * 观看次数(课程下的观看次数为该课程下所有视频的观看次数)
+     * 是否有效(禁用之后为无效)
      */
-    private Integer watchAmount;
+    private Boolean validFlag;
     /**
-     * 删除标志(目前采用假删除的方式)
+     * 审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频
      */
-    private Integer deleteFlag;
+    private Integer checkFlag;
+    /**
+     * 所属章节
+     */
+    private Integer chapterId;
 
 
     @Override
