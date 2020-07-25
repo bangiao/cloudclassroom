@@ -23,8 +23,8 @@ import java.util.Map;
  */
 public class MpGenerator {
 
-    public static final String prefix = "D:\\code\\ideaWorkSpasce\\cloud-classroomgenerator\\output";
-//    public static final String prefix = "";
+    public static final String prefix = "";
+//    public static final String prefix = "D:\\code\\ideaWorkSpasce\\cloud-classroomgenerator\\output";
 
     public static final String[] tabs = {};
 
