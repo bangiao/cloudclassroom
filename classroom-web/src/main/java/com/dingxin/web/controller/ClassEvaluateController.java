@@ -17,6 +17,7 @@ import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -110,21 +111,51 @@ public class ClassEvaluateController {
     @ApiOperation(value = "审核")
     public BaseResult audit(@RequestBody  ClassEvaluate classEvaluate){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
-        wrapper.set("status",1);
+        wrapper.set("status",classEvaluate.getStatus());
         wrapper.eq("id",classEvaluate.getId());
         classEvaluateService.update(wrapper);
-        return BaseResult.success("审核成功！");
+        return BaseResult.success().setMsg("审核成功！");
     }
     /**
-     * 批量审核
+     * 批量审核通过
      */
     @PostMapping("/auditBatch")
-    @ApiOperation(value = "批量审核")
+    @ApiOperation(value = "批量审核通过")
     public BaseResult auditBatch(@RequestBody List<Integer> ids){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
         wrapper.set("status",1);
         wrapper.in("id",ids);
         classEvaluateService.update(wrapper);
-        return BaseResult.success("批量审核成功！");
+        return BaseResult.success().setMsg("批量审核成功！");
+    }
+    /**
+     * 批量审核未通过
+     */
+    @PostMapping("/auditBatchUnapprove")
+    @ApiOperation(value = "批量审核未通过")
+    public BaseResult auditBatchUnapprove(@RequestBody List<Integer> ids){
+        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
+        wrapper.set("status",-1);
+        wrapper.in("id",ids);
+        classEvaluateService.update(wrapper);
+        return BaseResult.success().setMsg("批量审核成功！");
+    }
+    /**
+     * 评价审核列表查询
+     */
+    @PostMapping("/auditList")
+    @ApiOperation(value = "评价审核列表查询")
+    public BaseResult<Page<ClassEvaluate>>auditList(@RequestBody BaseQuery<ClassEvaluate> query){
+
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
+        QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
+        qw.eq("del_flag",0);
+        List<String> list = Arrays.asList("0,-1".split(","));
+        qw.in("status",list);
+        IPage pageList = classEvaluateService.page(page, qw);
+        if(CollectionUtils.isEmpty(pageList.getRecords())){
+            return BaseResult.success();
+        }
+        return BaseResult.success(pageList);
     }
 }
