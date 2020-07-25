@@ -51,6 +51,7 @@ public class MpGenerator {
         // gc.setControllerName("%sAction");
         mpg.setGlobalConfig(gc);
 
+        GlobalConfig finalGc = gc;
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.MYSQL);
@@ -59,7 +60,7 @@ public class MpGenerator {
             public IColumnType processTypeConvert(String fieldType) {
                 System.out.println("转换类型：" + fieldType);
                 // 注意！！processTypeConvert 存在默认类型转换，如果不是你要的效果请自定义返回、非如下直接返回。\
-                IColumnType dbColumnType = super.processTypeConvert(gc, fieldType);
+                IColumnType dbColumnType = super.processTypeConvert(finalGc, fieldType);
                 if ("bit(1)".equals(fieldType)) {
                     dbColumnType = DbColumnType.BOOLEAN;
                 }
