@@ -1,4 +1,6 @@
 package com.dingxin.web.service.impl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.dao.mapper.ClassCollectionMapper;
 import com.dingxin.web.service.IClassCollectionService;
