@@ -50,7 +50,7 @@ public class VideoAudit extends Model<VideoAudit> {
      */
     private String auditComments;
     /**
-     * 审批状态
+     * 审批状态0为未审核1为已审核-1为未通过
      */
     private Integer auditFlag;
 

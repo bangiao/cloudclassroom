@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.ClassType;
+import com.dingxin.pojo.request.ClassEvaluateRequest;
+import com.dingxin.pojo.request.VideoAutoRequest;
 import com.dingxin.pojo.vo.Id;
 import com.dingxin.pojo.vo.ThumbsUpVo;
 import com.dingxin.web.service.IClassEvaluateService;
@@ -127,10 +129,11 @@ public class ClassEvaluateController {
      */
     @PostMapping("/auditBatch")
     @ApiOperation(value = "批量审核通过")
-    public BaseResult auditBatch(@RequestBody List<Integer> ids){
+    public BaseResult auditBatch(@RequestBody ClassEvaluateRequest classEvaluateRequest){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
         wrapper.set("status",1);
-        wrapper.in("id",ids);
+        wrapper.set("audit_comments",classEvaluateRequest.getAuditComments());
+        wrapper.in("id",classEvaluateRequest.getIdList());
         classEvaluateService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
@@ -139,10 +142,11 @@ public class ClassEvaluateController {
      */
     @PostMapping("/auditBatchUnapprove")
     @ApiOperation(value = "批量审核未通过")
-    public BaseResult auditBatchUnapprove(@RequestBody List<Integer> ids){
+    public BaseResult auditBatchUnapprove(@RequestBody ClassEvaluateRequest classEvaluateRequest){
         UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
         wrapper.set("status",-1);
-        wrapper.in("id",ids);
+        wrapper.set("audit_comments",classEvaluateRequest.getAuditComments());
+        wrapper.in("id",classEvaluateRequest.getIdList());
         classEvaluateService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
