@@ -54,7 +54,7 @@
     </appender>
 
     <!-- 日志总开关 -->
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE_ALL"/>
         <appender-ref ref="FILE_ERROR"/>
