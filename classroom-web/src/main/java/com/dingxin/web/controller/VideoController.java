@@ -1,7 +1,7 @@
 package com.dingxin.web.controller;
 import com.dingxin.common.annotation.UserTag;
-import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.web.service.ICurriculumService;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.web.service.IVideoService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
@@ -17,24 +17,24 @@ import com.dingxin.pojo.basic.BaseResult;
  */
 @UserTag
 @RestController
-@RequestMapping("/curriculum")
-@Api(tags = "课程接口")
-public class CurriculumController {
+@RequestMapping("/video")
+@Api(tags = "视频接口")
+public class VideoController {
 
 
     @Autowired
-    private ICurriculumService curriculumService;
+    private IVideoService videoService;
 
 
     /**
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
-    public BaseResult<Page<Curriculum>>list(@RequestBody BaseQuery<Curriculum> query){
+    @ApiOperation(value = "获取列表",response = Video.class)
+    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
         //查询列表数据
-        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = curriculumService.page(page,Wrappers.query(query.getData()));
+        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
+        IPage pageList = videoService.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -46,8 +46,8 @@ public class CurriculumController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取详情信息")
-    public BaseResult<Curriculum> search(@RequestBody  Curriculum curriculum){
-        Curriculum result = curriculumService.getOne(Wrappers.query(curriculum));
+    public BaseResult<Video> search(@RequestBody  Video video){
+        Video result = videoService.getOne(Wrappers.query(video));
         return BaseResult.success(result);
     }
 
@@ -56,8 +56,8 @@ public class CurriculumController {
      */
     @PostMapping
     @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  Curriculum curriculum){
-        boolean retFlag= curriculumService.save(curriculum);
+    public BaseResult save(@RequestBody  Video video){
+        boolean retFlag= videoService.save(video);
         return BaseResult.success(retFlag);
     }
 
@@ -66,8 +66,8 @@ public class CurriculumController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.updateById(curriculum);
+    public BaseResult update(@RequestBody Video video){
+        boolean retFlag= videoService.updateById(video);
         return BaseResult.success(retFlag);
     }
 
@@ -76,8 +76,8 @@ public class CurriculumController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
-    public BaseResult delete(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.remove(Wrappers.query(curriculum));
+    public BaseResult delete(@RequestBody Video video){
+        boolean retFlag= videoService.remove(Wrappers.query(video));
         return BaseResult.success(retFlag);
     }
 }

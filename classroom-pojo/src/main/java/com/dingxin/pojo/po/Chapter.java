@@ -4,42 +4,43 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.io.Serializable;
 
 /**
  *  实体类
  */
-@TableName("ccr_operation_log")
+@TableName("ccr_chapter")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OperationLog extends Model<OperationLog> {
+public class Chapter extends Model<Chapter> {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 操作日志表主键
+     * 章节表主键
      */
     private Integer id;
     /**
-     * 操作人
+     * 章节描述
      */
-    private String userId;
+    private String chapterDesc;
     /**
-     * 操作时间
+     * 所属课程
      */
-    private LocalDateTime operateTime;
+    private String curriculumId;
     /**
-     * 操作内容
+     * 是否为根章节
      */
-    private String operateDesc;
+    private Integer rootChapterFlag;
     /**
-     * ip地址
+     * 父章节
      */
-    private String ipAddress;
+    private Integer parentId;
 
 
     @Override

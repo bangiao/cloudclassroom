@@ -2,6 +2,7 @@ package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.vo.Id;
@@ -24,9 +25,10 @@ import java.util.List;
 /**
  * 课程评价表
  */
+@UserTag
 @RestController
 @RequestMapping("/classEvaluate")
-@Api(value = "课程评价表接口")
+@Api(tags={"课程评价表接口"})
 public class ClassEvaluateController {
 
 

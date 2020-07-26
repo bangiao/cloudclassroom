@@ -4,42 +4,55 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.io.Serializable;
 
 /**
  *  实体类
  */
-@TableName("ccr_operation_log")
+@TableName("ccr_video_audit")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OperationLog extends Model<OperationLog> {
+public class VideoAudit extends Model<VideoAudit> {
 
     private static final long serialVersionUID=1L;
 
     /**
-     * 操作日志表主键
+     * 主键
      */
     private Integer id;
     /**
-     * 操作人
+     * 视频名称
      */
-    private String userId;
+    private String videoName;
     /**
-     * 操作时间
+     * 视频时长
      */
-    private LocalDateTime operateTime;
+    private Long videoDuration;
     /**
-     * 操作内容
+     * 视频附件
      */
-    private String operateDesc;
+    private String videoAttachment;
     /**
-     * ip地址
+     * 直播视频
      */
-    private String ipAddress;
+    private String liveVideo;
+    /**
+     * 是否有效(讲道理默认值为有效)
+     */
+    private Integer validFlag;
+    /**
+     * 审批意见
+     */
+    private String auditComments;
+    /**
+     * 审批状态
+     */
+    private Integer auditFlag;
 
 
     @Override

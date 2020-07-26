@@ -8,13 +8,17 @@
                     <result column="curriculum_name" property="curriculumName" />
                     <result column="curriculum_type" property="curriculumType" />
                     <result column="curriculum_desc" property="curriculumDesc" />
-                    <result column="topic_id" property="topicId" />
-                    <result column="teacher_id" property="teacherId" />
-                    <result column="add_video_flag" property="addVideoFlag" />
                     <result column="video_name" property="videoName" />
                     <result column="video_duration" property="videoDuration" />
                     <result column="video_attachment" property="videoAttachment" />
                     <result column="live_video" property="liveVideo" />
+                    <result column="add_video_flag" property="addVideoFlag" />
+                    <result column="disable_flag" property="disableFlag" />
+                    <result column="department_id" property="departmentId" />
+                    <result column="topic_id" property="topicId" />
+                    <result column="teacher_id" property="teacherId" />
+                    <result column="watch_amount" property="watchAmount" />
+                    <result column="delete_flag" property="deleteFlag" />
         </resultMap>
 
 </mapper>

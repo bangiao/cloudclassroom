@@ -1,7 +1,7 @@
 package com.dingxin.web.controller;
-import com.dingxin.common.annotation.UserTag;
-import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.web.service.ICurriculumService;
+import com.dingxin.common.annotation.ManTag;
+import com.dingxin.pojo.po.VideoAudit;
+import com.dingxin.web.service.IVideoAuditService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
@@ -15,15 +15,15 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 
  */
-@UserTag
+@ManTag
 @RestController
-@RequestMapping("/curriculum")
-@Api(tags = "课程接口")
-public class CurriculumController {
+@RequestMapping("/videoAudit")
+@Api(tags = "视频审核接口")
+public class VideoAuditController {
 
 
     @Autowired
-    private ICurriculumService curriculumService;
+    private IVideoAuditService videoAuditService;
 
 
     /**
@@ -31,10 +31,10 @@ public class CurriculumController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<Curriculum>>list(@RequestBody BaseQuery<Curriculum> query){
+    public BaseResult<Page<VideoAudit>>list(@RequestBody BaseQuery<VideoAudit> query){
         //查询列表数据
-        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = curriculumService.page(page,Wrappers.query(query.getData()));
+        Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
+        IPage pageList = videoAuditService.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -46,8 +46,8 @@ public class CurriculumController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取详情信息")
-    public BaseResult<Curriculum> search(@RequestBody  Curriculum curriculum){
-        Curriculum result = curriculumService.getOne(Wrappers.query(curriculum));
+    public BaseResult<VideoAudit> search(@RequestBody  VideoAudit videoAudit){
+        VideoAudit result = videoAuditService.getOne(Wrappers.query(videoAudit));
         return BaseResult.success(result);
     }
 
@@ -56,8 +56,8 @@ public class CurriculumController {
      */
     @PostMapping
     @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  Curriculum curriculum){
-        boolean retFlag= curriculumService.save(curriculum);
+    public BaseResult save(@RequestBody  VideoAudit videoAudit){
+        boolean retFlag= videoAuditService.save(videoAudit);
         return BaseResult.success(retFlag);
     }
 
@@ -66,8 +66,8 @@ public class CurriculumController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.updateById(curriculum);
+    public BaseResult update(@RequestBody VideoAudit videoAudit){
+        boolean retFlag= videoAuditService.updateById(videoAudit);
         return BaseResult.success(retFlag);
     }
 
@@ -76,8 +76,8 @@ public class CurriculumController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
-    public BaseResult delete(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.remove(Wrappers.query(curriculum));
+    public BaseResult delete(@RequestBody VideoAudit videoAudit){
+        boolean retFlag= videoAuditService.remove(Wrappers.query(videoAudit));
         return BaseResult.success(retFlag);
     }
 }

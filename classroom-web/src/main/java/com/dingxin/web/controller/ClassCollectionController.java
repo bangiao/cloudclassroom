@@ -1,5 +1,9 @@
 package com.dingxin.web.controller;
+<<<<<<< HEAD
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+=======
+import com.dingxin.common.annotation.UserTag;
+>>>>>>> 8bf7b1d016ba79126c5a2b4cd47433390299b05d
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.vo.Id;
@@ -19,9 +23,10 @@ import java.util.List;
 /**
  * 课程收藏表
  */
+@UserTag
 @RestController
 @RequestMapping("/classCollection")
-@Api(value = "课程收藏表接口")
+@Api(tags={"课程收藏接口"})
 public class ClassCollectionController {
 
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.ChapterMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.Chapter">
+                    <id column="id" property="id" />
+                    <result column="chapter_desc" property="chapterDesc" />
+                    <result column="curriculum_id" property="curriculumId" />
+                    <result column="root_chapter_flag" property="rootChapterFlag" />
+                    <result column="parent_id" property="parentId" />
+        </resultMap>
+
+</mapper>

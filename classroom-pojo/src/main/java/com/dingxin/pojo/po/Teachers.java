@@ -153,8 +153,12 @@ public class Teachers extends Model<Teachers> {
     @TableField("DWH")
     @ApiModelProperty(value = "单位")
     private String dwh;
-
-
+    /**
+     * 是否禁用 0：启用 -1：禁用
+     */
+    @TableField("enable")
+    @ApiModelProperty(value = "是否禁用")
+    private Boolean enable;
     @Override
     protected Serializable pkVal() {
         return this.jg0101id;
