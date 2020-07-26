@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.Role;
@@ -21,6 +22,7 @@ import java.util.List;
 /**
  * 菜单管理
  */
+@ManTag
 @RestController
 @RequestMapping("/menu")
 @Api(value = "菜单管理接口")

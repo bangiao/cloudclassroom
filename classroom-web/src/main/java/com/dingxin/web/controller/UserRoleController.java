@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.po.UserRole;
@@ -26,6 +27,7 @@ import java.util.List;
 /**
  * 用户与角色对应关系
  */
+@ManTag
 @RestController
 @RequestMapping("/userRole")
 @Api(value = "用户与角色对应关系接口")

@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.vo.RoleMenuVo;
 import com.dingxin.pojo.vo.Id;
@@ -22,6 +23,7 @@ import java.util.List;
 /**
  * 角色与菜单对应关系
  */
+@ManTag
 @RestController
 @RequestMapping("/roleMenu")
 @Api(value = "角色与菜单对应关系接口")
