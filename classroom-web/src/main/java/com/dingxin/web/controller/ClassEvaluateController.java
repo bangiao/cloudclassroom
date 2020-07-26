@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.ClassEvaluate;
+import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.vo.Id;
 import com.dingxin.pojo.vo.ThumbsUpVo;
 import com.dingxin.web.service.IClassEvaluateService;
@@ -38,7 +39,6 @@ public class ClassEvaluateController {
     @PostMapping("/list")
     @ApiOperation(value = "获取课程评价表列表")
     public BaseResult<Page<ClassEvaluate>>list(@RequestBody BaseQuery<ClassEvaluate> query){
-
         IPage pageList = classEvaluateService.queryPage(query);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
@@ -90,17 +90,21 @@ public class ClassEvaluateController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程评价表信息")
     public BaseResult delete(@RequestBody Id id){
-        boolean retFlag= classEvaluateService.removeById(id.getId());
+        ClassEvaluate byId = classEvaluateService.getById(id.getId());
+        if (null!=byId)byId.setDelFlag(1);
+        boolean retFlag= classEvaluateService.updateById(byId);
         return BaseResult.success(retFlag);
     }
 
     /**
-     * 删除
+     * 批量删除删除
      */
     @PostMapping("/delete/batch")
     @ApiOperation(value = "批量删除课程评价表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list){
-        boolean retFlag= classEvaluateService.removeByIds(list);
+        UpdateWrapper<ClassEvaluate> update = Wrappers.update();
+        update.set("del_falg",1).in("id",list);
+        boolean retFlag= classEvaluateService.update(update);
         return BaseResult.success(retFlag);
     }
 

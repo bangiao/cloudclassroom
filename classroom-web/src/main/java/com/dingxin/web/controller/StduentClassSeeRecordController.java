@@ -1,5 +1,6 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.vo.Id;
@@ -88,16 +89,20 @@ public class StduentClassSeeRecordController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除学生记录表信息")
     public BaseResult delete(@RequestBody Id id){
-        boolean retFlag= stduentClassSeeRecordService.removeById(id.getId());
+        StduentClassSeeRecord byId = stduentClassSeeRecordService.getById(id.getId());
+        if (null!=byId)byId.setDelFlag(1);
+        boolean retFlag= stduentClassSeeRecordService.updateById(byId);
         return BaseResult.success(retFlag);
     }
     /**
      * 批量删除删除
      */
     @PostMapping("/delete/batch")
-    @ApiOperation(value = "删除学生记录表信息")
+    @ApiOperation(value = "批量删除学生记录表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list){
-        boolean retFlag= stduentClassSeeRecordService.removeByIds(list);
+        UpdateWrapper<StduentClassSeeRecord> update = Wrappers.update();
+        update.set("del_falg",1).in("id",list);
+        boolean retFlag= stduentClassSeeRecordService.update(update);
         return BaseResult.success(retFlag);
     }
 
