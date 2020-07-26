@@ -1,6 +1,12 @@
 package com.dingxin.web.controller;
+<<<<<<< HEAD
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+=======
 import com.dingxin.common.annotation.UserTag;
+>>>>>>> 8bf7b1d016ba79126c5a2b4cd47433390299b05d
 import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.po.ClassEvaluate;
+import com.dingxin.pojo.vo.Id;
 import com.dingxin.web.service.IClassCollectionService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
+
+import java.util.List;
 
 /**
  * 课程收藏表
@@ -47,8 +55,8 @@ public class ClassCollectionController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程收藏表详情信息")
-    public BaseResult<ClassCollection> search(@RequestBody  ClassCollection classCollection){
-        ClassCollection result = classCollectionService.getOne(Wrappers.query(classCollection));
+    public BaseResult<ClassCollection> search(@RequestBody  Id id){
+        ClassCollection result = classCollectionService.getById(id.getId());
         return BaseResult.success(result);
     }
 
@@ -82,8 +90,21 @@ public class ClassCollectionController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程收藏表信息")
-    public BaseResult delete(@RequestBody ClassCollection classCollection){
-        boolean retFlag= classCollectionService.remove(Wrappers.query(classCollection));
+    public BaseResult delete(@RequestBody Id id){
+        ClassCollection byId = classCollectionService.getById(id.getId());
+        if (null!=byId)byId.setDelFlag(1);
+        boolean retFlag= classCollectionService.updateById(byId);
+        return BaseResult.success(retFlag);
+    }
+    /**
+     * 批量删除删除
+     */
+    @PostMapping("/delete/batch")
+    @ApiOperation(value = "批量删除课程收藏表信息")
+    public BaseResult deleteBatch(@RequestBody List<Integer> list){
+        UpdateWrapper<ClassCollection> update = Wrappers.update();
+        update.set("del_falg",1).in("id",list);
+        boolean retFlag= classCollectionService.update(update);
         return BaseResult.success(retFlag);
     }
 }
