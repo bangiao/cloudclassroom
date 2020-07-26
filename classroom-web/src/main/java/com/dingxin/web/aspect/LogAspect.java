@@ -90,7 +90,7 @@ public class LogAspect {
                 operationLog.setIpAddress(ipAddr);
                 operationLog.setOperateDesc(optDesc);
 //                operationLog.setUserId(userId);
-                operationLog.setOperateTime(LocalDateTime.now());
+                operationLog.setOperateTime(DateUtils.localDateTimeToLong(LocalDateTime.now()));
 
                 operationLogService.save(operationLog);
             });

@@ -1,6 +1,8 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.dingxin.common.utils.DateUtils;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -31,7 +33,7 @@ public class OperationLog extends Model<OperationLog> {
     /**
      * 操作时间
      */
-    private LocalDateTime operateTime;
+    private long operateTime;
     /**
      * 操作内容
      */
@@ -40,7 +42,26 @@ public class OperationLog extends Model<OperationLog> {
      * ip地址
      */
     private String ipAddress;
+    /**
+     * 操作人姓名
+     */
+    private String operateUsername;
 
+    /**
+     * 日志查询 开始时间
+     */
+    @TableField(exist = false)
+    private LocalDateTime startTime;
+
+    /**
+     * 日志查询 结束时间
+     */
+    @TableField(exist = false)
+    private LocalDateTime endTime;
+
+    public LocalDateTime getOperateTime() {
+        return DateUtils.longToLocalDateTime(this.operateTime);
+    }
 
     @Override
     protected Serializable pkVal() {

@@ -2,8 +2,13 @@ package com.dingxin.common.utils;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -265,6 +270,27 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
 			return DateTimes;
 	}
+
+	public static Long localDateTimeToLong(@NotNull LocalDateTime localDateTime){
+		try {
+//			return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
+			return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
+		try {
+//			return Instant.ofEpochSecond(time).atOffset(ZoneOffset.of("+08:00")).toLocalDateTime();
+			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	/**
 	 * @param args
 	 * @throws ParseException

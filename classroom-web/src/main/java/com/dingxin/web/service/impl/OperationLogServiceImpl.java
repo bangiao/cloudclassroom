@@ -43,6 +43,10 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
                     Objects.nonNull(data.getIpAddress()),
                     OperationLog::getIpAddress,
                     data.getIpAddress())
+                .like(
+                    Objects.nonNull(data.getOperateUsername()),
+                    OperationLog::getOperateUsername,
+                    data.getOperateUsername())
 ;
         return operationLogMapper.selectList(query);
 
