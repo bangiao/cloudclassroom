@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.web.service.ICurriculumService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 
  */
+@UserTag
 @RestController
 @RequestMapping("/curriculum")
-@Api(value = "接口")
+@Api(tags = "课程接口")
 public class CurriculumController {
 
 

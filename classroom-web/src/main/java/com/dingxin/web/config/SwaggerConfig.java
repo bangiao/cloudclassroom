@@ -1,5 +1,7 @@
 package com.dingxin.web.config;
 
+import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,15 +25,31 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
 
-    @Bean(value = "defaultApi2")
-    public Docket defaultApi2() {
+    @Bean(value = "manApi")
+    public Docket manApi() {
         Docket docket=new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 //分组名称
                 .groupName("管理端")
                 .select()
                 //这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("com.dingxin.web.controller"))
+//                .apis(RequestHandlerSelectors.basePackage("com.dingxin.web.controller"))
+                .apis(RequestHandlerSelectors.withClassAnnotation(ManTag.class))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+
+    @Bean(value = "userApi")
+    public Docket userApi() {
+        Docket docket=new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                //分组名称
+                .groupName("用户端")
+                .select()
+                //这里指定Controller扫描包路径
+//                .apis(RequestHandlerSelectors.basePackage("com.dingxin.web.controller"))
+                .apis(RequestHandlerSelectors.withClassAnnotation(UserTag.class))
                 .paths(PathSelectors.any())
                 .build();
         return docket;

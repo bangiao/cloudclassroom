@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
@@ -24,9 +25,10 @@ import java.util.List;
 /**
  *
  */
+@ManTag
 @RestController
 @RequestMapping("/teachers")
-@Api(value = "讲师管理接口")
+@Api(tags = "讲师管理接口")
 public class TeachersController {
 
 

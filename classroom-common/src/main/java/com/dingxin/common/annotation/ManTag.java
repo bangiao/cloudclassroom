@@ -1,13 +1,12 @@
-package com.dingxin.web.annotaion;
+package com.dingxin.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OperationWatcher {
+public @interface ManTag {
 
-    String operateDesc() default "";//操作内容
 }

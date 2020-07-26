@@ -1,5 +1,6 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
@@ -30,9 +31,10 @@ import java.util.List;
 /**
  * 
  */
+@ManTag
 @RestController
 @RequestMapping("/projectManagement")
-@Api(value = "专题管理接口")
+@Api(tags = "专题管理接口")
 public class ProjectManagementController {
 
 

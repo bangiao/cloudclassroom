@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.web.service.IVideoService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 
  */
+@UserTag
 @RestController
 @RequestMapping("/video")
-@Api(value = "接口")
+@Api(value = "视频接口")
 public class VideoController {
 
 

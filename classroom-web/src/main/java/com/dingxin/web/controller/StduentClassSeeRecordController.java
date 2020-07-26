@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.vo.Id;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
@@ -19,9 +20,10 @@ import java.util.List;
 /**
  * 学生记录表
  */
+@UserTag
 @RestController
 @RequestMapping("/stduentClassSeeRecord")
-@Api(value = "学生记录表接口")
+@Api(tags = "学生记录表接口")
 public class StduentClassSeeRecordController {
 
 

@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.web.service.IClassTypeService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 课程类型表
  */
+@UserTag
 @RestController
 @RequestMapping("/classType")
-@Api(value = "课程类型接口")
+@Api(tags = "课程类型接口")
 public class ClassTypeController {
 
 
