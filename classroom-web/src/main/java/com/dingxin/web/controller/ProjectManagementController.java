@@ -22,6 +22,7 @@ import com.dingxin.pojo.basic.BaseResult;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.sql.Wrapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,10 +46,27 @@ public class ProjectManagementController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<ProjectManagement>>list(@RequestBody BaseQuery<ProjectManagement> query){
+    public BaseResult<Page<ProjectManagementVo>>list(@RequestBody BaseQuery<ProjectManagementVo> query ){
         //查询列表数据
         Page<ProjectManagement> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage<ProjectManagement> pageList = projectManagementService.page(page,Wrappers.query(query.getData()));
+        ProjectManagementVo queryData = query.getData();
+        IPage<ProjectManagement> pageList = null;
+        if (null != queryData){
+            QueryWrapper<Teachers> teacherQuery = Wrappers.query();
+            QueryWrapper<ProjectManagement> getLikeQuery = Wrappers.query();
+            List<Teachers> teachersList = teachersService.list(teacherQuery.like("XM", queryData.getQueryStr()));
+            if (teachersList.size()>0){
+                ArrayList<String> teacherIdList = new ArrayList<>();
+                for (Teachers teacher:teachersList) {
+                    teacherIdList.add(teacher.getJg0101id());
+                }
+                pageList = projectManagementService.page(page, getLikeQuery.like("projectName", queryData.getQueryStr()).or().in("lecturerId", teacherIdList));
+            }else {
+                pageList = projectManagementService.page(page, getLikeQuery.like("projectName", queryData.getQueryStr()));
+            }
+        }else {
+            pageList = projectManagementService.page(page,Wrappers.query(query.getData()));
+        }
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -79,6 +97,7 @@ public class ProjectManagementController {
         voPage.setSize(pageList.getSize());
         voPage.setTotal(pageList.getTotal());
         voPage.setPages(pageList.getPages());
+        voPage.setCurrent(pageList.getCurrent());
         return BaseResult.success(voPage);
     }
 
@@ -88,6 +107,7 @@ public class ProjectManagementController {
     @PostMapping("/search")
     @ApiOperation(value = "获取专题详情信息")
     public BaseResult<ProjectManagement> search(@RequestBody  ProjectManagement projectManagement){
+        QueryWrapper<Object> query = Wrappers.query();
         ProjectManagement result = projectManagementService.getOne(Wrappers.query(projectManagement));
         return BaseResult.success(result);
     }
@@ -100,6 +120,11 @@ public class ProjectManagementController {
     public BaseResult save( @Validated @RequestBody ProjectManagement projectManagement){
         projectManagement.setCreateTime(LocalDateTime.now());
         projectManagement.setModifyTime(LocalDateTime.now());
+        String courseId = projectManagement.getCourseId();
+        if (StringUtils.isNotEmpty(courseId)){
+            String[] courseIdList = courseId.split(",");
+            projectManagement.setCourseNum(courseIdList.length);
+        }
         boolean retFlag= projectManagementService.save(projectManagement);
         return BaseResult.success(retFlag).setMsg("新增专题成功");
     }
