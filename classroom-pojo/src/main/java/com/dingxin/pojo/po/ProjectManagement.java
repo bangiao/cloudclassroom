@@ -33,49 +33,60 @@ public class ProjectManagement extends Model<ProjectManagement> {
     /**
      * 专题名称
      */
+    @ApiModelProperty(value = "专题名称")
     @NotBlank(message = "专题名称不能为空")
     private String projectName;
     /**
      * 讲师
      */
-    @NotBlank(message = "讲师不能为空")
+    @ApiModelProperty(value = "讲师关联id")
+    @NotNull(message = "讲师不能为空")
     private Integer lecturerId;
     /**
      * 专题描述
      */
+    @ApiModelProperty(value = "专题描述")
     @NotBlank(message = "专题描述不能为空")
     private String projectDescription;
     /**
      * 课程数量统计
      */
+    @ApiModelProperty(value = "课程数量统计")
     private Integer courseNum;
     /**
      * 观看次数
      */
+    @ApiModelProperty(value = "观看次数")
     private Integer watchNum;
     /**
      * 是否禁用 0：启用 -1：禁用
      */
+    @ApiModelProperty(value = "是否禁用 0：启用 -1：禁用")
     private Boolean enable;
     /**
      * 审核状态 0：待审核 1：审核通过 -1：审核未通过
      */
+    @ApiModelProperty(value = "审核状态 0：待审核 1：审核通过 -1：审核未通过")
     private Boolean auditStatus;
     /**
      * 是否删除 0：未删除 -1 ：删除
      */
+    @ApiModelProperty(value = "是否删除 0：未删除 -1 ：删除")
     private Boolean delFlag;
     /**
      * 课程关联id
      */
+    @ApiModelProperty(value = "课程关联id")
     private String courseId;
     /**
      * 创建时间
      */
+    @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
+    @ApiModelProperty(value = "修改时间")
     private LocalDateTime modifyTime;
 
 
