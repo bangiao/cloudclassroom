@@ -32,7 +32,7 @@ public class VideoAudit extends Model<VideoAudit> {
     /**
      * 视频时长
      */
-    private String videoDuration;
+    private Long videoDuration;
     /**
      * 视频附件
      */

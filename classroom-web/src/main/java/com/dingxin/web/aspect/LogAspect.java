@@ -24,6 +24,7 @@ import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,7 +90,7 @@ public class LogAspect {
                 operationLog.setIpAddress(ipAddr);
                 operationLog.setOperateDesc(optDesc);
 //                operationLog.setUserId(userId);
-                operationLog.setOperateTime(DateUtils.getDateTime());
+                operationLog.setOperateTime(LocalDateTime.now());
 
                 operationLogService.save(operationLog);
             });

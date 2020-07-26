@@ -44,7 +44,7 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 视频时长(时长为该课程下所有视频的累计时长)
      */
-    private String videoDuration;
+    private Long videoDuration;
     /**
      * 视频附件
      */

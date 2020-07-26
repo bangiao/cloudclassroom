@@ -37,7 +37,7 @@ public class Video extends Model<Video> {
      * 视频时长
      */
     @ApiModelProperty("视频时长")
-    private String videoDuration;
+    private Long videoDuration;
     /**
      * 视频附件
      */

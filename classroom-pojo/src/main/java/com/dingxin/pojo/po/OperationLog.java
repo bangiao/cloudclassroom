@@ -31,7 +31,7 @@ public class OperationLog extends Model<OperationLog> {
     /**
      * 操作时间
      */
-    private String operateTime;
+    private LocalDateTime operateTime;
     /**
      * 操作内容
      */
