@@ -1,23 +1,24 @@
 package com.dingxin.web.controller;
-<<<<<<< HEAD
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-=======
-import com.dingxin.common.annotation.UserTag;
->>>>>>> 8bf7b1d016ba79126c5a2b4cd47433390299b05d
-import com.dingxin.pojo.po.ClassType;
-import com.dingxin.pojo.po.Menu;
-import com.dingxin.pojo.vo.Id;
-import com.dingxin.web.service.IClassTypeService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
+import com.dingxin.common.annotation.UserTag;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.ClassType;
+import com.dingxin.pojo.vo.Id;
+import com.dingxin.web.service.IClassTypeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
