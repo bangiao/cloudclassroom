@@ -1,14 +1,12 @@
 package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
-import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.vo.ProjectManagementVo;
-import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectManagementService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -33,9 +31,10 @@ import java.util.List;
 /**
  * 
  */
+@ManTag
 @RestController
 @RequestMapping("/projectManagement")
-@Api(value = "专题管理接口")
+@Api(tags = "专题管理接口")
 public class ProjectManagementController {
 
 

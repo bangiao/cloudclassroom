@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.web.service.IClassCollectionService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 课程收藏表
  */
+@UserTag
 @RestController
 @RequestMapping("/classCollection")
-@Api(value = "课程收藏表接口")
+@Api(tags={"课程收藏接口"})
 public class ClassCollectionController {
 
 

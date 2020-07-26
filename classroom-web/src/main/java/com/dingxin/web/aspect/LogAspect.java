@@ -1,14 +1,13 @@
 package com.dingxin.web.aspect;
 
 import com.alibaba.fastjson.JSON;
+import com.dingxin.common.annotation.OperationWatcher;
 import com.dingxin.common.utils.BeanUtils;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.common.utils.IpUtil;
 import com.dingxin.common.utils.LogUtils;
 import com.dingxin.pojo.po.OperationLog;
-import com.dingxin.web.annotaion.OperationWatcher;
 import com.dingxin.web.service.IOperationLogService;
-import com.dingxin.web.shiro.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,13 +18,13 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -91,7 +90,7 @@ public class LogAspect {
                 operationLog.setIpAddress(ipAddr);
                 operationLog.setOperateDesc(optDesc);
 //                operationLog.setUserId(userId);
-                operationLog.setOperateTime(DateUtils.getDateTime());
+                operationLog.setOperateTime(LocalDateTime.now());
 
                 operationLogService.save(operationLog);
             });

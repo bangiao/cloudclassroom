@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.VideoAudit;
 import com.dingxin.web.service.IVideoAuditService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 
  */
+@ManTag
 @RestController
 @RequestMapping("/videoAudit")
-@Api(value = "接口")
+@Api(tags = "视频审核接口")
 public class VideoAuditController {
 
 

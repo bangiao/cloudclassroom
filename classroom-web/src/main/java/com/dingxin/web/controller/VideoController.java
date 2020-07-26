@@ -1,4 +1,5 @@
 package com.dingxin.web.controller;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.web.service.IVideoService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,9 +15,10 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 
  */
+@UserTag
 @RestController
 @RequestMapping("/video")
-@Api(value = "接口")
+@Api(tags = "视频接口")
 public class VideoController {
 
 
@@ -28,7 +30,7 @@ public class VideoController {
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
+    @ApiOperation(value = "获取列表",response = Video.class)
     public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
         //查询列表数据
         Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
