@@ -18,7 +18,7 @@ import com.dingxin.pojo.basic.BaseResult;
 @UserTag
 @RestController
 @RequestMapping("/video")
-@Api(value = "视频接口")
+@Api(tags = "视频接口")
 public class VideoController {
 
 
@@ -30,7 +30,7 @@ public class VideoController {
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
+    @ApiOperation(value = "获取列表",response = Video.class)
     public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
         //查询列表数据
         Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
