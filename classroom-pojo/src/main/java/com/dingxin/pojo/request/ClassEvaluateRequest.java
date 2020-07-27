@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ClassEvaluateRequest {
     /**
      * 主键ids
      */
-    @NotNull(message = "id不能为空")
+    @NotEmpty(message = "id不能为空")
     private List<Integer> idList;
     /**
      * 审核意见
