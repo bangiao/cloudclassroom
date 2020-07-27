@@ -1,8 +1,10 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.dao.mapper.CurriculumMapper;
+import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,12 @@ import java.util.Objects;
  *  服务接口实现类
  */
 @Service
-public class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curriculum> implements ICurriculumService {
+public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curriculum> implements ICurriculumService {
 
     @Autowired
     private CurriculumMapper curriculumMapper;
 
+    public  abstract IPage<CurriculumVo> getPage();
 
     @Override
     public List<Curriculum> like(Curriculum data) {

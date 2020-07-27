@@ -2,11 +2,15 @@ package com.dingxin.web.controller;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.web.service.strategy.curriculum.AdministratorStrategy;
+import com.dingxin.web.service.strategy.curriculum.CurriculumStrategyContext;
+import com.dingxin.web.service.strategy.curriculum.TeacherStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -26,6 +30,12 @@ public class CurriculumController {
     @Autowired
     private ICurriculumService curriculumService;
 
+    @Autowired
+    private AdministratorStrategy administratorStrategy;
+
+    @Autowired
+    private TeacherStrategy teacherStrategy;
+
 
     /**
      * 列表查询
@@ -33,13 +43,23 @@ public class CurriculumController {
     @PostMapping("/list")
     @ApiOperation(value = "获取所有课程列表")
     public BaseResult<Page<Curriculum>>list(@RequestBody BaseQuery<Curriculum> query){
-        //查询列表数据
-        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = curriculumService.page(page,Wrappers.query(query.getData()));
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
+
+        int a = 1;
+        IPage<CurriculumVo> pageList;
+        switch (a){
+            case 1 :
+                pageList = new CurriculumStrategyContext(administratorStrategy).getPageList();break;
+            case 2:
+                pageList = new CurriculumStrategyContext(teacherStrategy).getPageList();break;
         }
-        return BaseResult.success(pageList);
+//        //查询列表数据
+//        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
+//        IPage pageList = curriculumService.page(page,Wrappers.query(query.getData()));
+//        if(CollectionUtils.isEmpty(pageList.getRecords())){
+//            return BaseResult.success();
+//        }
+//        return BaseResult.success(pageList);
+        return null;
     }
 
     /**
