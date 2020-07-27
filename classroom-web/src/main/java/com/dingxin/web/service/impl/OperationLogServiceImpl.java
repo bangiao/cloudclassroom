@@ -15,6 +15,9 @@ import com.dingxin.web.service.IOperationLogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +26,7 @@ import java.util.Objects;
  * 服务接口实现类
  */
 @Service
+@Transactional
 public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, OperationLog> implements IOperationLogService {
 
     @Autowired
@@ -30,6 +34,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
 
 
     @Override
+    @Transactional(propagation = Propagation.NEVER,isolation = Isolation.READ_COMMITTED)
     public List<OperationLog> like(OperationLog data) {
         LambdaQueryWrapper<OperationLog> query = Wrappers.<OperationLog>lambdaQuery()
                 .like(
@@ -62,6 +67,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public IPage<OperationLog> queryPageAll(BaseQuery4List query) {
 
         Page<OperationLog> page = new Page(query.getCurrentPage(), query.getPageSize());
@@ -70,6 +76,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public IPage<OperationLog> queryPage(BaseQuery<OperationLogRequest> query) {
         //条件查询列表数据
         Page<OperationLog> page = new Page<OperationLog>(query.getCurrentPage(), query.getPageSize());
