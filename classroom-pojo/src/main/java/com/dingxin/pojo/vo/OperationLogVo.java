@@ -43,6 +43,7 @@ public class OperationLogVo {
 
     public static OperationLogVo convertToVo(OperationLog operationLogPo){
         OperationLogVo operationLogVo = new OperationLogVo();
+        operationLogVo.setId(operationLogPo.getId());
         operationLogVo.setIpAddress(operationLogPo.getIpAddress());
         operationLogVo.setOperateDesc(operationLogPo.getOperateDesc());
         operationLogVo.setOperateTime(DateUtils.longToLocalDateTime(operationLogPo.getOperateTime()));
