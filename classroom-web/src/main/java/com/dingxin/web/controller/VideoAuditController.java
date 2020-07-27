@@ -102,10 +102,7 @@ public class VideoAuditController {
         Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
         LambdaQueryWrapper<VideoAudit> qw = new LambdaQueryWrapper<>();
 //        qw.eq("del_flag",0);
-        List<Integer> list =new ArrayList<>();
-        list.add(CommonConstant.STATUS_NOAUDIT);
-        list.add(CommonConstant.STATUS_UNAPPROVE);
-        qw.in(VideoAudit::getAuditFlag,list);
+        qw.in(VideoAudit::getAuditFlag,CommonConstant.LIST);
         VideoAudit queryData = query.getData();
         qw.and(Wrapper -> Wrapper.like(VideoAudit::getVideoName,queryData.getQueryStr()));
         IPage pageList = videoAuditService.page(page, qw);

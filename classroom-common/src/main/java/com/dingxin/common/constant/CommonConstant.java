@@ -1,20 +1,26 @@
 package com.dingxin.common.constant;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 public interface CommonConstant {
 	/**
 	 * 审核状态-未通过
 	 */
-	public static final Integer STATUS_UNAPPROVE = -1;
+	Integer STATUS_UNAPPROVE = -1;
 	/**
 	 * 审核状态-待审核
 	 */
-	public static final Integer STATUS_NOAUDIT = 0;
+	Integer STATUS_NOAUDIT = 0;
 	/**
 	 * 审核状态-已审核
 	 */
-	public static final Integer STATUS_AUDIT = 1;
+	Integer STATUS_AUDIT = 1;
 	/**
 	 * 删除状态-未删除
 	 */
-	public static final Integer DEL_FLAG = 0;
+	Integer DEL_FLAG = 0;
+
+	List<Integer> LIST = Lists.newArrayList(0,-1);
 }

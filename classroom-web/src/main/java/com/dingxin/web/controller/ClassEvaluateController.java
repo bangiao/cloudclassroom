@@ -169,10 +169,7 @@ public class ClassEvaluateController {
         ClassEvaluate queryData = query.getData();
         qw.eq(ClassEvaluate::getDelFlag,CommonConstant.DEL_FLAG);
         qw.and(Wrapper -> Wrapper.like(ClassEvaluate::getClassName,queryData.getQueryStr()).or().like(ClassEvaluate::getStudentName,queryData.getQueryStr()));
-        List<Integer> list = new ArrayList<>();
-        list.add(CommonConstant.STATUS_UNAPPROVE);
-        list.add(CommonConstant.STATUS_NOAUDIT);
-        qw.in(ClassEvaluate::getStatus,list);
+        qw.in(ClassEvaluate::getStatus,CommonConstant.LIST);
         IPage pageList = classEvaluateService.page(page, qw);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
