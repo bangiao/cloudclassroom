@@ -10,6 +10,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * author: cuteG <br>
@@ -47,6 +48,8 @@ public class OperationLogVo {
     private String operateUsername;
 
     public static OperationLogVo convertToVo(OperationLog operationLogPo){
+        if (Objects.isNull(operationLogPo))
+            return null;
         OperationLogVo operationLogVo = new OperationLogVo();
         operationLogVo.setId(operationLogPo.getId());
         operationLogVo.setIpAddress(operationLogPo.getIpAddress());

@@ -1,5 +1,6 @@
 package com.dingxin.pojo.basic;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel("带分页的全量查询对象")
 public class BaseQuery4List implements Serializable {
 
     @ApiModelProperty("当前页:默认值1")
