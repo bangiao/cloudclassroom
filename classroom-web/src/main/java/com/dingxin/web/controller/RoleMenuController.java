@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.vo.RoleMenuVo;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IRoleMenuService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -53,7 +53,7 @@ public class RoleMenuController {
      */
     @PostMapping("/listAll")
     @ApiOperation(value = "菜单所有菜单且被选中的也标记")
-    public BaseResult<Page<RoleMenu>>list(@RequestBody Id id){
+    public BaseResult<Page<RoleMenu>>list(@RequestBody IdRequest id){
         return BaseResult.success(roleMenuService.allMenu(id));
     }
 
@@ -92,7 +92,7 @@ public class RoleMenuController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除角色与菜单对应关系信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         RoleMenu byId = roleMenuService.getById(id.getId());
         if (null!=id)byId.setDelFlag(1);
         boolean retFlag= roleMenuService.updateById(byId);

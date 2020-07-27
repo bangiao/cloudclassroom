@@ -5,7 +5,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.Role;
 import com.dingxin.pojo.po.RoleMenu;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IRoleService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -87,7 +87,7 @@ public class RoleController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除角色信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         Role byId = roleService.getById(id.getId());
         if (null!=id)byId.setDelFlag(1);
         boolean retFlag= roleService.updateById(byId);

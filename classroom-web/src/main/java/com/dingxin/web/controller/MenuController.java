@@ -5,7 +5,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.Role;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IMenuService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -87,7 +87,7 @@ public class MenuController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除菜单管理信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         Menu byId = menuService.getById(id.getId());
         if (null!=byId)byId.setDelFlag(1);
         boolean retFlag= menuService.updateById(byId);

@@ -9,7 +9,7 @@ import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassType;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IClassTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +104,7 @@ public class ClassTypeController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程类型信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         ClassType byId = classTypeService.getById(id.getId());
         if (null!=byId)byId.setDelFlag(1);
         boolean retFlag= classTypeService.updateById(byId);
