@@ -12,6 +12,7 @@ import com.dingxin.web.service.strategy.curriculum.AdministratorStrategy;
 import com.dingxin.web.service.strategy.curriculum.CurriculumStrategyContext;
 import com.dingxin.web.service.strategy.curriculum.TeacherStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,10 +32,13 @@ public class CurriculumController {
     private ICurriculumService curriculumService;
 
     @Autowired
+    @Qualifier("AdministratorStrategy")
     private AdministratorStrategy administratorStrategy;
 
     @Autowired
+    @Qualifier("TeacherStrategy")
     private TeacherStrategy teacherStrategy;
+
 
 
     /**
