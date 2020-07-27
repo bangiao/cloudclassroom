@@ -47,21 +47,6 @@ public class OperationLog extends Model<OperationLog> {
      */
     private String operateUsername;
 
-    /**
-     * 日志查询 开始时间
-     */
-    @TableField(exist = false)
-    private LocalDateTime startTime;
-
-    /**
-     * 日志查询 结束时间
-     */
-    @TableField(exist = false)
-    private LocalDateTime endTime;
-
-    public LocalDateTime getOperateTime() {
-        return DateUtils.longToLocalDateTime(this.operateTime);
-    }
 
     @Override
     protected Serializable pkVal() {

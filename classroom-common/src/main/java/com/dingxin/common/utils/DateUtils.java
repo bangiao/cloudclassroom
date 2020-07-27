@@ -1,5 +1,6 @@
 package com.dingxin.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 import javax.validation.constraints.NotNull;
@@ -18,8 +19,9 @@ import java.util.TimeZone;
  * @author jeeplus
  * @version 2014-4-15
  */
+@Slf4j
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
-	
+
 	private static String[] parsePatterns = {
 		"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", 
 		"yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -272,23 +274,13 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 	}
 
 	public static Long localDateTimeToLong(@NotNull LocalDateTime localDateTime){
-		try {
 //			return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 			return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
-		try {
 //			return Instant.ofEpochSecond(time).atOffset(ZoneOffset.of("+08:00")).toLocalDateTime();
 			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	/**

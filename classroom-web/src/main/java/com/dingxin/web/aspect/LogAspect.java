@@ -75,7 +75,6 @@ public class LogAspect {
     @AfterReturning(pointcut = "controllerPoinCut()")
     public void saveOperationLog(JoinPoint joinPoint){
 
-        try {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             Optional<OperationWatcher> optLog = Optional.ofNullable(method.getAnnotation(OperationWatcher.class));
@@ -94,9 +93,6 @@ public class LogAspect {
 
                 operationLogService.save(operationLog);
             });
-        } catch (Exception e) {
-            log.error("==访问日志保存失败==,details[{}]",e.getMessage());
-        }
 
     }
 
