@@ -42,7 +42,7 @@ public class OperationLogController {
     @PostMapping("/list")
     @ApiOperation(value = "获取所有列表")
     @OperationWatcher(operateDesc = "获取所有日志列表")
-    public BaseResult<Page<OperationLog>>list(@RequestBody BaseQuery4List query){
+    public BaseResult<Page<OperationLogVo>>list(@RequestBody BaseQuery4List query){
 
         IPage<OperationLogVo> pageList = operationLogService.queryPageAll(query);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
