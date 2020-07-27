@@ -1,9 +1,16 @@
 package com.dingxin.common.utils;
 
+import com.dingxin.common.constant.CommonConstant;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -13,8 +20,9 @@ import java.util.TimeZone;
  * @author jeeplus
  * @version 2014-4-15
  */
+@Slf4j
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
-	
+
 	private static String[] parsePatterns = {
 		"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", 
 		"yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -265,6 +273,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 
 			return DateTimes;
 	}
+
+	public static Long localDateTimeToLong(LocalDateTime localDateTime){
+			return localDateTime == null ? CommonConstant.LONG_DEFAULT :localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
+	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
+			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+	}
+
 	/**
 	 * @param args
 	 * @throws ParseException

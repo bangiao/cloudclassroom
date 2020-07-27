@@ -66,7 +66,7 @@ public class ClassCollection extends Model<ClassCollection> {
     private String teacherName;
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
-    private String delFlag;
+    private Integer delFlag;
 
 
     @Override

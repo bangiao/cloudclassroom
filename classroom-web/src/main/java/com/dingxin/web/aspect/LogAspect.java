@@ -75,7 +75,6 @@ public class LogAspect {
     @AfterReturning(pointcut = "controllerPoinCut()")
     public void saveOperationLog(JoinPoint joinPoint){
 
-        try {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
             Optional<OperationWatcher> optLog = Optional.ofNullable(method.getAnnotation(OperationWatcher.class));
@@ -89,14 +88,12 @@ public class LogAspect {
 
                 operationLog.setIpAddress(ipAddr);
                 operationLog.setOperateDesc(optDesc);
-//                operationLog.setUserId(userId);
-                operationLog.setOperateTime(LocalDateTime.now());
+                operationLog.setUserId("1232");
+                operationLog.setOperateUsername("LBWNB");
+                operationLog.setOperateTime(DateUtils.localDateTimeToLong(LocalDateTime.now()));
 
                 operationLogService.save(operationLog);
             });
-        } catch (Exception e) {
-            log.error("==访问日志保存失败==,details[{}]",e.getMessage());
-        }
 
     }
 

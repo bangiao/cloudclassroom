@@ -1,16 +1,28 @@
 package com.dingxin.web.controller;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.VideoAudit;
+import com.dingxin.pojo.request.VideoAutoRequest;
 import com.dingxin.web.service.IVideoAuditService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -79,5 +91,63 @@ public class VideoAuditController {
     public BaseResult delete(@RequestBody VideoAudit videoAudit){
         boolean retFlag= videoAuditService.remove(Wrappers.query(videoAudit));
         return BaseResult.success(retFlag);
+    }
+    /**
+     * 视频审核列表查询
+     */
+    @PostMapping("/auditList")
+    @ApiOperation(value = "视频审核列表查询")
+    public BaseResult<Page<VideoAudit>>auditList(@RequestBody BaseQuery<VideoAudit> query){
+
+        Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<VideoAudit> qw = new LambdaQueryWrapper<>();
+//        qw.eq("del_flag",0);
+        qw.in(VideoAudit::getAuditFlag,CommonConstant.LIST);
+        VideoAudit queryData = query.getData();
+        qw.and(Wrapper -> Wrapper.like(VideoAudit::getVideoName,queryData.getQueryStr()));
+        IPage pageList = videoAuditService.page(page, qw);
+        if(CollectionUtils.isEmpty(pageList.getRecords())){
+            return BaseResult.success();
+        }
+        return BaseResult.success(pageList);
+    }
+    /**
+     * 审核
+     */
+    @PostMapping("/audit")
+    @ApiOperation(value = "审核")
+    public BaseResult audit(@RequestBody  VideoAudit videoAudit){
+        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(VideoAudit::getAuditFlag,videoAudit.getAuditFlag());
+        wrapper.set(VideoAudit::getAuditComments,videoAudit.getAuditComments());
+        wrapper.eq(VideoAudit::getId,videoAudit.getId());
+        videoAuditService.update(wrapper);
+        return BaseResult.success().setMsg("审核成功！");
+    }
+    /**
+     * 批量审核通过
+     */
+    @PostMapping("/auditBatch")
+    @ApiOperation(value = "批量审核通过")
+    public BaseResult auditBatch(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
+        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(VideoAudit::getAuditFlag, CommonConstant.STATUS_AUDIT);
+        wrapper.set(VideoAudit::getAuditComments,videoAutoRequest.getAuditComments());
+        wrapper.in(VideoAudit::getId,videoAutoRequest.getIdList());
+        videoAuditService.update(wrapper);
+        return BaseResult.success().setMsg("批量审核成功！");
+    }
+    /**
+     * 批量审核未通过
+     */
+    @PostMapping("/auditBatchUnapprove")
+    @ApiOperation(value = "批量审核未通过")
+    public BaseResult auditBatchUnapprove(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
+        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(VideoAudit::getAuditFlag,CommonConstant.STATUS_UNAPPROVE);
+        wrapper.set(VideoAudit::getAuditComments,videoAutoRequest.getAuditComments());
+        wrapper.in(VideoAudit::getId,videoAutoRequest.getIdList());
+        videoAuditService.update(wrapper);
+        return BaseResult.success().setMsg("批量审核成功！");
     }
 }

@@ -5,9 +5,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.OperationWatcher;
+import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseQuery4List;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.OperationLog;
+import com.dingxin.pojo.request.OperationLogRequest;
+import com.dingxin.pojo.vo.OperationLogVo;
 import com.dingxin.web.service.IOperationLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -34,16 +39,12 @@ public class OperationLogController {
     private IOperationLogService operationLogService;
 
 
-    /**
-     * 列表查询
-     */
     @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
-    @OperationWatcher(operateDesc = "获取日志列表")
-    public BaseResult<Page<OperationLog>>list(@RequestBody BaseQuery<OperationLog> query){
-        //查询列表数据
-        Page<OperationLog> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = operationLogService.page(page,Wrappers.query(query.getData()));
+    @ApiOperation(value = "获取所有列表")
+    @OperationWatcher(operateDesc = "获取所有日志列表")
+    public BaseResult<Page<OperationLogVo>>list(@RequestBody BaseQuery4List query){
+
+        IPage<OperationLogVo> pageList = operationLogService.queryPageAll(query);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }
@@ -51,40 +52,37 @@ public class OperationLogController {
     }
 
     /**
+     * 列表条件及模糊查询
+     */
+    @PostMapping("/list/query")
+    @ApiOperation(value = "列表条件查询")
+    @OperationWatcher(operateDesc = "获取满足条件的所有日志列表")
+    public BaseResult<Page<OperationLogVo>>listByQuery(@RequestBody BaseQuery<OperationLogRequest> query){
+        if (Objects.isNull(query.getData())) {
+            return BaseResult.failed(ExceptionEnum.PARAMTER_ERROR);
+        }
+        IPage<OperationLogVo> pageList = operationLogService.queryPage(query);
+
+        return BaseResult.success(pageList);
+    }
+
+    /**
      * 单个查询
      */
     @PostMapping("/search")
-    @ApiOperation(value = "获取详情信息")
+    @ApiOperation(value = "获取单条数据详情信息")
     public BaseResult<OperationLog> search(@RequestBody  OperationLog operationLog){
         OperationLog result = operationLogService.getOne(Wrappers.query(operationLog));
         return BaseResult.success(result);
     }
 
-//    /**
-//     * 保存
-//     */
-//    @PostMapping
-//    @ApiOperation(value = "新增信息")
-//    public BaseResult save(@RequestBody  OperationLog operationLog){
-//        boolean retFlag= operationLogService.save(operationLog);
-//        return BaseResult.success(retFlag);
-//    }
-
-//    /**
-//     * 修改
-//     */
-//    @PostMapping("/update")
-//    @ApiOperation(value = "修改信息")
-//    public BaseResult update(@RequestBody OperationLog operationLog){
-//        boolean retFlag= operationLogService.updateById(operationLog);
-//        return BaseResult.success(retFlag);
-//    }
 
     /**
      * 删除
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
+    @OperationWatcher(operateDesc = "删除单条日志")
     public BaseResult delete(@RequestBody OperationLog operationLog){
         boolean retFlag= operationLogService.remove(Wrappers.query(operationLog));
         return BaseResult.success(retFlag);
@@ -94,7 +92,8 @@ public class OperationLogController {
      * 批量删除
      */
     @PostMapping("/delete/batch")
-    @ApiOperation(value = "删除信息")
+    @ApiOperation(value = "批量删除信息")
+    @OperationWatcher(operateDesc = "批量删除日志")
     public BaseResult batchDelete(@RequestBody List<Integer> operationLogs){
         boolean retFlag= operationLogService.removeByIds(operationLogs);
         return BaseResult.success(retFlag);

@@ -1,51 +1,40 @@
 package com.dingxin.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.dingxin.common.utils.DateUtils;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.io.Serializable;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.io.Serializable;
 
 /**
- *  实体类
+ * 角色与菜单对应关系 实体类
  */
-@TableName("ccr_operation_log")
+@TableName("sys_role_menu")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OperationLog extends Model<OperationLog> {
+@Builder
+public class RoleMenu extends Model<RoleMenu> {
 
     private static final long serialVersionUID=1L;
 
-    /**
-     * 操作日志表主键
-     */
     private Integer id;
     /**
-     * 操作人
+     * 角色ID
      */
-    private String userId;
+    private Integer roleId;
     /**
-     * 操作时间
+     * 菜单ID
      */
-    private long operateTime;
-    /**
-     * 操作内容
-     */
-    private String operateDesc;
-    /**
-     * ip地址
-     */
-    private String ipAddress;
-    /**
-     * 操作人姓名
-     */
-    private String operateUsername;
+    private Integer menuId;
+    private LocalDateTime createTime;
+    private LocalDateTime modifyTime;
+    private Integer delFlag;
 
 
     @Override

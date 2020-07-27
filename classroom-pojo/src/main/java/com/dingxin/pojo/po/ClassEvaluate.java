@@ -122,8 +122,12 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
     /**
      * 审核状态0为未审核1为已审核-1为未通过
      */
-    @ApiModelProperty(value = "审核状态0为未审核1为已审核")
+    @ApiModelProperty(value = "审核状态0为未审核1为已审核-1为未通过")
     private Integer status;
+    /**
+     * 审批意见
+     */
+    private String auditComments;
     /**
      * 是否删除
      */

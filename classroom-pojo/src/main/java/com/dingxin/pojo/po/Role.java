@@ -1,6 +1,5 @@
 package com.dingxin.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,55 +7,52 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.io.Serializable;
 
 /**
- *  实体类
+ * 角色 实体类
  */
-@TableName("ccr_video_audit")
+@TableName("sys_role")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VideoAudit extends Model<VideoAudit> {
+public class Role extends Model<Role> {
 
     private static final long serialVersionUID=1L;
 
-    /**
-     * 主键
-     */
     private Integer id;
     /**
-     * 视频名称
+     * 角色名称
      */
-    private String videoName;
+    @NotNull(message = "roleName must not be null")
+    @ApiModelProperty(value = "角色名称")
+    private String roleName;
     /**
-     * 视频时长
+     * 备注
      */
-    private Long videoDuration;
+    private String remark;
     /**
-     * 视频附件
+     * 创建者ID
      */
-    private String videoAttachment;
+    private Integer createUserId;
     /**
-     * 直播视频
+     * 创建时间
      */
-    private String liveVideo;
+    private LocalDateTime createTime;
     /**
-     * 是否有效(讲道理默认值为有效)
+     * 数据字典id
      */
-    private Integer validFlag;
+    private Integer dicId;
     /**
-     * 审批意见
+     * 排序
      */
-    private String auditComments;
-    /**
-     * 审批状态0为未审核1为已审核-1为未通过
-     */
-    private Integer auditFlag;
-
-    @TableField(exist = false)
-    private String queryStr;
+    private Integer sort;
+    private LocalDateTime modifyTime;
+    private Integer delFlag;
 
 
     @Override

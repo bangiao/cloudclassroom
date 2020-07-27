@@ -9,6 +9,7 @@
                     <result column="operate_time" property="operateTime" />
                     <result column="operate_desc" property="operateDesc" />
                     <result column="ip_address" property="ipAddress" />
+                    <result column="operate_username" property="operateUsername" />
         </resultMap>
 
 </mapper>
