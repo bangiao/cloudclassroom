@@ -1,8 +1,12 @@
 package com.dingxin.web.controller;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.annotation.UserTag;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.request.ClassEvaluateRequest;
@@ -16,11 +20,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -118,9 +124,10 @@ public class ClassEvaluateController {
     @PostMapping("/audit")
     @ApiOperation(value = "审核")
     public BaseResult audit(@RequestBody  ClassEvaluate classEvaluate){
-        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
-        wrapper.set("status",classEvaluate.getStatus());
-        wrapper.eq("id",classEvaluate.getId());
+        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(ClassEvaluate::getStatus,classEvaluate.getStatus());
+        wrapper.set(ClassEvaluate::getAuditComments,classEvaluate.getAuditComments());
+        wrapper.eq(ClassEvaluate::getId,classEvaluate.getId());
         classEvaluateService.update(wrapper);
         return BaseResult.success().setMsg("审核成功！");
     }
@@ -129,11 +136,11 @@ public class ClassEvaluateController {
      */
     @PostMapping("/auditBatch")
     @ApiOperation(value = "批量审核通过")
-    public BaseResult auditBatch(@RequestBody ClassEvaluateRequest classEvaluateRequest){
-        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
-        wrapper.set("status",1);
-        wrapper.set("audit_comments",classEvaluateRequest.getAuditComments());
-        wrapper.in("id",classEvaluateRequest.getIdList());
+    public BaseResult auditBatch(@Validated @RequestBody ClassEvaluateRequest classEvaluateRequest){
+        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
+        wrapper.set(ClassEvaluate::getAuditComments,classEvaluateRequest.getAuditComments());
+        wrapper.in(ClassEvaluate::getId,classEvaluateRequest.getIdList());
         classEvaluateService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
@@ -142,11 +149,11 @@ public class ClassEvaluateController {
      */
     @PostMapping("/auditBatchUnapprove")
     @ApiOperation(value = "批量审核未通过")
-    public BaseResult auditBatchUnapprove(@RequestBody ClassEvaluateRequest classEvaluateRequest){
-        UpdateWrapper<ClassEvaluate> wrapper = new UpdateWrapper<>();
-        wrapper.set("status",-1);
-        wrapper.set("audit_comments",classEvaluateRequest.getAuditComments());
-        wrapper.in("id",classEvaluateRequest.getIdList());
+    public BaseResult auditBatchUnapprove(@Validated @RequestBody ClassEvaluateRequest classEvaluateRequest){
+        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(ClassEvaluate::getStatus,CommonConstant.STATUS_UNAPPROVE);
+        wrapper.set(ClassEvaluate::getAuditComments,classEvaluateRequest.getAuditComments());
+        wrapper.in(ClassEvaluate::getId,classEvaluateRequest.getIdList());
         classEvaluateService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
@@ -158,10 +165,14 @@ public class ClassEvaluateController {
     public BaseResult<Page<ClassEvaluate>>auditList(@RequestBody BaseQuery<ClassEvaluate> query){
 
         Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
-        QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
-        qw.eq("del_flag",0);
-        List<String> list = Arrays.asList("0,-1".split(","));
-        qw.in("status",list);
+        LambdaQueryWrapper<ClassEvaluate> qw = new LambdaQueryWrapper<>();
+        ClassEvaluate queryData = query.getData();
+        qw.eq(ClassEvaluate::getDelFlag,CommonConstant.DEL_FLAG);
+        qw.and(Wrapper -> Wrapper.like(ClassEvaluate::getClassName,queryData.getQueryStr()).or().like(ClassEvaluate::getStudentName,queryData.getQueryStr()));
+        List<Integer> list = new ArrayList<>();
+        list.add(CommonConstant.STATUS_UNAPPROVE);
+        list.add(CommonConstant.STATUS_NOAUDIT);
+        qw.in(ClassEvaluate::getStatus,list);
         IPage pageList = classEvaluateService.page(page, qw);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();

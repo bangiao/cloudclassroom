@@ -1,5 +1,6 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -53,6 +54,9 @@ public class VideoAudit extends Model<VideoAudit> {
      * 审批状态0为未审核1为已审核-1为未通过
      */
     private Integer auditFlag;
+
+    @TableField(exist = false)
+    private String queryStr;
 
 
     @Override
