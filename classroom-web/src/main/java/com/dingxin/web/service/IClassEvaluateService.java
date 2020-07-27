@@ -4,6 +4,7 @@ import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.OperationLog;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
 import com.dingxin.pojo.vo.ThumbsUpVo;
 
 import java.util.List;
@@ -26,5 +27,5 @@ public interface IClassEvaluateService extends IService<ClassEvaluate> {
      * @param query
      * @return
      */
-    IPage queryPage(BaseQuery<ClassEvaluate> query);
+    IPage queryPage(ClassEvaluateListRequest query);
 }

@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
 import com.dingxin.pojo.vo.ThumbsUpVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -122,40 +124,41 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
      * @return
      */
     @Override
-    public IPage queryPage(BaseQuery<ClassEvaluate> query) {
+    public IPage queryPage(ClassEvaluateListRequest query) {
         //查询列表数据
         Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
-        QueryWrapper<ClassEvaluate> qw = new QueryWrapper<>();
-        ClassEvaluate data = query.getData();
-        if (null!=data) {
-            String queryStr = data.getQueryStr();
-            if (StringUtils.isNoneBlank(queryStr))qw.like("student_name", queryStr).or().like("student_code", queryStr).or().like("class_name", queryStr);
-        }
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.select(ClassEvaluate::getClassId,ClassEvaluate::getTeacherName,ClassEvaluate::getStudyLength,ClassEvaluate::getEvaluateTime,
+                ClassEvaluate::getEvaluateContent,ClassEvaluate::getStudentName,ClassEvaluate::getStudentCode,ClassEvaluate::getClassName);
+        qw.like(StringUtils.isNoneBlank(query.getQueryStr()),ClassEvaluate::getStudentName, query.getQueryStr())
+                .or()
+                .like(StringUtils.isNoneBlank(query.getQueryStr()),ClassEvaluate::getStudentCode,query.getQueryStr())
+                .or()
+                .like(StringUtils.isNotBlank(query.getQueryStr()),ClassEvaluate::getClassName, query.getQueryStr());
 //        伪代码
         int type=1;
 //        管理员
         if (1==type){
-            qw.eq("status",1);
+            qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
         }
 //        老师查看老师的评价且已经审核通过的
         else if (2==type){
-            qw.eq("teacher_id",data.getTeacherId()).eq("status",1).eq("class_id",data.getClassId());
+            qw.eq(ClassEvaluate::getTeacherId,1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId,1);
         }
 //        学生查看课程相关的 评价不管有没有
         else if (3==type){
-            qw.eq("class_id",0).and((a)-> {
-                    QueryWrapper<ClassEvaluate> q = Wrappers.query();
-                    return  q.eq("status",1).or(true,(b)->{
-                        QueryWrapper<ClassEvaluate> qe = Wrappers.query();
-                        return qe.eq("student_id",5).eq("status",0);
+            qw.eq(ClassEvaluate::getClassId,0).and((a)-> {
+                LambdaQueryWrapper<ClassEvaluate> q = Wrappers.lambdaQuery();
+                    return  q.eq(ClassEvaluate::getStatus,1).or(true,(b)->{
+                        LambdaQueryWrapper<ClassEvaluate> qe = Wrappers.lambdaQuery();
+                        return qe.eq(ClassEvaluate::getStudentId,5).eq(ClassEvaluate::getStatus,CommonConstant.STATUS_NOAUDIT);
                     });
                 }
             );
         }else {
             return new Page();
         }
-        IPage pageList = page(page, qw.eq("del_flag",0).orderByDesc("modify_time"));
-        pageList.setTotal(pageList.getRecords().size());
+        IPage pageList = page(page, qw.eq(ClassEvaluate::getDelFlag,CommonConstant.DEL_FLAG).orderByDesc(ClassEvaluate::getCreateTime));
         return pageList;
     }
 }

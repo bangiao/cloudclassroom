@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.pojo.basic.BaseQuery;
@@ -60,7 +60,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/get")
     @ApiOperation(value = "获取学生记录表详情信息")
-    public BaseResult<StduentClassSeeRecord> info(@RequestBody Id id){
+    public BaseResult<StduentClassSeeRecord> info(@RequestBody IdRequest id){
         StduentClassSeeRecord stduentClassSeeRecord = stduentClassSeeRecordService.getById(id.getId());
         return BaseResult.success(stduentClassSeeRecord);
     }
@@ -90,7 +90,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除学生记录表信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         StduentClassSeeRecord byId = stduentClassSeeRecordService.getById(id.getId());
         if (null!=byId)byId.setDelFlag(1);
         boolean retFlag= stduentClassSeeRecordService.updateById(byId);

@@ -1,9 +1,9 @@
 package com.dingxin.web.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.vo.Id;
-import com.google.common.collect.Lists;
+import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface IRoleMenuService extends IService<RoleMenu> {
      * @param id
      * @return
      */
-    List<Menu>  allMenu(Id id);
+    List<Menu>  allMenu(IdRequest id);
 }
