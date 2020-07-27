@@ -7,6 +7,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.OperationWatcher;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseQuery4List;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.OperationLog;
 import com.dingxin.pojo.request.OperationLogRequest;
@@ -41,9 +42,9 @@ public class OperationLogController {
     @PostMapping("/list")
     @ApiOperation(value = "获取所有列表")
     @OperationWatcher(operateDesc = "获取所有日志列表")
-    public BaseResult<Page<OperationLog>>list(@RequestBody BaseQuery query){
+    public BaseResult<Page<OperationLog>>list(@RequestBody BaseQuery4List query){
 
-        IPage pageList = operationLogService.queryPageAll(query);
+        IPage<OperationLogVo> pageList = operationLogService.queryPageAll(query);
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
         }

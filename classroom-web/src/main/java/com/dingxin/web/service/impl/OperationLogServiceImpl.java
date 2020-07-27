@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseQuery4List;
 import com.dingxin.pojo.po.OperationLog;
 import com.dingxin.dao.mapper.OperationLogMapper;
 import com.dingxin.pojo.request.OperationLogRequest;
@@ -64,10 +65,9 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
     }
 
     @Override
-    public IPage<OperationLogVo> queryPageAll(BaseQuery<OperationLogRequest> query) {
+    public IPage<OperationLogVo> queryPageAll(BaseQuery4List query) {
 
         Page<OperationLog> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage<OperationLogVo> operationLogVo = new Page<OperationLogVo>();
         IPage<OperationLog> operationLogIPage = operationLogMapper.selectPage(page, Wrappers.query());
 
         return OperationLogVo.convertToVoWithPage(operationLogIPage);
