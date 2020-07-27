@@ -1,6 +1,7 @@
 package com.dingxin.pojo.request;
 
 import com.dingxin.pojo.po.VideoAudit;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
+@ApiModel(value = "视频审核请求模型")
 public class VideoAutoRequest {
 
     private static final long serialVersionUID=1L;

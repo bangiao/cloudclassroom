@@ -1,5 +1,6 @@
 package com.dingxin.pojo.request;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
+@ApiModel(value = "评价审核请求模型")
 public class ClassEvaluateRequest {
 
     private static final long serialVersionUID=1L;
