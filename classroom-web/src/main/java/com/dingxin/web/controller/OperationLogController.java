@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.OperationWatcher;
+import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.OperationLog;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 
@@ -55,16 +57,12 @@ public class OperationLogController {
     @ApiOperation(value = "列表条件查询")
     @OperationWatcher(operateDesc = "获取满足条件的所有日志列表")
     public BaseResult<Page<OperationLogVo>>listByQuery(@RequestBody BaseQuery<OperationLogRequest> query){
-
-        IPage<OperationLogVo> pageList = operationLogService.queryPage(query);
-        if (query.getData()!=null) {
-            if(CollectionUtils.isEmpty(pageList.getRecords())){
-                return BaseResult.success();
-            }
-            return BaseResult.success(pageList);
+        if (Objects.isNull(query.getData())) {
+            return BaseResult.failed(ExceptionEnum.PARAMTER_ERROR);
         }
-        return BaseResult.success().setMsg("传参不能为空");
+        IPage<OperationLogVo> pageList = operationLogService.queryPage(query);
 
+        return BaseResult.success(pageList);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.dingxin.common.utils;
 
+import com.dingxin.common.constant.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -273,13 +274,11 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 			return DateTimes;
 	}
 
-	public static Long localDateTimeToLong(@NotNull LocalDateTime localDateTime){
-//			return localDateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-			return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	public static Long localDateTimeToLong(LocalDateTime localDateTime){
+			return localDateTime == null ? CommonConstant.LONG_DEFAULT :localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
 
 	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
-//			return Instant.ofEpochSecond(time).atOffset(ZoneOffset.of("+08:00")).toLocalDateTime();
 			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
 	}
 

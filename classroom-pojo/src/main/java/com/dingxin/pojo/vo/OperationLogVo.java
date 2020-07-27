@@ -3,6 +3,7 @@ package com.dingxin.pojo.vo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.OperationLog;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,10 +21,12 @@ public class OperationLogVo {
     /**
      * 操作日志表主键
      */
+    @ApiModelProperty(value = "角色名称,一般页面不会显示",example = "10")
     private Integer id;
     /**
      * 操作时间
      */
+    @ApiModelProperty(value = "操作时间",example = "10")
     private LocalDateTime operateTime;
     /**
      * 操作内容
@@ -38,35 +41,18 @@ public class OperationLogVo {
      */
     private String operateUsername;
 
-    public OperationLogVo convertToVo(OperationLog operationLogPo){
-        this.ipAddress = operationLogPo.getIpAddress();
-        this.operateDesc = operationLogPo.getOperateDesc();
-        this.operateTime = DateUtils.longToLocalDateTime(operationLogPo.getOperateTime());
-        this.operateUsername = operationLogPo.getOperateUsername();
-        return this;
-    }
-
-    public static IPage<OperationLogVo> convertToVoWithPage(IPage<OperationLogVo> operationLogVo,IPage<OperationLog> operationLogPo){
-        operationLogVo.setTotal(operationLogPo.getTotal());
-        operationLogVo.setCurrent(operationLogPo.getCurrent());
-        operationLogVo.setPages(operationLogPo.getPages());
-        operationLogVo.setSize(operationLogPo.getSize());
-        List<OperationLog> operationLogList = operationLogPo.getRecords();
-        ArrayList<OperationLogVo> operationLogVos = new ArrayList<>();
-        if (operationLogList != null){
-            operationLogList.forEach(perOperationLogPo -> {
-                OperationLogVo perOperationLogVo = new OperationLogVo();
-                perOperationLogVo.setIpAddress(perOperationLogPo.getIpAddress());
-                perOperationLogVo.setOperateDesc(perOperationLogPo.getOperateDesc());
-                perOperationLogVo.setOperateTime(DateUtils.longToLocalDateTime(perOperationLogPo.getOperateTime()));
-                perOperationLogVo.setOperateUsername(perOperationLogPo.getOperateUsername());
-
-                operationLogVos.add(perOperationLogVo);
-            });
-
-            operationLogVo.setRecords(operationLogVos);
-        }
+    public static OperationLogVo convertToVo(OperationLog operationLogPo){
+        OperationLogVo operationLogVo = new OperationLogVo();
+        operationLogVo.setIpAddress(operationLogPo.getIpAddress());
+        operationLogVo.setOperateDesc(operationLogPo.getOperateDesc());
+        operationLogVo.setOperateTime(DateUtils.longToLocalDateTime(operationLogPo.getOperateTime()));
+        operationLogVo.setOperateUsername(operationLogPo.getOperateUsername());
 
         return operationLogVo;
+    }
+
+    public static IPage<OperationLogVo> convertToVoWithPage(IPage<OperationLog> operationLogPo){
+
+        return operationLogPo.convert(OperationLogVo::convertToVo);
     }
 }

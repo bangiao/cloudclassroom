@@ -70,7 +70,7 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
         IPage<OperationLogVo> operationLogVo = new Page<OperationLogVo>();
         IPage<OperationLog> operationLogIPage = operationLogMapper.selectPage(page, Wrappers.query());
 
-        return OperationLogVo.convertToVoWithPage(operationLogVo,operationLogIPage);
+        return OperationLogVo.convertToVoWithPage(operationLogIPage);
     }
 
     @Override
@@ -93,9 +93,8 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
                                 operationLogQuery.getOperateUsername());
 
             IPage<OperationLog> operationLogPo = operationLogMapper.selectPage(page, optQuery);
-            IPage<OperationLogVo> operationLogVo = new Page<OperationLogVo>();
 
-            return OperationLogVo.convertToVoWithPage(operationLogVo,operationLogPo);
+            return OperationLogVo.convertToVoWithPage(operationLogPo);
         }
         return null;
     }
