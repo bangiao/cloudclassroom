@@ -88,7 +88,8 @@ public class LogAspect {
 
                 operationLog.setIpAddress(ipAddr);
                 operationLog.setOperateDesc(optDesc);
-//                operationLog.setUserId(userId);
+                operationLog.setUserId("1232");
+                operationLog.setOperateUsername("LBWNB");
                 operationLog.setOperateTime(DateUtils.localDateTimeToLong(LocalDateTime.now()));
 
                 operationLogService.save(operationLog);

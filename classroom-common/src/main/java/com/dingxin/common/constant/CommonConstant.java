@@ -23,4 +23,8 @@ public interface CommonConstant {
 	Integer DEL_FLAG = 0;
 
 	List<Integer> LIST = Lists.newArrayList(0,-1);
+	/**
+	 * localDateTime转long 参数为空时 默认值
+	 */
+	Long LONG_DEFAULT = -1L;
 }
