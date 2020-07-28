@@ -274,12 +274,45 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 			return DateTimes;
 	}
 
+	/**
+	 * 将localDateTime转化为时间戳
+	 * @param localDateTime
+	 * @return
+	 */
 	public static Long localDateTimeToLong(LocalDateTime localDateTime){
 			return localDateTime == null ? CommonConstant.LONG_DEFAULT :localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 	}
 
+	/**
+	 * 时间戳转化为localDateTime
+	 * @param time
+	 * @return
+	 */
 	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
 			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
+	}
+
+	/**
+	 * 将秒转换为时间 示例：6000 => 1小时40分钟
+	 * @param seconds
+	 * @return
+	 */
+	public static String secondsToTime(Long seconds){
+		String time = null;
+		if (seconds==null || seconds <= 0)
+			return null;
+		long hours = (seconds % (60 * 60 * 24)) / (60 * 60);
+		long minutes = (seconds % (60 * 60)) / 60;
+		long mySeconds = seconds % 60;
+		if (hours > 0) {
+			time = hours + "小时" + minutes + "分钟"+mySeconds + "秒";
+		} else if (minutes > 0) {
+			time = minutes + "分钟"+mySeconds + "秒";
+		} else {
+			time = mySeconds + "秒";
+		}
+		return time;
+
 	}
 
 	/**
@@ -301,8 +334,8 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 		dateString = dateString.replace("Z", " UTC"); 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z"); 
 		Date d = format.parse(dateString); 
-		System.out.println(d.getTime()); 
+		System.out.println(d.getTime());
 
-		
+
 	}
 }
