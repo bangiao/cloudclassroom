@@ -2,7 +2,6 @@ package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,8 +12,8 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.request.ClassEvaluateListRequest;
 import com.dingxin.pojo.request.ClassEvaluateRequest;
-import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.pojo.vo.ThumbsUpVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import io.swagger.annotations.Api;
@@ -113,7 +112,7 @@ public class ClassEvaluateController {
     @ApiOperation(value = "批量删除课程评价表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list) {
         LambdaUpdateWrapper<ClassEvaluate> update = Wrappers.lambdaUpdate();
-        update.set(ClassEvaluate::getDelFlag, 1).in(ClassEvaluate::getId, list);
+        update.set(ClassEvaluate::getDelFlag, CommonConstant.NOT_DEL_FLAG).in(ClassEvaluate::getId, list);
         boolean retFlag = classEvaluateService.update(update);
         return BaseResult.success(retFlag);
     }

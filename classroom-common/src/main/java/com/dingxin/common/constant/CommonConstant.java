@@ -24,7 +24,7 @@ public interface CommonConstant {
 	/**
 	 * 删除状态-未删除
 	 */
-	Integer NOT_DEL_FLAG = 0;
+	Integer NOT_DEL_FLAG = 1;
 	/**
 	 * 已禁用
 	 */

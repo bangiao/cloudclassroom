@@ -1,26 +1,26 @@
-package com.dingxin.pojo.po;
+package com.dingxin.pojo.vo;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.po.ClassEvaluate;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 课程收藏表 实体类
  */
-@TableName("ccr_class_collection")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassCollection extends Model<ClassCollection> {
+@Builder
+@Api("课程收藏数据传输对象")
+public class ClassCollectionListVo {
 
     private static final long serialVersionUID=1L;
 
@@ -29,11 +29,6 @@ public class ClassCollection extends Model<ClassCollection> {
      */
     @ApiModelProperty(value = "主键")
     private Integer id;
-    /**
-     * 用户id
-     */
-    @ApiModelProperty(value = "用户id")
-    private Integer personId;
     /**
      * 课程id
      */
@@ -55,23 +50,23 @@ public class ClassCollection extends Model<ClassCollection> {
     @ApiModelProperty(value = "课程类型字符串")
     private String classTypeStr;
     /**
-     * 讲师Id
-     */
-    @ApiModelProperty(value = "讲师Id")
-    private Integer teacherId;
-    /**
      * 讲师姓名
      */
     @ApiModelProperty(value = "讲师姓名")
     private String teacherName;
-    private LocalDateTime createTime;
-    private LocalDateTime modifyTime;
-    private Integer delFlag;
 
+    public static ClassCollectionListVo convertToVo(ClassCollection classCollection){
+        if (Objects.isNull(classCollection))
+            return null;
+        return ClassCollectionListVo.builder().id(classCollection.getId()).teacherName(classCollection.getTeacherName())
+               .classTypeStr(classCollection.getClassTypeStr()).classType(classCollection.getClassType())
+                .className(classCollection.getClassName()).classId(classCollection.getClassId())
+                .build();
+    }
 
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
+    public static IPage<ClassCollectionListVo> convertToVoWithPage(IPage<ClassCollection> classEvaluate){
+
+        return classEvaluate.convert(ClassCollectionListVo::convertToVo);
     }
 
 }

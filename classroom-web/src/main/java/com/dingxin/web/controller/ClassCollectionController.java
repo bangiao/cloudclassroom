@@ -9,7 +9,10 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.request.ClassCollectionInsertRequest;
+import com.dingxin.pojo.request.ClassCollectionListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ClassCollectionListVo;
 import com.dingxin.web.service.IClassCollectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,12 +44,10 @@ public class ClassCollectionController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取课程收藏表列表")
-    public BaseResult<Page<ClassCollection>> list(@RequestBody BaseQuery<ClassCollection> query) {
+    public BaseResult<Page<ClassCollection>> list(@RequestBody ClassCollectionListRequest query) {
         //查询列表数据
-        Page<ClassCollection> page = new Page(query.getCurrentPage(), query.getPageSize());
-        IPage pageList = classCollectionService.page(page, Wrappers.lambdaQuery(query.getData()).eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG).orderByDesc(ClassCollection::getCreateTime));
-        pageList.setTotal(pageList.getRecords().size());
-        return BaseResult.success(pageList);
+        IPage<ClassCollection> pageList= classCollectionService.queryList(query);
+        return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
     }
 
     /**
@@ -62,25 +63,11 @@ public class ClassCollectionController {
     /**
      * 保存
      */
-    @PostMapping("/insert")
-    @ApiOperation(value = "新增课程收藏表信息")
-    public BaseResult save(@Validated @RequestBody ClassCollection classCollection) {
-        ClassCollection entity = classCollectionService.lambdaQuery().eq(ClassCollection::getClassId, classCollection.getClassId()).eq(ClassCollection::getPersonId, classCollection.getClassId()).getEntity();
-        if (null != entity) {
-            entity.setModifyTime(null);
-            classCollection = entity;
-        }
-        boolean retFlag = classCollectionService.saveOrUpdate(classCollection);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改课程收藏表信息")
-    public BaseResult update(@RequestBody ClassCollection classCollection) {
-        boolean retFlag = classCollectionService.updateById(classCollection);
+    @PostMapping("/insertOrUpdate")
+    @ApiOperation(value = "新增或者修改课程收藏表信息")
+    public BaseResult save(@Validated @RequestBody ClassCollectionInsertRequest classCollection) {
+        ClassCollection convent = ClassCollectionInsertRequest.convent(classCollection);
+        boolean retFlag =classCollectionService.insert(convent);
         return BaseResult.success(retFlag);
     }
 
@@ -90,9 +77,7 @@ public class ClassCollectionController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程收藏表信息")
     public BaseResult delete(@RequestBody IdRequest id) {
-        ClassCollection byId = classCollectionService.getById(id.getId());
-        if (null != byId) byId.setDelFlag(1);
-        boolean retFlag = classCollectionService.updateById(byId);
+        boolean retFlag = classCollectionService.deleteById(id);
         return BaseResult.success(retFlag);
     }
 
@@ -102,9 +87,7 @@ public class ClassCollectionController {
     @PostMapping("/delete/batch")
     @ApiOperation(value = "批量删除课程收藏表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list) {
-        UpdateWrapper<ClassCollection> update = Wrappers.update();
-        update.set("del_falg", 1).in("id", list);
-        boolean retFlag = classCollectionService.update(update);
+        boolean retFlag = classCollectionService.deleteByBatch(list);
         return BaseResult.success(retFlag);
     }
 }
