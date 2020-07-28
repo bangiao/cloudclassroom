@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.VideoAudit;
 import com.dingxin.pojo.request.VideoAutoRequest;
@@ -102,7 +103,7 @@ public class VideoAuditController {
         Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
         LambdaQueryWrapper<VideoAudit> qw = new LambdaQueryWrapper<>();
 //        qw.eq("del_flag",0);
-        qw.in(VideoAudit::getAuditFlag,CommonConstant.LIST);
+        qw.in(VideoAudit::getAuditFlag, AuditStatusEnum.getAllStatus());
         VideoAudit queryData = query.getData();
         qw.and(Wrapper -> Wrapper.like(VideoAudit::getVideoName,queryData.getQueryStr()));
         IPage pageList = videoAuditService.page(page, qw);

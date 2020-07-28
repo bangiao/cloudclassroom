@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
@@ -172,7 +173,7 @@ public class ClassEvaluateController {
         ClassEvaluate queryData = query.getData();
         qw.eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
         qw.and(Wrapper -> Wrapper.like(ClassEvaluate::getClassName, queryData.getQueryStr()).or().like(ClassEvaluate::getStudentName, queryData.getQueryStr()));
-        qw.in(ClassEvaluate::getStatus, CommonConstant.LIST);
+        qw.in(ClassEvaluate::getStatus, AuditStatusEnum.getAllStatus());
         IPage pageList = classEvaluateService.page(page, qw);
         if (CollectionUtils.isEmpty(pageList.getRecords())) {
             return BaseResult.success();
