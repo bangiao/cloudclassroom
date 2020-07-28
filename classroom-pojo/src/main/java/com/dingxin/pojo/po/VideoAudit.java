@@ -55,6 +55,12 @@ public class VideoAudit extends Model<VideoAudit> {
      */
     private Integer auditFlag;
 
+    /**
+     * 所属课程
+     */
+    @ApiModelProperty("所属课程")
+    private Integer curriculumId;
+
     @TableField(exist = false)
     private String queryStr;
 
