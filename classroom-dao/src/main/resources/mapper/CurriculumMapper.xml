@@ -16,7 +16,7 @@
                     <result column="disable_flag" property="disableFlag" />
                     <result column="department_id" property="departmentId" />
                     <result column="topic_id" property="topicId" />
-                    <result column="teacher_id" property="teacherId" />
+                    <result column="teacher_name" property="teacherName" />
                     <result column="watch_amount" property="watchAmount" />
                     <result column="delete_flag" property="deleteFlag" />
         </resultMap>

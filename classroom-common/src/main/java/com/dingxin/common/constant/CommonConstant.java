@@ -22,9 +22,13 @@ public interface CommonConstant {
 	 */
 	Integer DEL_FLAG = 0;
 	/**
-	 * 删除状态-已删除
+	 * 已禁用
 	 */
-	Integer NOT_DEL_FLAG = 1;
+	Integer DISABLE_TRUE = 1;
+	/**
+	 * 未禁用
+	 */
+	Integer DISABLE_FALSE = 0;
 
 	List<Integer> LIST = Lists.newArrayList(0,-1);
 	/**

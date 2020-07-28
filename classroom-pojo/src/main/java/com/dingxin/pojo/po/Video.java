@@ -62,12 +62,17 @@ public class Video extends Model<Video> {
      * 审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频
      */
     @ApiModelProperty("审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频")
-    private Integer checkFlag;
+    private Integer auditFlag;
     /**
      * 所属章节
      */
     @ApiModelProperty("所属章节")
     private Integer chapterId;
+    /**
+     * 所属课程
+     */
+    @ApiModelProperty("所属课程")
+    private Integer curriculumId;
 
 
     @Override
