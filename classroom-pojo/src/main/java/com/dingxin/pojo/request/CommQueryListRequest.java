@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassCollectionListRequest extends BaseQuery4List {
+public class CommQueryListRequest extends BaseQuery4List {
 
     private static final long serialVersionUID=1L;
     /**
