@@ -19,9 +19,9 @@ import java.io.Serializable;
 @ApiModel("带分页的全量查询对象")
 public class BaseQuery4List implements Serializable {
 
-    @ApiModelProperty("当前页:默认值1")
+    @ApiModelProperty(value = "当前页:默认值1",example = "1")
     private int currentPage = 1;
 
-    @ApiModelProperty("每页条数:默认值10")
+    @ApiModelProperty(value = "每页条数:默认值10",example = "10")
     private int pageSize = 10;
 }

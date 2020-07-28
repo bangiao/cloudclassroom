@@ -5,7 +5,9 @@ import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.OperationLog;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Objects;
  */
 @Data
 @ApiModel("日志返回对象")
+@Builder
 public class OperationLogVo {
 
     /**
@@ -50,14 +53,13 @@ public class OperationLogVo {
     public static OperationLogVo convertToVo(OperationLog operationLogPo){
         if (Objects.isNull(operationLogPo))
             return null;
-        OperationLogVo operationLogVo = new OperationLogVo();
-        operationLogVo.setId(operationLogPo.getId());
-        operationLogVo.setIpAddress(operationLogPo.getIpAddress());
-        operationLogVo.setOperateDesc(operationLogPo.getOperateDesc());
-        operationLogVo.setOperateTime(DateUtils.longToLocalDateTime(operationLogPo.getOperateTime()));
-        operationLogVo.setOperateUsername(operationLogPo.getOperateUsername());
+        return OperationLogVo.builder()
+                .id(operationLogPo.getId())
+                .ipAddress(operationLogPo.getIpAddress())
+                .operateDesc(operationLogPo.getOperateDesc())
+                .operateTime(DateUtils.longToLocalDateTime(operationLogPo.getOperateTime()))
+                .operateUsername(operationLogPo.getOperateUsername()).build();
 
-        return operationLogVo;
     }
 
     public static IPage<OperationLogVo> convertToVoWithPage(IPage<OperationLog> operationLogPo){

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.dao.mapper.RoleMenuMapper;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IMenuService;
 import com.dingxin.web.service.IRoleMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -53,7 +53,7 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
      * @return
      */
     @Override
-    public List<Menu> allMenu(Id id) {
+    public List<Menu> allMenu(IdRequest id) {
         QueryWrapper<Menu> qm = Wrappers.query();
         qm.eq("del_falg",0);
         QueryWrapper<RoleMenu> qr = Wrappers.query();

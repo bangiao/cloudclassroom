@@ -55,6 +55,10 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoAuditMapper, VideoAu
                     Objects.nonNull(data.getAuditFlag()),
                     VideoAudit::getAuditFlag,
                     data.getAuditFlag())
+                .like(
+                    Objects.nonNull(data.getCurriculumId()),
+                    VideoAudit::getCurriculumId,
+                    data.getCurriculumId())
 ;
         return videoAuditMapper.selectList(query);
 

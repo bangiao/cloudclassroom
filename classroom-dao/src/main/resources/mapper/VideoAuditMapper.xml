@@ -12,6 +12,7 @@
                     <result column="valid_flag" property="validFlag" />
                     <result column="audit_comments" property="auditComments" />
                     <result column="audit_flag" property="auditFlag" />
+                    <result column="curriculum_id" property="curriculumId" />
         </resultMap>
 
 </mapper>

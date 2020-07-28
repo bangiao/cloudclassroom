@@ -5,15 +5,19 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.UserTag;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassCollection;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.ClassCollectionInsertRequest;
+import com.dingxin.pojo.request.ClassCollectionListRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ClassCollectionListVo;
 import com.dingxin.web.service.IClassCollectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +31,7 @@ import java.util.List;
 @UserTag
 @RestController
 @RequestMapping("/classCollection")
-@Api(tags={"课程收藏接口"})
+@Api(tags = {"课程收藏接口"})
 public class ClassCollectionController {
 
 
@@ -40,15 +44,10 @@ public class ClassCollectionController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取课程收藏表列表")
-    public BaseResult<Page<ClassCollection>>list(@RequestBody BaseQuery<ClassCollection> query){
+    public BaseResult<Page<ClassCollection>> list(@RequestBody ClassCollectionListRequest query) {
         //查询列表数据
-        Page<ClassCollection> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = classCollectionService.page(page,Wrappers.query(query.getData()).eq("del_flag",0).orderByDesc("create_time").select(""));
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
-        }
-        pageList.setTotal(pageList.getRecords().size());
-        return BaseResult.success(pageList);
+        IPage<ClassCollection> pageList= classCollectionService.queryList(query);
+        return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
     }
 
     /**
@@ -56,7 +55,7 @@ public class ClassCollectionController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程收藏表详情信息")
-    public BaseResult<ClassCollection> search(@RequestBody  Id id){
+    public BaseResult<ClassCollection> search(@RequestBody IdRequest id) {
         ClassCollection result = classCollectionService.getById(id.getId());
         return BaseResult.success(result);
     }
@@ -64,25 +63,11 @@ public class ClassCollectionController {
     /**
      * 保存
      */
-    @PostMapping("/insert")
-    @ApiOperation(value = "新增课程收藏表信息")
-    public BaseResult save(@RequestBody  ClassCollection classCollection){
-        ClassCollection entity = classCollectionService.query().eq("class_id", classCollection.getClassId()).eq("person_id", classCollection.getClassId()).getEntity();
-        if (null!=entity){
-            entity.setModifyTime(null);
-            classCollection=entity;
-        }
-        boolean retFlag= classCollectionService.saveOrUpdate(classCollection);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改课程收藏表信息")
-    public BaseResult update(@RequestBody ClassCollection classCollection){
-        boolean retFlag= classCollectionService.updateById(classCollection);
+    @PostMapping("/insertOrUpdate")
+    @ApiOperation(value = "新增或者修改课程收藏表信息")
+    public BaseResult save(@Validated @RequestBody ClassCollectionInsertRequest classCollection) {
+        ClassCollection convent = ClassCollectionInsertRequest.convent(classCollection);
+        boolean retFlag =classCollectionService.insert(convent);
         return BaseResult.success(retFlag);
     }
 
@@ -91,21 +76,18 @@ public class ClassCollectionController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程收藏表信息")
-    public BaseResult delete(@RequestBody Id id){
-        ClassCollection byId = classCollectionService.getById(id.getId());
-        if (null!=byId)byId.setDelFlag(1);
-        boolean retFlag= classCollectionService.updateById(byId);
+    public BaseResult delete(@RequestBody IdRequest id) {
+        boolean retFlag = classCollectionService.deleteById(id);
         return BaseResult.success(retFlag);
     }
+
     /**
      * 批量删除删除
      */
     @PostMapping("/delete/batch")
     @ApiOperation(value = "批量删除课程收藏表信息")
-    public BaseResult deleteBatch(@RequestBody List<Integer> list){
-        UpdateWrapper<ClassCollection> update = Wrappers.update();
-        update.set("del_falg",1).in("id",list);
-        boolean retFlag= classCollectionService.update(update);
+    public BaseResult deleteBatch(@RequestBody List<Integer> list) {
+        boolean retFlag = classCollectionService.deleteByBatch(list);
         return BaseResult.success(retFlag);
     }
 }

@@ -5,7 +5,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.po.UserRole;
-import com.dingxin.pojo.vo.Id;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.UserRoleDTO;
 import com.dingxin.web.service.IUserRoleService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -93,7 +93,7 @@ public class UserRoleController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除用户与角色对应关系信息")
-    public BaseResult delete(@RequestBody Id id){
+    public BaseResult delete(@RequestBody IdRequest id){
         UserRole byId = userRoleService.getById(id.getId());
         if (null!=byId)byId.setDelFlag(1);
         boolean retFlag= userRoleService.updateById(byId);

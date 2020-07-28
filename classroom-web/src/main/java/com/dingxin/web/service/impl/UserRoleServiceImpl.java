@@ -1,23 +1,22 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.dao.mapper.UserRoleMapper;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.po.UserRole;
-import com.dingxin.dao.mapper.UserRoleMapper;
-import com.dingxin.pojo.vo.Id;
 import com.dingxin.web.service.IMenuService;
 import com.dingxin.web.service.IRoleMenuService;
 import com.dingxin.web.service.IUserRoleService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.web.shiro.ShiroUtils;
 import com.google.common.collect.Lists;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

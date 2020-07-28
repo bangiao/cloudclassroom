@@ -15,7 +15,6 @@ import com.dingxin.pojo.vo.OperationLogVo;
 import com.dingxin.web.service.IOperationLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 
+ *
  */
 @ManTag
 @RestController
@@ -42,12 +41,11 @@ public class OperationLogController {
     @PostMapping("/list")
     @ApiOperation(value = "获取所有列表")
     @OperationWatcher(operateDesc = "获取所有日志列表")
-    public BaseResult<Page<OperationLogVo>>list(@RequestBody BaseQuery4List query){
+    public BaseResult<Page<OperationLogVo>> list(@RequestBody BaseQuery4List query) {
 
-        IPage<OperationLogVo> pageList = operationLogService.queryPageAll(query);
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
-        }
+        IPage<OperationLog> operationLogIPage = operationLogService.queryPageAll(query);
+        IPage<OperationLogVo> pageList = OperationLogVo.convertToVoWithPage(operationLogIPage);
+
         return BaseResult.success(pageList);
     }
 
@@ -57,11 +55,12 @@ public class OperationLogController {
     @PostMapping("/list/query")
     @ApiOperation(value = "列表条件查询")
     @OperationWatcher(operateDesc = "获取满足条件的所有日志列表")
-    public BaseResult<Page<OperationLogVo>>listByQuery(@RequestBody BaseQuery<OperationLogRequest> query){
+    public BaseResult<Page<OperationLogVo>> listByQuery(@RequestBody BaseQuery<OperationLogRequest> query) {
         if (Objects.isNull(query.getData())) {
-            return BaseResult.failed(ExceptionEnum.PARAMTER_ERROR);
+            return BaseResult.failed(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
-        IPage<OperationLogVo> pageList = operationLogService.queryPage(query);
+        IPage<OperationLog> operationLogPo = operationLogService.queryPage(query);
+        IPage<OperationLogVo> pageList = OperationLogVo.convertToVoWithPage(operationLogPo);
 
         return BaseResult.success(pageList);
     }
@@ -71,7 +70,7 @@ public class OperationLogController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取单条数据详情信息")
-    public BaseResult<OperationLog> search(@RequestBody  OperationLog operationLog){
+    public BaseResult<OperationLog> search(@RequestBody OperationLog operationLog) {
         OperationLog result = operationLogService.getOne(Wrappers.query(operationLog));
         return BaseResult.success(result);
     }
@@ -83,8 +82,8 @@ public class OperationLogController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
     @OperationWatcher(operateDesc = "删除单条日志")
-    public BaseResult delete(@RequestBody OperationLog operationLog){
-        boolean retFlag= operationLogService.remove(Wrappers.query(operationLog));
+    public BaseResult delete(@RequestBody OperationLog operationLog) {
+        boolean retFlag = operationLogService.remove(Wrappers.query(operationLog));
         return BaseResult.success(retFlag);
     }
 
@@ -94,8 +93,8 @@ public class OperationLogController {
     @PostMapping("/delete/batch")
     @ApiOperation(value = "批量删除信息")
     @OperationWatcher(operateDesc = "批量删除日志")
-    public BaseResult batchDelete(@RequestBody List<Integer> operationLogs){
-        boolean retFlag= operationLogService.removeByIds(operationLogs);
+    public BaseResult batchDelete(@RequestBody List<Integer> operationLogs) {
+        boolean retFlag = operationLogService.removeByIds(operationLogs);
         return BaseResult.success(retFlag);
     }
 }
