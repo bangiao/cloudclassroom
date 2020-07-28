@@ -1,4 +1,4 @@
-package com.dingxin.pojo.vo;
+package com.dingxin.pojo.request;
 
 import lombok.Data;
 
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
  * 点赞vo 接受参数
  */
 @Data
-public class ThumbsUpVo {
+public class ThumbsUpRequest {
 
     /**
      * true 为点赞 false 取消赞

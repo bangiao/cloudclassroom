@@ -1,17 +1,14 @@
 package com.dingxin.pojo.request;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.dingxin.pojo.po.ClassCollection;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -21,9 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Api("课程收藏数据接受对象")
-public class ClassCollectionInsertRequest extends Model<ClassCollectionInsertRequest> {
+public class ClassCollectionInsertRequest {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
     /**
      * 主键ID传修改 不传新增
      */
@@ -67,8 +64,8 @@ public class ClassCollectionInsertRequest extends Model<ClassCollectionInsertReq
     private String teacherName;
 
 
-    public static ClassCollection convent(ClassCollectionInsertRequest request){
-       return ClassCollection.builder().classId(request.getClassId()).className(request.getClassName())
+    public static ClassCollection convent(ClassCollectionInsertRequest request) {
+        return ClassCollection.builder().classId(request.getClassId()).className(request.getClassName())
                 .classType(request.getClassType()).classTypeStr(request.getClassTypeStr())
                 .teacherId(request.getTeacherId()).teacherName(request.getTeacherName()).modifyTime(LocalDateTime.now()).id(request.getId()).build();
     }

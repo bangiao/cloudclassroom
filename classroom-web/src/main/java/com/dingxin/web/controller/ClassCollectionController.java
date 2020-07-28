@@ -1,16 +1,12 @@
 package com.dingxin.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dingxin.common.annotation.UserTag;
-import com.dingxin.common.constant.CommonConstant;
-import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.request.ClassCollectionInsertRequest;
-import com.dingxin.pojo.request.ClassCollectionListRequest;
+import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ClassCollectionListVo;
 import com.dingxin.web.service.IClassCollectionService;
@@ -28,7 +24,7 @@ import java.util.List;
 /**
  * 课程收藏表
  */
-@UserTag
+@ManTag
 @RestController
 @RequestMapping("/classCollection")
 @Api(tags = {"课程收藏接口"})
@@ -44,9 +40,9 @@ public class ClassCollectionController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取课程收藏表列表")
-    public BaseResult<Page<ClassCollection>> list(@RequestBody ClassCollectionListRequest query) {
+    public BaseResult<Page<ClassCollection>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
-        IPage<ClassCollection> pageList= classCollectionService.queryList(query);
+        IPage<ClassCollection> pageList = classCollectionService.queryList(query);
         return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
     }
 
@@ -56,8 +52,8 @@ public class ClassCollectionController {
     @PostMapping("/search")
     @ApiOperation(value = "获取课程收藏表详情信息")
     public BaseResult<ClassCollection> search(@RequestBody IdRequest id) {
-        ClassCollection result = classCollectionService.getById(id.getId());
-        return BaseResult.success(result);
+        ClassCollection result = classCollectionService.getByIdSelf(id);
+        return BaseResult.success(ClassCollectionListVo.convertToVo(result));
     }
 
     /**
@@ -67,7 +63,7 @@ public class ClassCollectionController {
     @ApiOperation(value = "新增或者修改课程收藏表信息")
     public BaseResult save(@Validated @RequestBody ClassCollectionInsertRequest classCollection) {
         ClassCollection convent = ClassCollectionInsertRequest.convent(classCollection);
-        boolean retFlag =classCollectionService.insert(convent);
+        boolean retFlag = classCollectionService.insert(convent);
         return BaseResult.success(retFlag);
     }
 

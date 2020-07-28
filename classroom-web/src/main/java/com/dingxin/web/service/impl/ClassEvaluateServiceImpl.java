@@ -1,17 +1,18 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dingxin.common.constant.CommonConstant;
-import com.dingxin.pojo.basic.BaseQuery;
-import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.dao.mapper.ClassEvaluateMapper;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
-import com.dingxin.pojo.vo.ThumbsUpVo;
-import com.dingxin.web.service.IClassEvaluateService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.dao.mapper.ClassEvaluateMapper;
+import com.dingxin.pojo.po.ClassEvaluate;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.web.service.IClassEvaluateService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * 课程评价表 服务接口实现类
@@ -29,6 +29,7 @@ import java.util.function.Function;
 public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, ClassEvaluate> implements IClassEvaluateService {
     @Autowired
     private ClassEvaluateMapper classEvaluateMapper;
+
     @Override
     public List<ClassEvaluate> like(ClassEvaluate data) {
         LambdaQueryWrapper<ClassEvaluate> query = Wrappers.<ClassEvaluate>lambdaQuery()
@@ -99,8 +100,7 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
                 .like(
                         Objects.nonNull(data.getDelFlag()),
                         ClassEvaluate::getDelFlag,
-                        data.getDelFlag())
-                ;
+                        data.getDelFlag());
         return classEvaluateMapper.selectList(query);
 
 
@@ -108,57 +108,105 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
 
     /**
      * 修改点赞数
+     *
      * @return
      */
     @Override
-    public boolean updateUp(ThumbsUpVo thumbsUpVo) {
+    public boolean updateUp(ThumbsUpRequest thumbsUpVo) {
         ClassEvaluate classEvaluate = getById(thumbsUpVo.getId());
-        if (thumbsUpVo.getUpOrDown())classEvaluate.setEvaluateCount(classEvaluate.getEvaluateCount()+1);
-        else classEvaluate.setEvaluateCount(classEvaluate.getEvaluateCount()>0?classEvaluate.getEvaluateCount()-1:0);
+        if (thumbsUpVo.getUpOrDown()) classEvaluate.setEvaluateCount(classEvaluate.getEvaluateCount() + 1);
+        else
+            classEvaluate.setEvaluateCount(classEvaluate.getEvaluateCount() > 0 ? classEvaluate.getEvaluateCount() - 1 : 0);
         return updateById(classEvaluate);
     }
 
     /**
      * 查询数据列表根据不同的条件
+     *
      * @param query
      * @return
      */
     @Override
     public IPage queryPage(ClassEvaluateListRequest query) {
         //查询列表数据
-        Page<ClassEvaluate> page = new Page(query.getCurrentPage(),query.getPageSize());
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
-        qw.select(ClassEvaluate::getClassId,ClassEvaluate::getTeacherName,ClassEvaluate::getStudyLength,ClassEvaluate::getEvaluateTime,
-                ClassEvaluate::getEvaluateContent,ClassEvaluate::getStudentName,ClassEvaluate::getStudentCode,ClassEvaluate::getClassName);
-        qw.like(StringUtils.isNoneBlank(query.getQueryStr()),ClassEvaluate::getStudentName, query.getQueryStr())
-                .or()
-                .like(StringUtils.isNoneBlank(query.getQueryStr()),ClassEvaluate::getStudentCode,query.getQueryStr())
-                .or()
-                .like(StringUtils.isNotBlank(query.getQueryStr()),ClassEvaluate::getClassName, query.getQueryStr());
+        qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
+                ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
+        if (StringUtils.isNotBlank(query.getQueryStr())) {
+            qw.like(ClassEvaluate::getStudentName, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getStudentCode, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getClassName, query.getQueryStr());
+        }
 //        伪代码
-        int type=1;
+        int type = 3;
 //        管理员
-        if (1==type){
+        if (1 == type) {
             qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
         }
 //        老师查看老师的评价且已经审核通过的
-        else if (2==type){
-            qw.eq(ClassEvaluate::getTeacherId,1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId,1);
+        else if (2 == type) {
+            qw.eq(ClassEvaluate::getTeacherId, 1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId, 1);
         }
 //        学生查看课程相关的 评价不管有没有
-        else if (3==type){
-            qw.eq(ClassEvaluate::getClassId,0).and((a)-> {
-                LambdaQueryWrapper<ClassEvaluate> q = Wrappers.lambdaQuery();
-                    return  q.eq(ClassEvaluate::getStatus,1).or(true,(b)->{
-                        LambdaQueryWrapper<ClassEvaluate> qe = Wrappers.lambdaQuery();
-                        return qe.eq(ClassEvaluate::getStudentId,5).eq(ClassEvaluate::getStatus,CommonConstant.STATUS_NOAUDIT);
-                    });
-                }
+        else if (3 == type) {
+            qw.eq(ClassEvaluate::getClassId, 1).and((a) -> {
+                        LambdaQueryWrapper<ClassEvaluate> q = Wrappers.lambdaQuery();
+                        return q.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).or((b) -> {
+                            LambdaQueryWrapper<ClassEvaluate> qe = Wrappers.lambdaQuery();
+                            return qe.eq(ClassEvaluate::getStudentId, 1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_NOAUDIT);
+                        });
+                    }
             );
-        }else {
+        } else {
             return new Page();
         }
-        IPage pageList = page(page, qw.eq(ClassEvaluate::getDelFlag,CommonConstant.DEL_FLAG).orderByDesc(ClassEvaluate::getCreateTime));
+        IPage pageList = page(page, qw.eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG).orderByDesc(ClassEvaluate::getCreateTime));
         return pageList;
+    }
+
+    /**
+     * 删除课程评价
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean delete(IdRequest id) {
+        LambdaUpdateWrapper<ClassEvaluate> qw = Wrappers.lambdaUpdate();
+        qw.set(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getId()), ClassEvaluate::getId, id.getId());
+        return update(qw);
+    }
+
+    /**
+     * 批量删除课程评价
+     *
+     * @param list
+     * @return
+     */
+    @Override
+    public boolean deleteBatch(List<Integer> list) {
+        boolean retFlag = false;
+        LambdaUpdateWrapper<ClassEvaluate> qw = Wrappers.lambdaUpdate();
+        if (!Objects.isNull(list) && list.size() > 0) {
+            qw.set(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassEvaluate::getId, list);
+            retFlag = update(qw);
+        }
+        return retFlag;
+    }
+
+    /**
+     * 单个查询
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public ClassEvaluate getByIdSelf(IdRequest id) {
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.eq(ClassEvaluate::getId, id.getId()).eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
+        return getOne(qw);
     }
 }

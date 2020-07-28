@@ -1,10 +1,10 @@
 package com.dingxin.web.service;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dingxin.pojo.po.ClassCollection;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.request.ClassCollectionListRequest;
+import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.vo.ClassCollectionListVo;
 
 import java.util.List;
 
@@ -17,13 +17,15 @@ public interface IClassCollectionService extends IService<ClassCollection> {
 
     /**
      * 查询收场课程列表
+     *
      * @param query
      * @return
      */
-    IPage queryList(ClassCollectionListRequest query);
+    IPage queryList(CommQueryListRequest query);
 
     /**
      * 新增课程收藏
+     *
      * @param classCollection
      * @return
      */
@@ -31,6 +33,7 @@ public interface IClassCollectionService extends IService<ClassCollection> {
 
     /**
      * 删除课程收藏
+     *
      * @param id
      * @return
      */
@@ -38,8 +41,17 @@ public interface IClassCollectionService extends IService<ClassCollection> {
 
     /**
      * 批量删除
+     *
      * @param list
      * @return
      */
     boolean deleteByBatch(List<Integer> list);
+
+    /**
+     * 获取单个
+     *
+     * @param id
+     * @return
+     */
+    ClassCollection getByIdSelf(IdRequest id);
 }
