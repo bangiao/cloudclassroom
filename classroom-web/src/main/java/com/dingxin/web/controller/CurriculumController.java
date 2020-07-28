@@ -59,7 +59,7 @@ public class CurriculumController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取所有课程列表")
-    public BaseResult<Page<Curriculum>>list(@RequestBody BaseQuery4List query){
+    public BaseResult<Page<CurriculumVo>>list(@RequestBody BaseQuery4List query){
 
         //todo
 //        String userId = ShiroUtils.getUserId();
