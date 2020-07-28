@@ -34,19 +34,24 @@ public class ProjectManagement extends Model<ProjectManagement> {
      * 专题名称
      */
     @ApiModelProperty(value = "专题名称")
-    @NotBlank(message = "专题名称不能为空")
+    @NotBlank(message = "projectName can not be null")
     private String projectName;
     /**
      * 讲师
      */
     @ApiModelProperty(value = "讲师关联id")
-    @NotNull(message = "讲师不能为空")
+    @NotNull(message = "lecturerId can not be null")
     private Integer lecturerId;
+    /**
+     * 讲师姓名
+     */
+    @ApiModelProperty(value = "讲师姓名")
+    private String lecturerName;
     /**
      * 专题描述
      */
     @ApiModelProperty(value = "专题描述")
-    @NotBlank(message = "专题描述不能为空")
+    @NotBlank(message = "projectDescription can not be null")
     private String projectDescription;
     /**
      * 课程数量统计

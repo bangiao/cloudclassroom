@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 课程收藏表 实体类
+ * 公共关键字查询request
  */
 @Data
 @AllArgsConstructor
