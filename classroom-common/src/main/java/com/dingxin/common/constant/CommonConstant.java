@@ -22,9 +22,9 @@ public interface CommonConstant {
 	 */
 	Integer DEL_FLAG = 0;
 	/**
-	 * 删除状态-未删除
+	 * 删除状态-删除
 	 */
-	Integer NOT_DEL_FLAG = 1;
+	Integer DEL_FLAG_TRUE = 1;
 	/**
 	 * 已禁用
 	 */
