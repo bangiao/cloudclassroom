@@ -26,7 +26,7 @@ import com.dingxin.pojo.basic.BaseResult;
 @Api(value = "${table.comment}接口")
 public class ${table.controllerName} extends ${superControllerClass} {
 #else
-@Api(value = "${table.comment}接口")
+@Api(tags = "${table.comment}接口")
 public class ${table.controllerName} {
 #end
 
