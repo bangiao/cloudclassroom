@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.RoleMenuInsertRequest;
 
 import java.util.List;
 
@@ -20,4 +21,11 @@ public interface IRoleMenuService extends IService<RoleMenu> {
      * @return
      */
     List<Menu>  allMenu(IdRequest id);
+
+    /**
+     * 通过角色保存菜单
+     * @param request
+     * @return
+     */
+    boolean insertMenusByRole(RoleMenuInsertRequest request);
 }

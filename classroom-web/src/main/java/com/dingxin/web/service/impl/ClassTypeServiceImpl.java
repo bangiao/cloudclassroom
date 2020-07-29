@@ -16,6 +16,7 @@ import com.dingxin.web.service.IClassTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -131,6 +132,10 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
         if (count > 1) {
             return 1;
         }
+        convent.setModifyTime(LocalDateTime.now());
+        //todo 修改设置值的信息  改为去登录人的信息
+        convent.setCreatePersonId(1);
+        convent.setCreatePersonName("杨大大");
         boolean b = saveOrUpdate(convent);
         return b ? 0 : 2;
     }
