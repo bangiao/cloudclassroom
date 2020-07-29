@@ -1,9 +1,13 @@
-package com.dingxin.pojo.po;
+package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.dingxin.pojo.po.ClassType;
+import com.dingxin.pojo.po.Menu;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,14 +20,13 @@ import java.time.LocalDateTime;
 /**
  * 菜单管理 实体类
  */
-@TableName("sys_menu")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Menu extends Model<Menu> {
+public class MenuVo  {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     private Integer id;
     /**
@@ -33,23 +36,16 @@ public class Menu extends Model<Menu> {
     /**
      * 菜单名称
      */
-    @NotNull(message = "name must not be null")
     @ApiModelProperty(value = "菜单名称")
     private String name;
     /**
      * 菜单URL
      */
-    @NotNull(message = "url must not be null")
     @ApiModelProperty(value = "菜单URL")
     private String url;
     /**
-     * 授权(多个用逗号分隔，如：user:list,user:create)
+     *  1：菜单   2：按钮
      */
-    private String perms;
-    /**
-     * 1：菜单   2：按钮
-     */
-    @NotNull(message = "type must not be null")
     @ApiModelProperty(value = "1：菜单   2：按钮")
     private Integer type;
     /**
@@ -59,20 +55,19 @@ public class Menu extends Model<Menu> {
     /**
      * 排序
      */
-    @NotNull(message = "orderNum must not be null")
     @ApiModelProperty(value = "排序")
     private Integer orderNum;
-    private LocalDateTime createTime;
-    private LocalDateTime modifyTime;
-    private Integer delFlag;
 
-    @TableField(exist = false)
     @ApiModelProperty(value = "是否被选中")
     private Boolean check;
 
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
+    public static MenuVo convent(Menu menu){
+        return MenuVo.builder().check(menu.getCheck()).orderNum(menu.getOrderNum())
+                .icon(menu.getIcon()).type(menu.getType()).url(menu.getUrl())
+                .name(menu.getName()).parentId(menu.getParentId()).id(menu.getId()).build();
+    }
+    public static IPage<MenuVo> convertToVoWithPage(IPage<Menu> menu) {
+        return menu.convert(MenuVo::convent);
     }
 
 }

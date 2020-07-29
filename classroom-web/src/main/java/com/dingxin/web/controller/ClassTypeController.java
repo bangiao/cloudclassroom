@@ -14,6 +14,7 @@ import com.dingxin.web.service.IClassTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,7 +72,7 @@ public class ClassTypeController {
      */
     @PostMapping("/insert")
     @ApiOperation(value = "新增/修改课程类型信息")
-    public BaseResult save(@RequestBody ClassTypeInsertRequest classType) {
+    public BaseResult save(@Validated @RequestBody ClassTypeInsertRequest classType) {
         ClassType convent = ClassTypeInsertRequest.convent(classType);
         int con = classTypeService.saveSelf(convent);
         if (con == 1) {
@@ -88,7 +89,7 @@ public class ClassTypeController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程类型信息")
-    public BaseResult delete(@RequestBody IdRequest id) {
+    public BaseResult delete(@Validated @RequestBody IdRequest id) {
         boolean retFlag = classTypeService.delete(id);
         return BaseResult.success(retFlag);
     }

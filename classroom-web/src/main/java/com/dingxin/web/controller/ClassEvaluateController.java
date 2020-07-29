@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 课程评价表
  */
-@ManTag
+@UserTag
 @RestController
 @RequestMapping("/classEvaluate")
 @Api(tags = {"课程评价表接口"})
@@ -58,7 +58,7 @@ public class ClassEvaluateController {
     }
 
     /**
-     * 保存
+     * 保存 收藏只会有保存不会有修改
      */
     @PostMapping("/insert")
     @ApiOperation(value = "新增课程评价表信息")
@@ -83,7 +83,7 @@ public class ClassEvaluateController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程评价表信息")
-    public BaseResult delete(@RequestBody IdRequest id) {
+    public BaseResult delete(@Validated @RequestBody IdRequest id) {
         boolean retFlag = classEvaluateService.delete(id);
         return BaseResult.success(retFlag);
     }

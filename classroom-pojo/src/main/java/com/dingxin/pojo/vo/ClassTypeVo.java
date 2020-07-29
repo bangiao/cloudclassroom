@@ -2,7 +2,6 @@ package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.dingxin.pojo.po.ClassType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ClassTypeVo extends Model<ClassTypeVo> {
+public class ClassTypeVo {
 
     private static final long serialVersionUID = 1L;
 
