@@ -51,10 +51,11 @@ public class ProjectManagementController {
         Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ProjectManagement> projectQw = new LambdaQueryWrapper<>();
         projectQw.eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG).and(Wrappers -> Wrappers
-                .like(
+                .like(  StringUtils.isNotEmpty(query.getQueryStr()),
                         ProjectManagement::getProjectName,
                         query.getQueryStr())
                 .or().like(
+                        StringUtils.isNotEmpty(query.getQueryStr()),
                         ProjectManagement::getLecturerName,
                         query.getQueryStr()));
         IPage<ProjectManagement> pageList = projectManagementService.page(page, projectQw);
