@@ -50,13 +50,14 @@ public class ProjectManagementController {
         //查询列表数据
         Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ProjectManagement> projectQw = new LambdaQueryWrapper<>();
-        projectQw.eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG).and(Wrappers -> Wrappers
+        projectQw.eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG).and(StringUtils.isNotBlank(query.getQueryStr()),Wrappers -> Wrappers
                 .like(
                         ProjectManagement::getProjectName,
                         query.getQueryStr())
                 .or().like(
                         ProjectManagement::getLecturerName,
                         query.getQueryStr()));
+
         IPage<ProjectManagement> pageList = projectManagementService.page(page, projectQw);
         return BaseResult.success(pageList);
     }
