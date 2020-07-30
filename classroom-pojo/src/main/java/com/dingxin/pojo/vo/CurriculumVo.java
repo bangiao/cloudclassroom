@@ -58,6 +58,10 @@ public class CurriculumVo {
     @ApiModelProperty(value = "视频时长(该课程下所有视频的累计时长)",example = "5小时30分钟")
     private String videoDuration;
 
+//    @ApiModelProperty(value = "审核状态(该课程下所有视频审核通过才会显示为通过)",example = "已审核上线")
+    @ApiModelProperty(value = "是否有效(课程被禁用则课程下的所有视频被禁用)",example = "有效")
+    private Boolean validFlag;
+
     public static CurriculumVo convertToVo(Curriculum curriculumVoPo){
         if (Objects.isNull(curriculumVoPo))
             return null;
@@ -68,7 +72,9 @@ public class CurriculumVo {
                 .curriculumDesc(curriculumVoPo.getCurriculumDesc())
                 .teacherName(curriculumVoPo.getTeacherName())
                 .watchAmount(curriculumVoPo.getWatchAmount())
-                .videoDuration(DateUtils.secondsToTime(curriculumVoPo.getVideoDuration())).build();
+                .videoDuration(DateUtils.secondsToTime(curriculumVoPo.getVideoDuration()))
+                .validFlag(curriculumVoPo.getDisableFlag())
+                .build();
 
     }
 
