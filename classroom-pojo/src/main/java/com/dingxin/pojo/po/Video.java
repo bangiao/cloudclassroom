@@ -73,6 +73,10 @@ public class Video extends Model<Video> {
      */
     @ApiModelProperty("所属课程")
     private Integer curriculumId;
+    /**
+     * 审批意见
+     */
+    private String auditComments;
 
 
     @Override

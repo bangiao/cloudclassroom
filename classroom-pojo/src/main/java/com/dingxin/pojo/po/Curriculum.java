@@ -78,6 +78,10 @@ public class Curriculum extends Model<Curriculum> {
      */
     private String teacherName;
     /**
+     * 讲师id
+     */
+    private String teacherId;
+    /**
      * 观看次数(课程下的观看次数为该课程下所有视频的观看次数)
      */
     private Integer watchAmount;

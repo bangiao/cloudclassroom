@@ -14,6 +14,7 @@
                     <result column="check_flag" property="checkFlag" />
                     <result column="chapter_id" property="chapterId" />
                     <result column="curriculum_id" property="curriculumId" />
+                    <result column="audit_comments" property="auditComments" />
         </resultMap>
 
 </mapper>
