@@ -48,17 +48,7 @@ public class ProjectManagementController {
     @ApiOperation(value = "获取专题管理列表,关键字查询列表")
     public BaseResult<Page<ProjectManagement>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
-        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<ProjectManagement> projectQw = new LambdaQueryWrapper<>();
-        projectQw.eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG).and(Wrappers -> Wrappers
-                .like(
-                        ProjectManagement::getProjectName,
-                        query.getQueryStr())
-                .or().like(
-                        ProjectManagement::getLecturerName,
-                        query.getQueryStr()));
-        IPage<ProjectManagement> pageList = projectManagementService.page(page, projectQw);
-        return BaseResult.success(pageList);
+        return BaseResult.success(projectManagementService.queryPage(query));
     }
 
     /**
@@ -68,23 +58,7 @@ public class ProjectManagementController {
     @ApiOperation(value = "获取专题管理列表,关键字查询列表")
     public BaseResult<Page<ProjectManagement>> PCList(@RequestBody CommQueryListRequest query) {
         //查询列表数据
-        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
-        IPage<ProjectManagement> pageList = projectManagementService.page(page, qw
-                .like(
-                        StringUtils.isNotBlank(query.getQueryStr()),
-                        ProjectManagement::getProjectName,
-                        query.getQueryStr())
-                .eq(
-                        ProjectManagement::getDelFlag,
-                        CommonConstant.DEL_FLAG)
-                .eq(
-                        ProjectManagement::getEnable,
-                        CommonConstant.DISABLE_FALSE)
-                .eq(
-                        ProjectManagement::getAuditStatus,
-                        CommonConstant.STATUS_AUDIT));
-        return BaseResult.success(pageList);
+        return BaseResult.success(projectManagementService.queryPCPage(query));
     }
 
     /**
@@ -92,9 +66,8 @@ public class ProjectManagementController {
      */
     @PostMapping("/searchById")
     @ApiOperation(value = "获取讲师详情信息")
-    public BaseResult<Teachers> search(@RequestBody IdRequest idRequest) {
-        ProjectManagement result = projectManagementService.getById(idRequest.getId());
-        return BaseResult.success(result);
+    public BaseResult<ProjectManagement> search(@RequestBody IdRequest idRequest) {
+        return BaseResult.success(projectManagementService.searchOneById(idRequest));
     }
 
     /**
@@ -103,7 +76,6 @@ public class ProjectManagementController {
     @PostMapping
     @ApiOperation(value = "新增专题管理信息")
     public BaseResult save(@Validated @RequestBody ProjectManagement projectManagement) {
-        projectManagement.setCreateTime(LocalDateTime.now());
         projectManagement.setModifyTime(LocalDateTime.now());
         String courseId = projectManagement.getCourseId();
         if (StringUtils.isNotEmpty(courseId)) {
@@ -131,9 +103,6 @@ public class ProjectManagementController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除专题信息")
     public BaseResult delete(@RequestBody List<Integer> idList) {
-        LambdaUpdateWrapper<ProjectManagement> update = Wrappers.lambdaUpdate();
-        update.set(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ProjectManagement::getId, idList);
-        boolean retFlag = projectManagementService.update(update);
-        return BaseResult.success(retFlag).setMsg("删除成功");
+        return BaseResult.success(projectManagementService.deleteByIds(idList)).setMsg("删除成功");
     }
 }
