@@ -39,21 +39,24 @@ public class TeachersController {
     @ApiOperation(value = "获取列表")
     public BaseResult<Page<Teachers>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
-        Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
-        IPage pageList = teachersService.page(page, qw);
-        return BaseResult.success(pageList);
+        return BaseResult.success(teachersService.queryPage(query));
     }
-
+    /**
+     * 讲师管理Pc列表查询
+     */
+    @PostMapping("pc/list")
+    @ApiOperation(value = "获取Pc列表")
+    public BaseResult<Page<Teachers>> PClist(@RequestBody CommQueryListRequest query) {
+        //查询列表数据
+        return BaseResult.success(teachersService.queryPCPage(query));
+    }
     /**
      * 单个查询
      */
     @PostMapping("/searchById")
     @ApiOperation(value = "获取讲师详情信息")
     public BaseResult<Teachers> search(@RequestBody IdRequest idRequest) {
-        Teachers result = teachersService.getById(idRequest.getId());
-        return BaseResult.success(result);
+        return BaseResult.success(teachersService.queryById(idRequest));
     }
 
 

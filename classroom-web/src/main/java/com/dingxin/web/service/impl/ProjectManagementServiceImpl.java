@@ -1,10 +1,17 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
+import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IProjectManagementService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -76,5 +83,56 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
 
 
     }
+
+    @Override
+    public IPage<ProjectManagement> queryPage(CommQueryListRequest query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> projectQw = new LambdaQueryWrapper<>();
+        projectQw.eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG).and(StringUtils.isNotBlank(query.getQueryStr()), Wrappers -> Wrappers
+                .like(
+                        ProjectManagement::getProjectName,
+                        query.getQueryStr())
+                .or().like(
+                        ProjectManagement::getLecturerName,
+                        query.getQueryStr()));
+
+        return projectManagementMapper.selectPage(page, projectQw);
+    }
+
+    @Override
+    public IPage<ProjectManagement> queryPCPage(CommQueryListRequest query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
+        IPage<ProjectManagement> pageList = projectManagementMapper.selectPage(page, qw
+                .like(
+                        StringUtils.isNotBlank(query.getQueryStr()),
+                        ProjectManagement::getProjectName,
+                        query.getQueryStr())
+                .eq(
+                        ProjectManagement::getDelFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        ProjectManagement::getEnable,
+                        CommonConstant.DISABLE_FALSE)
+                .eq(
+                        ProjectManagement::getAuditStatus,
+                        CommonConstant.STATUS_AUDIT));
+        return pageList;
+    }
+
+    @Override
+    public boolean deleteByIds(List<Integer> idList) {
+        LambdaUpdateWrapper<ProjectManagement> update = Wrappers.lambdaUpdate();
+        update.set(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ProjectManagement::getId, idList);
+        return update(update);
+    }
+
+    @Override
+    public ProjectManagement searchOneById(IdRequest idRequest) {
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
+        qw.eq(ProjectManagement::getId,idRequest.getId()).eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
+        return getOne(qw);
+    }
+
 
 }

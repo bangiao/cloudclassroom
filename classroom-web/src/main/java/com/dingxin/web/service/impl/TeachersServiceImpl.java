@@ -1,8 +1,14 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.dao.mapper.TeachersMapper;
+import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.ITeachersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +121,29 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         return teachersMapper.selectList(query);
 
 
+    }
+
+    @Override
+    public IPage<Teachers> queryPage(CommQueryListRequest query) {
+        Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
+        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
+        return page(page,qw);
+    }
+
+    @Override
+    public IPage<Teachers> queryPCPage(CommQueryListRequest query) {
+        Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
+        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
+        return page(page,qw);
+    }
+
+    @Override
+    public Teachers queryById(IdRequest idRequest) {
+        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
+        qw.eq(Teachers::getJg0101id,idRequest.getId()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
+        return getOne(qw);
     }
 
 }
