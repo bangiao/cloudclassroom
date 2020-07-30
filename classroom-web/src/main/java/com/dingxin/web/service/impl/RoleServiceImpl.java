@@ -16,6 +16,7 @@ import com.dingxin.pojo.po.Role;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IRoleService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +120,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         convent.setModifyTime(LocalDateTime.now());
         // TODO: 2020/7/29   改值 取登录人信息
         convent.setCreateUserId(1);
-        convent.setCreateUserName("杨大大");
+        convent.setCreateUserName(ShiroUtils.getUserName());
         return saveOrUpdate(convent);
 
     }

@@ -102,7 +102,7 @@ public class StduentClassSeeRecordInsertRequest {
         if (Objects.isNull(request)){
            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return StduentClassSeeRecord.builder().studyLengthStr(request.getClassName()).className(request.getClassName()).classId(request.getClassId())
+        return StduentClassSeeRecord.builder().studyLength(request.getStudyLength()).className(request.getClassName()).classId(request.getClassId())
                 .teacherName(request.getTeacherName()).teacherId(request.getTeacherId()).studentClass(request.getStudentClass())
                 .studentMajor(request.getStudentMajor()).studentColleges(request.getStudentColleges())
                 .studentCode(request.getStudentCode()).studentName(request.getStudentName()).studentId(request.getStudentId()).build();

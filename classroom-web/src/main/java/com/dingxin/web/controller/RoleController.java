@@ -28,7 +28,7 @@ import java.util.List;
 @ManTag
 @RestController
 @RequestMapping("/role")
-@Api(value = "角色接口")
+@Api(tags = {"角色接口"})
 public class RoleController {
 
 

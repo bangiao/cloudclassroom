@@ -12,12 +12,14 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
+import com.dingxin.common.utils.LogUtils;
 import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
 import com.dingxin.web.shiro.ShiroUtils;
+import net.sf.jsqlparser.statement.execute.Execute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -175,23 +177,25 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      */
     @Override
     public IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query) {
-        String userId = ShiroUtils.getUserId();
-        if (StringUtils.isEmpty(userId)) {
-            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        try {
+            String userId = ShiroUtils.getUserId();
+            LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+            qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG)
+                    .eq(StduentClassSeeRecord::getStudentId, userId);
+            String queryStr = query.getQueryStr();
+            if (StringUtils.isNotEmpty(queryStr)) {
+                qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
+                        .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
+                        .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
+            }
+            Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
+            IPage pageList = page(page, qw);
+            return pageList;
+        }catch (Exception e){
+            LogUtils.error(e.getMessage());
+            throw new BusinessException(ExceptionEnum.SYSTEM_ERROR);
         }
 
-        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
-        qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG)
-                .eq(StduentClassSeeRecord::getStudentId, userId);
-        String queryStr = query.getQueryStr();
-        if (StringUtils.isNotEmpty(queryStr)) {
-            qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
-                    .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
-                    .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
-        }
-        Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
-        IPage pageList = page(page, qw);
-        return pageList;
 
     }
 

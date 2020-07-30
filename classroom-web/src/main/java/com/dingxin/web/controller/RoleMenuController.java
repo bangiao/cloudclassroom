@@ -26,7 +26,7 @@ import java.util.List;
 @ManTag
 @RestController
 @RequestMapping("/roleMenu")
-@Api(value = "角色与菜单对应关系接口")
+@Api(tags = "角色与菜单对应关系接口")
 public class RoleMenuController {
 
 

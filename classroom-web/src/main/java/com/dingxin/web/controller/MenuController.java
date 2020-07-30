@@ -3,7 +3,6 @@ package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
-import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.request.CommQueryListRequest;
@@ -28,7 +27,7 @@ import java.util.List;
 @ManTag
 @RestController
 @RequestMapping("/menu")
-@Api(value = "菜单管理接口")
+@Api(tags = "菜单管理接口")
 public class MenuController {
 
 
