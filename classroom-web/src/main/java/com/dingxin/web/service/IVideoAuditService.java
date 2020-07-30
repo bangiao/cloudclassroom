@@ -1,13 +1,15 @@
 package com.dingxin.web.service;
-import com.dingxin.pojo.po.VideoAudit;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.po.Video;
+
 import java.util.List;
 
 /**
  *  服务接口
  */
-public interface IVideoAuditService extends IService<VideoAudit> {
+public interface IVideoAuditService extends IService<Video> {
 
-    List<VideoAudit> like(VideoAudit data);
+    List<Video> like(Video data);
 
 }
