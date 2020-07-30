@@ -34,6 +34,10 @@ public class Curriculum extends Model<Curriculum> {
      */
     private String curriculumType;
     /**
+     * 课程类型主键
+     */
+    private Integer classTypeId;
+    /**
      * 课程介绍
      */
     private String curriculumDesc;

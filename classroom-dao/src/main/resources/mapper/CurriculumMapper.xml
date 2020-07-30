@@ -7,6 +7,7 @@
                     <id column="id" property="id" />
                     <result column="curriculum_name" property="curriculumName" />
                     <result column="curriculum_type" property="curriculumType" />
+                    <result column="class_type_id" property="classTypeId" />
                     <result column="curriculum_desc" property="curriculumDesc" />
                     <result column="video_name" property="videoName" />
                     <result column="video_duration" property="videoDuration" />
