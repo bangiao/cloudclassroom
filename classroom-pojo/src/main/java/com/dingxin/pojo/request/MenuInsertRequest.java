@@ -1,5 +1,7 @@
 package com.dingxin.pojo.request;
 
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.Menu;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * 菜单管理 实体类
@@ -55,6 +58,9 @@ public class MenuInsertRequest {
     private Integer orderNum;
 
     public static Menu convent(MenuInsertRequest request) {
+        if (Objects.isNull(request)){
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+        }
         return Menu.builder().id(request.getId()).parentId(request.getParentId())
                 .name(request.getName()).url(request.getUrl())
                 .type(request.getType()).icon(request.getIcon()).build();

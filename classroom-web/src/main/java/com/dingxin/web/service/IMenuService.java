@@ -37,7 +37,7 @@ public interface IMenuService extends IService<Menu> {
      * @param convent
      * @return
      */
-    int saveSelf(Menu convent);
+    boolean saveSelf(Menu convent);
 
     /**
      * 删除菜单

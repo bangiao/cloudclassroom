@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.po.Menu;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 菜单管理 实体类
@@ -62,6 +65,8 @@ public class MenuVo  {
     private Boolean check;
 
     public static MenuVo convent(Menu menu){
+        if (Objects.isNull(menu))
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return MenuVo.builder().check(menu.getCheck()).orderNum(menu.getOrderNum())
                 .icon(menu.getIcon()).type(menu.getType()).url(menu.getUrl())
                 .name(menu.getName()).parentId(menu.getParentId()).id(menu.getId()).build();

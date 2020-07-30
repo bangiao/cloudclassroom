@@ -64,13 +64,8 @@ public class RoleController {
     @ApiOperation(value = "新增角色信息")
     public BaseResult save(@Validated @RequestBody RoleInsertRequest request) {
         Role convent = RoleInsertRequest.convent(request);
-        int con = roleService.saveSelf(convent);
-        if (con == 1) {
-            return BaseResult.failed(ExceptionEnum.DUPLICATE_DATA);
-        } else if (con == 2) {
-            return BaseResult.success(ExceptionEnum.SYSTEM_ERROR);
-        }
-        return BaseResult.success(true);
+        boolean falg=roleService.saveSelf(convent);
+        return BaseResult.success(falg);
     }
 
     /**

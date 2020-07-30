@@ -14,6 +14,7 @@ import com.dingxin.web.service.IRoleMenuService;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,7 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean insertMenusByRole(RoleMenuInsertRequest request) {
         LambdaQueryWrapper<RoleMenu> qe = Wrappers.lambdaQuery();
         qe.eq(RoleMenu::getRoleId, request.getRoleId());

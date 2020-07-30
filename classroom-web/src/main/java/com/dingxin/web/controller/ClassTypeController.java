@@ -74,13 +74,8 @@ public class ClassTypeController {
     @ApiOperation(value = "新增/修改课程类型信息")
     public BaseResult save(@Validated @RequestBody ClassTypeInsertRequest classType) {
         ClassType convent = ClassTypeInsertRequest.convent(classType);
-        int con = classTypeService.saveSelf(convent);
-        if (con == 1) {
-            return BaseResult.failed(ExceptionEnum.DUPLICATE_DATA);
-        } else if (con == 2) {
-            return BaseResult.success(ExceptionEnum.SYSTEM_ERROR);
-        }
-        return BaseResult.success(true);
+        boolean falg = classTypeService.saveSelf(convent);
+        return BaseResult.success(falg);
     }
 
 

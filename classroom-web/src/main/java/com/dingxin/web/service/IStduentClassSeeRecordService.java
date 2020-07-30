@@ -1,6 +1,10 @@
 package com.dingxin.web.service;
-import com.dingxin.pojo.po.StduentClassSeeRecord;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.po.StduentClassSeeRecord;
+import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
 
@@ -12,8 +16,49 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
 
     /**
      * 记录新增
+     *
      * @param stduentClassSeeRecord
      * @return
      */
     boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord);
+
+    /**
+     * 查询学生记录
+     *
+     * @param query
+     * @return
+     */
+    IPage<StduentClassSeeRecord> queryPage(CommQueryListRequest query);
+
+    /**
+     * 获取单条记录
+     *
+     * @param id
+     * @return
+     */
+    StduentClassSeeRecord getOneSelf(IdRequest id);
+
+    /**
+     * 删除
+     *
+     * @param id
+     * @return
+     */
+    boolean delete(IdRequest id);
+
+    /**
+     * 批量删除
+     *
+     * @param list
+     * @return
+     */
+    boolean deleteBatch(List<Integer> list);
+
+    /**
+     * 查询自己的列表
+     *
+     * @param query
+     * @return
+     */
+    IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query);
 }

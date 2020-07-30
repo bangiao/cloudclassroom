@@ -1,11 +1,23 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.common.utils.DateUtils;
-import com.dingxin.pojo.po.StduentClassSeeRecord;
-import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
-import com.dingxin.web.service.IStduentClassSeeRecordService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
+import com.dingxin.common.utils.DateUtils;
+import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
+import com.dingxin.pojo.po.StduentClassSeeRecord;
+import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.web.service.IStduentClassSeeRecordService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,29 +98,116 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
                 .like(
                         Objects.nonNull(data.getDelFlag()),
                         StduentClassSeeRecord::getDelFlag,
-                        data.getDelFlag())
-                ;
+                        data.getDelFlag());
         return stduentClassSeeRecordMapper.selectList(query);
 
 
     }
 
     /**
+     * 查询学生记录列表 管理端
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<StduentClassSeeRecord> queryPage(CommQueryListRequest query) {
+        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+        qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
+        String queryStr = query.getQueryStr();
+        if (StringUtils.isNotEmpty(queryStr)) {
+            qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
+                    .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
+                    .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
+        }
+        Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
+        IPage pageList = page(page, qw);
+        return pageList;
+    }
+
+    /**
+     * 获取单条记录
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public StduentClassSeeRecord getOneSelf(IdRequest id) {
+        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+        qw.eq(StduentClassSeeRecord::getId, id.getId()).eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
+        return getOne(qw);
+    }
+
+    /**
+     * 单个删除
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean delete(IdRequest id) {
+        LambdaUpdateWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaUpdate();
+        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getId()), StduentClassSeeRecord::getId, id.getId());
+        return update(qw);
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param list
+     * @return
+     */
+    @Override
+    public boolean deleteBatch(List<Integer> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
+        }
+        LambdaUpdateWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaUpdate();
+        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(StduentClassSeeRecord::getId, list);
+        return update(qw);
+    }
+
+    /**
+     * 查询自己的观看记录
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query) {
+        String userId = ShiroUtils.getUserId();
+        if (StringUtils.isEmpty(userId)) {
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        }
+
+        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+        qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG)
+                .eq(StduentClassSeeRecord::getStudentId, userId);
+        String queryStr = query.getQueryStr();
+        if (StringUtils.isNotEmpty(queryStr)) {
+            qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
+                    .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
+                    .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
+        }
+        Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
+        IPage pageList = page(page, qw);
+        return pageList;
+
+    }
+
+    /**
      * 观看视频记录新增
+     *
      * @param stduentClassSeeRecord
      * @return
      */
     @Override
     public boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord) {
-        StduentClassSeeRecord entity = query().eq("class_id", stduentClassSeeRecord.getClassId()).eq("student_id", stduentClassSeeRecord.getStudentId()).getEntity();
-        if (null!=entity){
-            entity.setModifyTime(null);
-            entity.setStudyLength(stduentClassSeeRecord.getStudyLength());
-            stduentClassSeeRecord=entity;
-        }
 //        学习时长格式化
         stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
-        boolean retFlag= saveOrUpdate(stduentClassSeeRecord);
-        return retFlag;
+        return save(stduentClassSeeRecord);
+
     }
+
+
 }

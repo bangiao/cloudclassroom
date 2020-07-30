@@ -1,34 +1,35 @@
-package com.dingxin.pojo.po;
+package com.dingxin.pojo.request;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
+import com.dingxin.pojo.po.StduentClassSeeRecord;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
- * 学生记录表 实体类
+ * 学生记录表接受表
  */
-@TableName("ccr_stduent_class_see_record")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
+@Api("学生记录数据接受对象")
+public class StduentClassSeeRecordInsertRequest {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 逐渐
-     */
-    @ApiModelProperty(value = "主键")
-    private Integer id;
     /**
      * 学生id
      */
@@ -38,31 +39,31 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
     /**
      * 学生姓名
      */
-    @NotNull(message = "studentName must not be null")
+    @NotBlank(message = "studentName must not be null")
     @ApiModelProperty(value = "学生姓名")
     private String studentName;
     /**
      * 学校
      */
-    @NotNull(message = "studentCode must not be null")
+    @NotBlank(message = "studentCode must not be null")
     @ApiModelProperty(value = "学校")
     private String studentCode;
     /**
      * 院校
      */
-    @NotNull(message = "studentColleges must not be null")
+    @NotBlank(message = "studentColleges must not be null")
     @ApiModelProperty(value = "院校")
     private String studentColleges;
     /**
      * 专业
      */
-    @NotNull(message = "studentMajor must not be null")
+    @NotBlank(message = "studentMajor must not be null")
     @ApiModelProperty(value = "院校")
     private String studentMajor;
     /**
      * 班级
      */
-    @NotNull(message = "studentClass must not be null")
+    @NotBlank(message = "studentClass must not be null")
     @ApiModelProperty(value = "班级")
     private String studentClass;
     /**
@@ -74,7 +75,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
     /**
      * 教师姓名
      */
-    @NotNull(message = "teacherName must not be null")
+    @NotBlank(message = "teacherName must not be null")
     @ApiModelProperty(value = "教师姓名")
     private String teacherName;
     /**
@@ -86,39 +87,25 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
     /**
      * 课程名字
      */
-    @NotNull(message = "className must not be null")
+    @NotBlank(message = "className must not be null")
     @ApiModelProperty(value = "课程名字")
     private String className;
     /**
      * 学习时长
      */
     @ApiModelProperty(value = "学习时长")
+    @NotNull
+    @Min(1)
     private Long studyLength;
-    /**
-     * 学习时长字符串
-     */
-    @ApiModelProperty(value = "学习时长字符串")
-    private String studyLengthStr;
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
-    /**
-     * 修改时间
-     */
-    @ApiModelProperty(value = "修改时间")
-    private LocalDateTime modifyTime;
-    /**
-     * 是否有效
-     */
-    @ApiModelProperty(value = "是否有效")
-    private Integer delFlag;
 
-
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
+    public static StduentClassSeeRecord convent(StduentClassSeeRecordInsertRequest request){
+        if (Objects.isNull(request)){
+           throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+        }
+        return StduentClassSeeRecord.builder().studyLengthStr(request.getClassName()).className(request.getClassName()).classId(request.getClassId())
+                .teacherName(request.getTeacherName()).teacherId(request.getTeacherId()).studentClass(request.getStudentClass())
+                .studentMajor(request.getStudentMajor()).studentColleges(request.getStudentColleges())
+                .studentCode(request.getStudentCode()).studentName(request.getStudentName()).studentId(request.getStudentId()).build();
     }
 
 }

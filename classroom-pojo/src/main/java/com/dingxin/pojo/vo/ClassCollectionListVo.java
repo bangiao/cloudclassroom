@@ -1,6 +1,8 @@
 package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.po.ClassEvaluate;
 import io.swagger.annotations.Api;
@@ -57,7 +59,7 @@ public class ClassCollectionListVo {
 
     public static ClassCollectionListVo convertToVo(ClassCollection classCollection){
         if (Objects.isNull(classCollection))
-            return null;
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return ClassCollectionListVo.builder().id(classCollection.getId()).teacherName(classCollection.getTeacherName())
                .classTypeStr(classCollection.getClassTypeStr()).classType(classCollection.getClassType())
                 .className(classCollection.getClassName()).classId(classCollection.getClassId())

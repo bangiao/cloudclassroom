@@ -37,7 +37,7 @@ public interface IRoleService extends IService<Role> {
      * @param convent
      * @return
      */
-    int saveSelf(Role convent);
+    boolean saveSelf(Role convent);
 
     /**
      * 删除角色信息

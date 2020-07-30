@@ -1,6 +1,8 @@
 package com.dingxin.pojo.request;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.Role;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 /**
  * 角色 实体类
@@ -37,6 +40,9 @@ public class RoleInsertRequest extends Model<RoleInsertRequest> {
     private String remark;
 
     public static Role convent(RoleInsertRequest request) {
+        if (Objects.isNull(request)){
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+        }
         return Role.builder().id(request.getId()).roleName(request.getRoleName()).remark(request.getRemark()).build();
     }
 }

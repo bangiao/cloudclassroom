@@ -64,13 +64,8 @@ public class MenuController {
     @ApiOperation(value = "新增/修改菜单管理信息")
     public BaseResult save(@Validated @RequestBody MenuInsertRequest request) {
         Menu convent = MenuInsertRequest.convent(request);
-        int con = menuService.saveSelf(convent);
-        if (con == 1) {
-            return BaseResult.failed(ExceptionEnum.DUPLICATE_DATA);
-        } else if (con == 2) {
-            return BaseResult.success(ExceptionEnum.SYSTEM_ERROR);
-        }
-        return BaseResult.success(true);
+        boolean fag = menuService.saveSelf(convent);
+        return BaseResult.success(fag);
     }
 
     /**

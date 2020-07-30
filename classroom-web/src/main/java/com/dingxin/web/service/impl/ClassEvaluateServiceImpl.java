@@ -3,10 +3,13 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.request.ClassEvaluateListRequest;
@@ -188,13 +191,12 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
      */
     @Override
     public boolean deleteBatch(List<Integer> list) {
-        boolean retFlag = false;
-        LambdaUpdateWrapper<ClassEvaluate> qw = Wrappers.lambdaUpdate();
-        if (!Objects.isNull(list) && list.size() > 0) {
-            qw.set(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassEvaluate::getId, list);
-            retFlag = update(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-        return retFlag;
+        LambdaUpdateWrapper<ClassEvaluate> qw = Wrappers.lambdaUpdate();
+        qw.set(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassEvaluate::getId, list);
+        return update(qw);
     }
 
     /**

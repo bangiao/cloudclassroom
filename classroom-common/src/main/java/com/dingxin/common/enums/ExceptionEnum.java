@@ -26,6 +26,7 @@ public enum ExceptionEnum {
     //4.业务流程校验异常
 
     DUPLICATE_DATA("4001","重复的数据"),
+    COVENT_NULLPOINT("4002","转换源对象为空"),
 
         //5.系统级
     SYSTEM_ERROR("5001","系统内部异常"),

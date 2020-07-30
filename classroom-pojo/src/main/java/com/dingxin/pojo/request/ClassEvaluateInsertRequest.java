@@ -1,5 +1,7 @@
 package com.dingxin.pojo.request;
 
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassEvaluate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 课程评价表 实体类
@@ -71,6 +74,9 @@ public class ClassEvaluateInsertRequest {
     private String evaluateContent;
 
     public static ClassEvaluate covent(ClassEvaluateInsertRequest request) {
+        if (Objects.isNull(request)){
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+        }
         return ClassEvaluate.builder().classId(request.getClassId()).className(request.getClassName())
                 .classType(request.getClassType())
                 .classTypeStr(request.getClassTypeStr()).teacherId(request.getTeacherId()).teacherName(request.getTeacherName())

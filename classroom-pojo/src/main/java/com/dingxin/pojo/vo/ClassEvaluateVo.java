@@ -1,6 +1,8 @@
 package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassEvaluate;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -62,7 +64,7 @@ public class ClassEvaluateVo {
 
     public static ClassEvaluateVo convertToVo(ClassEvaluate classEvaluate) {
         if (Objects.isNull(classEvaluate))
-            return null;
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return ClassEvaluateVo.builder().id(classEvaluate.getId()).teacherName(classEvaluate.getTeacherName())
                 .studyLength(classEvaluate.getStudyLength()).evaluateTime(classEvaluate.getEvaluateTime())
                 .evaluateContent(classEvaluate.getEvaluateContent()).className(classEvaluate.getClassName())

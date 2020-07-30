@@ -3,11 +3,14 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassTypeMapper;
 import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.request.CommQueryListRequest;
@@ -125,19 +128,19 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
      * @return
      */
     @Override
-    public int saveSelf(ClassType convent) {
+    public boolean saveSelf(ClassType convent) {
         LambdaQueryWrapper<ClassType> qw = Wrappers.lambdaQuery();
         qw.eq(ClassType::getTypeName, convent.getTypeName()).eq(ClassType::getDelFlag, CommonConstant.DEL_FLAG);
         int count = count(qw);
         if (count > 1) {
-            return 1;
+            throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());
         //todo 修改设置值的信息  改为去登录人的信息
         convent.setCreatePersonId(1);
         convent.setCreatePersonName("杨大大");
-        boolean b = saveOrUpdate(convent);
-        return b ? 0 : 2;
+        return saveOrUpdate(convent);
+
     }
 
     /**
@@ -161,13 +164,12 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
      */
     @Override
     public boolean deleteBatch(List<Integer> list) {
-        boolean retFlag = false;
-        LambdaUpdateWrapper<ClassType> qw = Wrappers.lambdaUpdate();
-        if (!Objects.isNull(list) && list.size() > 0) {
-            qw.set(ClassType::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassType::getId, list);
-            retFlag = update(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-        return retFlag;
+        LambdaUpdateWrapper<ClassType> qw = Wrappers.lambdaUpdate();
+        qw.set(ClassType::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassType::getId, list);
+        return update(qw);
     }
 
 }

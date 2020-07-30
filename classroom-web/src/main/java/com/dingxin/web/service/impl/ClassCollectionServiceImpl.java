@@ -3,20 +3,25 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassCollectionMapper;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IClassCollectionService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -83,20 +88,21 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
     }
 
     /**
-     * 查询收场课程列表
+     * 查询收藏课程列表
      *
      * @param query
      * @return
      */
     @Override
     public IPage queryList(CommQueryListRequest query) {
-
-//        获取登录人Id
+        String userId = ShiroUtils.getUserId();
+        if (StringUtils.isEmpty(userId)){
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        }
         LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
-        /*String userId = ShiroUtils.getUserId();
-        qw.eq(ClassCollection::getPersonId,userId);*/
+        qw.eq(ClassCollection::getPersonId,userId);
         qw.eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-        if (StringUtils.isNotEmpty("userId") && StringUtils.isNotEmpty(query.getQueryStr())) {
+        if ( StringUtils.isNotEmpty(query.getQueryStr())) {
             qw.like(ClassCollection::getClassName, query.getQueryStr())
                     .or().like(ClassCollection::getTeacherName, query.getQueryStr())
                     .or().like(ClassCollection::getClassTypeStr, query.getQueryStr())
@@ -114,15 +120,13 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
      */
     @Override
     public boolean insert(ClassCollection classCollection) {
-        boolean falg = false;
-     /*   String userId = ShiroUtils.getUserId();
-        if (StringUtils.isNotEmpty(userId)){
-            classCollection.setPersonId(Integer.parseInt(userId));
-
-        }*/
+        String userId = ShiroUtils.getUserId();
+        if (StringUtils.isEmpty(userId))
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        classCollection.setPersonId(Integer.parseInt(userId));
         classCollection.setModifyTime(LocalDateTime.now());
-        falg = saveOrUpdate(classCollection);
-        return falg;
+        return saveOrUpdate(classCollection);
+
     }
 
     /**
@@ -146,13 +150,12 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
      */
     @Override
     public boolean deleteByBatch(List<Integer> list) {
-        boolean retFlag = false;
-        LambdaUpdateWrapper<ClassCollection> qw = Wrappers.lambdaUpdate();
-        if (!Objects.isNull(list) && list.size() > 0) {
-            qw.set(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassCollection::getId, list);
-            retFlag = update(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-        return retFlag;
+        LambdaUpdateWrapper<ClassCollection> qw = Wrappers.lambdaUpdate();
+        qw.set(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(ClassCollection::getId, list);
+        return update(qw);
     }
 
     /**

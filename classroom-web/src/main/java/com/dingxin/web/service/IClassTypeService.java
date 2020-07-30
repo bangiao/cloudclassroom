@@ -45,7 +45,7 @@ public interface IClassTypeService extends IService<ClassType> {
      * @param convent
      * @return
      */
-    int saveSelf(ClassType convent);
+    boolean saveSelf(ClassType convent);
 
     /**
      * 删除

@@ -2,12 +2,16 @@ package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 /**
  * 课程类型实体类
@@ -42,6 +46,8 @@ public class ClassTypeVo {
     private String createPersonName;
 
     public static ClassTypeVo convent(ClassType type) {
+        if (Objects.isNull(type))
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return ClassTypeVo.builder().id(type.getId()).typeName(type.getTypeName()).dataName(type.getDataName()).createPersonName(type.getCreatePersonName()).build();
     }
 

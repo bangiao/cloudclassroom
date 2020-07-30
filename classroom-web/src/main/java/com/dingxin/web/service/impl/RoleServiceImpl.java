@@ -3,11 +3,14 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.RoleMapper;
 import com.dingxin.pojo.po.Role;
 import com.dingxin.pojo.request.CommQueryListRequest;
@@ -105,20 +108,20 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
      * @return
      */
     @Override
-    public int saveSelf(Role convent) {
+    public boolean saveSelf(Role convent) {
         LambdaQueryWrapper<Role> qw = Wrappers.lambdaQuery();
         qw.eq(Role::getId, convent.getId()).eq(Role::getDelFlag, CommonConstant.DEL_FLAG)
                 .eq(Role::getRoleName, convent.getRoleName());
         int count = count(qw);
         if (count > 1) {
-            return 1;
+            throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());
         // TODO: 2020/7/29   改值 取登录人信息
         convent.setCreateUserId(1);
         convent.setCreateUserName("杨大大");
-        boolean b = saveOrUpdate(convent);
-        return b ? 0 : 2;
+        return saveOrUpdate(convent);
+
     }
 
     /**
@@ -135,20 +138,19 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     /**
-     * 批量删除橘色
+     * 批量删除角色
      *
      * @param list
      * @return
      */
     @Override
     public boolean deleteBatch(List<Integer> list) {
-        boolean retFlag = false;
-        LambdaUpdateWrapper<Role> qw = Wrappers.lambdaUpdate();
-        if (!Objects.isNull(list) && list.size() > 0) {
-            qw.set(Role::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(Role::getId, list);
-            retFlag = update(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-        return retFlag;
+        LambdaUpdateWrapper<Role> qw = Wrappers.lambdaUpdate();
+        qw.set(Role::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(Role::getId, list);
+        return update(qw);
     }
 
 }

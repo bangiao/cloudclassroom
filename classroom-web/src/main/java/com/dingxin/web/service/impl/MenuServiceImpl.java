@@ -3,11 +3,14 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.MenuMapper;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.request.CommQueryListRequest;
@@ -107,16 +110,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
      * @return
      */
     @Override
-    public int saveSelf(Menu convent) {
+    public boolean saveSelf(Menu convent) {
         LambdaQueryWrapper<Menu> qw = Wrappers.lambdaQuery();
         qw.eq(Menu::getName, convent.getName()).eq(Menu::getDelFlag, CommonConstant.DEL_FLAG)
                 .eq(Menu::getUrl, convent.getUrl());
         int count = count(qw);
         if (count > 1) {
-            return 1;
+            throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
-        boolean b = saveOrUpdate(convent);
-        return b ? 0 : 2;
+        return saveOrUpdate(convent);
+
     }
 
     /**
@@ -140,13 +143,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
      */
     @Override
     public boolean deleteBatch(List<Integer> list) {
-        boolean retFlag = false;
-        LambdaUpdateWrapper<Menu> qw = Wrappers.lambdaUpdate();
-        if (!Objects.isNull(list) && list.size() > 0) {
-            qw.set(Menu::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(Menu::getId, list);
-            retFlag = update(qw);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-        return retFlag;
+        LambdaUpdateWrapper<Menu> qw = Wrappers.lambdaUpdate();
+        qw.set(Menu::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in(Menu::getId, list);
+        return update(qw);
     }
 
 }

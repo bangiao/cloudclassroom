@@ -1,5 +1,7 @@
 package com.dingxin.pojo.request;
 
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 实体类
@@ -38,6 +41,9 @@ public class ClassTypeInsertRequest {
     private String dataName;
 
     public static ClassType convent(ClassTypeInsertRequest request) {
+        if (Objects.isNull(request)){
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+        }
         return ClassType.builder().createPersonId(1).id(request.getId()).createPersonName("先写死").modifyTime(LocalDateTime.now())
                 .dataName(request.getDataName()).typeName(request.getTypeName()).build();
 
