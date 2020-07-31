@@ -4,6 +4,7 @@ import com.dingxin.pojo.po.ProjectManagement;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ProjectManagementVo;
 
 import java.util.List;
 
@@ -21,4 +22,11 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
     boolean deleteByIds(List<Integer> idList);
 
     ProjectManagement searchOneById(IdRequest idRequest);
+
+    IPage<ProjectManagement> queryPCPageByCount(CommQueryListRequest query);
+
+    IPage<ProjectManagementVo> searchProjectNameList(CommQueryListRequest query);
+
+    IPage<ProjectManagement> searchByProjectName(CommQueryListRequest query);
 }
+

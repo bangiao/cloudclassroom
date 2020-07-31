@@ -9,6 +9,7 @@ import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.IProjectManagementService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -84,6 +85,11 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
 
     }
 
+    /**
+     * 管理端列表查询
+     * @param query
+     * @return
+     */
     @Override
     public IPage<ProjectManagement> queryPage(CommQueryListRequest query) {
         Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
@@ -99,6 +105,11 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         return projectManagementMapper.selectPage(page, projectQw);
     }
 
+    /**
+     * pc列表查询
+     * @param query
+     * @return
+     */
     @Override
     public IPage<ProjectManagement> queryPCPage(CommQueryListRequest query) {
         Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
@@ -120,6 +131,11 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         return pageList;
     }
 
+    /**
+     * 删除
+     * @param idList
+     * @return
+     */
     @Override
     public boolean deleteByIds(List<Integer> idList) {
         LambdaUpdateWrapper<ProjectManagement> update = Wrappers.lambdaUpdate();
@@ -127,11 +143,68 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         return update(update);
     }
 
+    /**
+     * 单个查询
+     * @param idRequest
+     * @return
+     */
     @Override
     public ProjectManagement searchOneById(IdRequest idRequest) {
         LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
         qw.eq(ProjectManagement::getId,idRequest.getId()).eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
         return getOne(qw);
+    }
+
+    /**
+     * pc依靠次数列表查询
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<ProjectManagement> queryPCPageByCount(CommQueryListRequest query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
+        qw.orderByDesc(ProjectManagement::getWatchNum);
+        return page(page,qw);
+    }
+
+    /**
+     * 查询pc专题名称列表
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<ProjectManagementVo> searchProjectNameList(CommQueryListRequest query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
+        qw
+            .groupBy(ProjectManagement::getProjectName)
+            .select(ProjectManagement::getProjectName)
+            .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG)
+            .eq(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE);
+        return ProjectManagementVo.convertToVoWithPage(page(page, qw));
+    }
+
+    /**
+     * 根据专题名称查询列表
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<ProjectManagement> searchByProjectName(CommQueryListRequest query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
+        qw.eq(
+                StringUtils.isNotBlank(query.getQueryStr()),
+                ProjectManagement::getProjectName,
+                query.getQueryStr())
+                .eq(
+                        ProjectManagement::getEnable,
+                        CommonConstant.DISABLE_FALSE)
+                .eq(
+                        ProjectManagement::getDelFlag,
+                        CommonConstant.DEL_FLAG);
+        return page(page,qw);
     }
 
 

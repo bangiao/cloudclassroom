@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.ViewpagerMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.Viewpager">
+                    <id column="id" property="id" />
+                    <result column="pic_name" property="picName" />
+                    <result column="pic_type" property="picType" />
+                    <result column="pic_size" property="picSize" />
+                    <result column="pic_url" property="picUrl" />
+                    <result column="createTime" property="createTime" />
+                    <result column="modifyTime" property="modifyTime" />
+                    <result column="del_Flag" property="delFlag" />
+        </resultMap>
+
+</mapper>

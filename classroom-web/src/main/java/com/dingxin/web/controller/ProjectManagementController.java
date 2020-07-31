@@ -6,12 +6,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectManagementService;
 import com.dingxin.web.service.ITeachersService;
@@ -32,6 +34,7 @@ import java.util.List;
  *
  */
 @ManTag
+@UserTag
 @RestController
 @RequestMapping("/projectManagement")
 @Api(tags = "专题管理接口")
@@ -60,7 +63,33 @@ public class ProjectManagementController {
         //查询列表数据
         return BaseResult.success(projectManagementService.queryPCPage(query));
     }
-
+    /**
+     * 列表查询
+     */
+    @PostMapping("/pc/listByCount")
+    @ApiOperation(value = "获取专题管理列表,关键字查询列表")
+    public BaseResult<Page<ProjectManagement>> PCListByCount(@RequestBody CommQueryListRequest query) {
+        //查询列表数据
+        return BaseResult.success(projectManagementService.queryPCPageByCount(query));
+    }
+    /**
+     * pc专题名称列表查询
+     */
+    @PostMapping("/pc/searchProjectNameList")
+    @ApiOperation(value = "获取pc专题管理专题名称列表")
+    public BaseResult<Page<ProjectManagementVo>> searchProjectNameList(@RequestBody CommQueryListRequest query) {
+        //查询列表数据
+        return BaseResult.success(projectManagementService.searchProjectNameList(query));
+    }
+    /**
+     * pc专题名称列表查询
+     */
+    @PostMapping("/pc/searchByProjectName")
+    @ApiOperation(value = "pc专题名称列表查询")
+    public BaseResult<Page<ProjectManagementVo>> searchByProjectName(@RequestBody CommQueryListRequest query) {
+        //查询列表数据
+        return BaseResult.success(projectManagementService.searchByProjectName(query));
+    }
     /**
      * 单个查询
      */
