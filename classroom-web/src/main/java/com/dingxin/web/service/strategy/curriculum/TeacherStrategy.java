@@ -51,6 +51,10 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                         requestData.getAuditFlag()!=null,
                         Curriculum::getAuditFlag,
                         requestData.getAuditFlag())
+                .like(
+                        StringUtils.isNotBlank(requestData.getTopicName()),
+                        Curriculum::getTopicName,
+                        requestData.getTopicName())
                 .and(
                         StringUtils.isNotBlank(requestData.getTeacherName()),
                         q->q.eq(Curriculum::getTeacherName,requestData.getTeacherName()))

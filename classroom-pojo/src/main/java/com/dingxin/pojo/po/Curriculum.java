@@ -74,6 +74,10 @@ public class Curriculum extends Model<Curriculum> {
      */
     private Integer topicId;
     /**
+     * 专题名
+     */
+    private String topicName;
+    /**
      * 讲师
      */
     private String teacherName;

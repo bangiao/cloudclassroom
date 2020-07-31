@@ -48,6 +48,10 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
                         StringUtils.isNotBlank(requestData.getTeacherName()),
                         Curriculum::getTeacherName,
                         requestData.getTeacherName())
+                .like(
+                        StringUtils.isNotBlank(requestData.getTopicName()),
+                        Curriculum::getTopicName,
+                        requestData.getTopicName())
                 .eq(
                         requestData.getAuditFlag()!=null,
                         Curriculum::getAuditFlag,

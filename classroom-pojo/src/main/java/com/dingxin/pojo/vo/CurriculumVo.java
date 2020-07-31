@@ -66,6 +66,11 @@ public class CurriculumVo {
      */
     @ApiModelProperty("审核状态(-1 未通过，0未审核，1审核通过)")
     private Integer auditFlag;
+    /**
+     * 专题名
+     */
+    @ApiModelProperty(value = "专题名",example = "vue从入门到精通")
+    private String topicName;
 
 
     public static CurriculumVo convertToVo(Curriculum curriculumVoPo){
@@ -80,6 +85,8 @@ public class CurriculumVo {
                 .watchAmount(curriculumVoPo.getWatchAmount())
                 .videoDuration(DateUtils.secondsToTime(curriculumVoPo.getVideoDuration()))
                 .validFlag(curriculumVoPo.getDisableFlag())
+                .auditFlag(curriculumVoPo.getAuditFlag())
+                .topicName(curriculumVoPo.getTopicName())
                 .build();
 
     }
