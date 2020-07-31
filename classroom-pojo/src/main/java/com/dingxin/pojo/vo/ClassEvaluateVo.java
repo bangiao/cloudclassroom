@@ -1,9 +1,9 @@
 package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dingxin.common.utils.DateUtils;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.po.OperationLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -62,16 +62,17 @@ public class ClassEvaluateVo {
     @ApiModelProperty(value = "学生姓名")
     private String studentName;
 
-    public static ClassEvaluateVo convertToVo(ClassEvaluate classEvaluate){
+    public static ClassEvaluateVo convertToVo(ClassEvaluate classEvaluate) {
         if (Objects.isNull(classEvaluate))
-            return null;
+            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return ClassEvaluateVo.builder().id(classEvaluate.getId()).teacherName(classEvaluate.getTeacherName())
                 .studyLength(classEvaluate.getStudyLength()).evaluateTime(classEvaluate.getEvaluateTime())
                 .evaluateContent(classEvaluate.getEvaluateContent()).className(classEvaluate.getClassName())
                 .studentCode(classEvaluate.getStudentCode()).studentName(classEvaluate.getStudentName()).build();
     }
 
-    public static IPage<ClassEvaluateVo> convertToVoWithPage(IPage<ClassEvaluate> classEvaluate){
+
+    public static IPage<ClassEvaluateVo> convertToVoWithPage(IPage<ClassEvaluate> classEvaluate) {
 
         return classEvaluate.convert(ClassEvaluateVo::convertToVo);
     }

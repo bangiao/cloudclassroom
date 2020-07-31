@@ -9,10 +9,13 @@
                     <result column="video_duration" property="videoDuration" />
                     <result column="video_attachment" property="videoAttachment" />
                     <result column="live_video_id" property="liveVideoId" />
+                    <result column="live_video" property="liveVideo" />
                     <result column="teacher_id" property="teacherId" />
                     <result column="valid_flag" property="validFlag" />
                     <result column="check_flag" property="checkFlag" />
                     <result column="chapter_id" property="chapterId" />
+                    <result column="curriculum_id" property="curriculumId" />
+                    <result column="audit_comments" property="auditComments" />
         </resultMap>
 
 </mapper>

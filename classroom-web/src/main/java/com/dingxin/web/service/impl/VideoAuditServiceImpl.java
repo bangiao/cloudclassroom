@@ -1,12 +1,14 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.pojo.po.VideoAudit;
-import com.dingxin.dao.mapper.VideoAuditMapper;
-import com.dingxin.web.service.IVideoAuditService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.dao.mapper.VideoMapper;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.web.service.IVideoAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -14,49 +16,53 @@ import java.util.Objects;
  *  服务接口实现类
  */
 @Service
-public class VideoAuditServiceImpl extends ServiceImpl<VideoAuditMapper, VideoAudit> implements IVideoAuditService {
+public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> implements IVideoAuditService {
 
     @Autowired
-    private VideoAuditMapper videoAuditMapper;
+    private VideoMapper videoMapper;
 
 
     @Override
-    public List<VideoAudit> like(VideoAudit data) {
-        LambdaQueryWrapper<VideoAudit> query = Wrappers.<VideoAudit>lambdaQuery()
+    public List<Video> like(Video data) {
+        LambdaQueryWrapper<Video> query = Wrappers.<Video>lambdaQuery()
                 .like(
                     Objects.nonNull(data.getId()),
-                    VideoAudit::getId,
+                    Video::getId,
                     data.getId())
                 .like(
                     Objects.nonNull(data.getVideoName()),
-                    VideoAudit::getVideoName,
+                    Video::getVideoName,
                     data.getVideoName())
                 .like(
                     Objects.nonNull(data.getVideoDuration()),
-                    VideoAudit::getVideoDuration,
+                    Video::getVideoDuration,
                     data.getVideoDuration())
                 .like(
                     Objects.nonNull(data.getVideoAttachment()),
-                    VideoAudit::getVideoAttachment,
+                    Video::getVideoAttachment,
                     data.getVideoAttachment())
                 .like(
                     Objects.nonNull(data.getLiveVideo()),
-                    VideoAudit::getLiveVideo,
+                    Video::getLiveVideo,
                     data.getLiveVideo())
                 .like(
                     Objects.nonNull(data.getValidFlag()),
-                    VideoAudit::getValidFlag,
+                    Video::getValidFlag,
                     data.getValidFlag())
                 .like(
                     Objects.nonNull(data.getAuditComments()),
-                    VideoAudit::getAuditComments,
+                    Video::getAuditComments,
                     data.getAuditComments())
                 .like(
                     Objects.nonNull(data.getAuditFlag()),
-                    VideoAudit::getAuditFlag,
+                    Video::getAuditFlag,
                     data.getAuditFlag())
+                .like(
+                    Objects.nonNull(data.getCurriculumId()),
+                    Video::getCurriculumId,
+                    data.getCurriculumId())
 ;
-        return videoAuditMapper.selectList(query);
+        return videoMapper.selectList(query);
 
 
     }

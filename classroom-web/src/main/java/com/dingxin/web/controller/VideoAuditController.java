@@ -1,29 +1,32 @@
 package com.dingxin.web.controller;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.VideoAudit;
-import com.dingxin.pojo.request.VideoAutoRequest;
-import com.dingxin.web.service.IVideoAuditService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.VideoAutoRequest;
+import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.web.service.IVideoAuditService;
+import com.dingxin.web.service.IVideoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import com.dingxin.pojo.basic.BaseResult;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
@@ -37,6 +40,8 @@ public class VideoAuditController {
 
     @Autowired
     private IVideoAuditService videoAuditService;
+    @Autowired
+    private IVideoService videoService;
 
 
     /**
@@ -44,9 +49,9 @@ public class VideoAuditController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<VideoAudit>>list(@RequestBody BaseQuery<VideoAudit> query){
+    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
         //查询列表数据
-        Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
+        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
         IPage pageList = videoAuditService.page(page,Wrappers.query(query.getData()));
         if(CollectionUtils.isEmpty(pageList.getRecords())){
             return BaseResult.success();
@@ -59,8 +64,8 @@ public class VideoAuditController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取详情信息")
-    public BaseResult<VideoAudit> search(@RequestBody  VideoAudit videoAudit){
-        VideoAudit result = videoAuditService.getOne(Wrappers.query(videoAudit));
+    public BaseResult<Video> search(@RequestBody  Video videoAudit){
+        Video result = videoAuditService.getOne(Wrappers.query(videoAudit));
         return BaseResult.success(result);
     }
 
@@ -69,7 +74,7 @@ public class VideoAuditController {
      */
     @PostMapping
     @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  VideoAudit videoAudit){
+    public BaseResult save(@RequestBody  Video videoAudit){
         boolean retFlag= videoAuditService.save(videoAudit);
         return BaseResult.success(retFlag);
     }
@@ -79,7 +84,7 @@ public class VideoAuditController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody VideoAudit videoAudit){
+    public BaseResult update(@RequestBody Video videoAudit){
         boolean retFlag= videoAuditService.updateById(videoAudit);
         return BaseResult.success(retFlag);
     }
@@ -89,7 +94,7 @@ public class VideoAuditController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除信息")
-    public BaseResult delete(@RequestBody VideoAudit videoAudit){
+    public BaseResult delete(@RequestBody Video videoAudit){
         boolean retFlag= videoAuditService.remove(Wrappers.query(videoAudit));
         return BaseResult.success(retFlag);
     }
@@ -98,18 +103,16 @@ public class VideoAuditController {
      */
     @PostMapping("/auditList")
     @ApiOperation(value = "视频审核列表查询")
-    public BaseResult<Page<VideoAudit>>auditList(@RequestBody BaseQuery<VideoAudit> query){
+    public BaseResult<Page<Video>>auditList(@RequestBody VideoListRequest query){
 
-        Page<VideoAudit> page = new Page(query.getCurrentPage(),query.getPageSize());
-        LambdaQueryWrapper<VideoAudit> qw = new LambdaQueryWrapper<>();
-//        qw.eq("del_flag",0);
-        qw.in(VideoAudit::getAuditFlag, AuditStatusEnum.getAllStatus());
-        VideoAudit queryData = query.getData();
-        qw.and(Wrapper -> Wrapper.like(VideoAudit::getVideoName,queryData.getQueryStr()));
-        IPage pageList = videoAuditService.page(page, qw);
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
+        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<Video> qw = new LambdaQueryWrapper<>();
+        String queryStr = query.getQueryStr();
+        if(StringUtils.isNotEmpty(queryStr)){
+            qw.and(Wrapper -> Wrapper.like(Video::getVideoName,queryStr));
         }
+        qw.in(Video::getAuditFlag, AuditStatusEnum.getAllStatus());
+        IPage pageList = videoService.page(page, qw);
         return BaseResult.success(pageList);
     }
     /**
@@ -117,12 +120,12 @@ public class VideoAuditController {
      */
     @PostMapping("/audit")
     @ApiOperation(value = "审核")
-    public BaseResult audit(@RequestBody  VideoAudit videoAudit){
-        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(VideoAudit::getAuditFlag,videoAudit.getAuditFlag());
-        wrapper.set(VideoAudit::getAuditComments,videoAudit.getAuditComments());
-        wrapper.eq(VideoAudit::getId,videoAudit.getId());
-        videoAuditService.update(wrapper);
+    public BaseResult audit(@RequestBody  Video videoAudit){
+        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(Video::getAuditFlag,videoAudit.getAuditFlag());
+        wrapper.set(Video::getAuditComments,videoAudit.getAuditComments());
+        wrapper.eq(Video::getId,videoAudit.getId());
+        videoService.update(wrapper);
         return BaseResult.success().setMsg("审核成功！");
     }
     /**
@@ -131,11 +134,11 @@ public class VideoAuditController {
     @PostMapping("/auditBatch")
     @ApiOperation(value = "批量审核通过")
     public BaseResult auditBatch(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
-        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(VideoAudit::getAuditFlag, CommonConstant.STATUS_AUDIT);
-        wrapper.set(VideoAudit::getAuditComments,videoAutoRequest.getAuditComments());
-        wrapper.in(VideoAudit::getId,videoAutoRequest.getIdList());
-        videoAuditService.update(wrapper);
+        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(Video::getAuditFlag, CommonConstant.STATUS_AUDIT);
+        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
+        wrapper.in(Video::getId,videoAutoRequest.getIdList());
+        videoService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
     /**
@@ -144,11 +147,11 @@ public class VideoAuditController {
     @PostMapping("/auditBatchUnapprove")
     @ApiOperation(value = "批量审核未通过")
     public BaseResult auditBatchUnapprove(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
-        LambdaUpdateWrapper<VideoAudit> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(VideoAudit::getAuditFlag,CommonConstant.STATUS_UNAPPROVE);
-        wrapper.set(VideoAudit::getAuditComments,videoAutoRequest.getAuditComments());
-        wrapper.in(VideoAudit::getId,videoAutoRequest.getIdList());
-        videoAuditService.update(wrapper);
+        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.set(Video::getAuditFlag,CommonConstant.STATUS_UNAPPROVE);
+        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
+        wrapper.in(Video::getId,videoAutoRequest.getIdList());
+        videoService.update(wrapper);
         return BaseResult.success().setMsg("批量审核成功！");
     }
 }

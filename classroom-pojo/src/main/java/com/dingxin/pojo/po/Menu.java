@@ -1,14 +1,15 @@
 package com.dingxin.pojo.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -19,15 +20,16 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Menu extends Model<Menu> {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
-    private String id;
+    private Integer id;
     /**
      * 父菜单ID，一级菜单为0
      */
-    private String parentId;
+    private Integer parentId;
     /**
      * 菜单名称
      */
@@ -45,7 +47,7 @@ public class Menu extends Model<Menu> {
      */
     private String perms;
     /**
-     *  1：菜单   2：按钮
+     * 1：菜单   2：按钮
      */
     @NotNull(message = "type must not be null")
     @ApiModelProperty(value = "1：菜单   2：按钮")

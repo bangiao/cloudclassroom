@@ -1,18 +1,17 @@
 package com.dingxin.pojo.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.io.Serializable;
 
 /**
  * 课程评价表 实体类
@@ -21,6 +20,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ClassEvaluate extends Model<ClassEvaluate> {
 
     private static final long serialVersionUID=1L;
@@ -47,7 +47,7 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      */
     @ApiModelProperty(value = "课程类型Id")
     @NotNull(message = "classType must not be null")
-    private String classType;
+    private Integer classType;
     /**
      * 课程类型
      */
@@ -133,8 +133,6 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      */
     private Integer delFlag;
 
-    @TableField(exist = false)
-    private String queryStr;
 
 
     @Override

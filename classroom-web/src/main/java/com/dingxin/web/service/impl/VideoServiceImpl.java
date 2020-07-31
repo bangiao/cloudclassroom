@@ -52,13 +52,17 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                     Video::getValidFlag,
                     data.getValidFlag())
                 .like(
-                    Objects.nonNull(data.getCheckFlag()),
-                    Video::getCheckFlag,
-                    data.getCheckFlag())
+                    Objects.nonNull(data.getAuditFlag()),
+                    Video::getAuditFlag,
+                    data.getAuditFlag())
                 .like(
                     Objects.nonNull(data.getChapterId()),
                     Video::getChapterId,
                     data.getChapterId())
+                .like(
+                        Objects.nonNull(data.getCurriculumId()),
+                        Video::getCurriculumId,
+                        data.getCurriculumId())
 ;
         return videoMapper.selectList(query);
 

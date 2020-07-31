@@ -7,7 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * 专门用来接受id
+ * 公共id request
  */
 @Data
 @Api("主键查询数据传输对象")

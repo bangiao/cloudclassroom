@@ -34,6 +34,10 @@ public class Curriculum extends Model<Curriculum> {
      */
     private String curriculumType;
     /**
+     * 课程类型主键
+     */
+    private Integer classTypeId;
+    /**
      * 课程介绍
      */
     private String curriculumDesc;
@@ -60,7 +64,7 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 是否禁用(是否有效)
      */
-    private Integer disableFlag;
+    private Boolean disableFlag;
     /**
      * 所属院系
      */
@@ -72,7 +76,11 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 讲师
      */
-    private Integer teacherId;
+    private String teacherName;
+    /**
+     * 讲师id
+     */
+    private String teacherId;
     /**
      * 观看次数(课程下的观看次数为该课程下所有视频的观看次数)
      */

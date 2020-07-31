@@ -7,6 +7,7 @@
                     <id column="id" property="id" />
                     <result column="curriculum_name" property="curriculumName" />
                     <result column="curriculum_type" property="curriculumType" />
+                    <result column="class_type_id" property="classTypeId" />
                     <result column="curriculum_desc" property="curriculumDesc" />
                     <result column="video_name" property="videoName" />
                     <result column="video_duration" property="videoDuration" />
@@ -16,6 +17,7 @@
                     <result column="disable_flag" property="disableFlag" />
                     <result column="department_id" property="departmentId" />
                     <result column="topic_id" property="topicId" />
+                    <result column="teacher_name" property="teacherName" />
                     <result column="teacher_id" property="teacherId" />
                     <result column="watch_amount" property="watchAmount" />
                     <result column="delete_flag" property="deleteFlag" />

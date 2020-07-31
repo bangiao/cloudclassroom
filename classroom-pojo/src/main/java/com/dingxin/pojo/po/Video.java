@@ -1,14 +1,14 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
-import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -47,7 +47,12 @@ public class Video extends Model<Video> {
      * 直播视频
      */
     @ApiModelProperty("直播视频")
-    private String liveVideoId;
+    private String liveVideo;
+    /**
+     * 直播视频id
+     */
+    @ApiModelProperty("直播视频")
+    private Integer liveVideoId;
     /**
      * 讲师
      */
@@ -62,12 +67,24 @@ public class Video extends Model<Video> {
      * 审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频
      */
     @ApiModelProperty("审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频")
-    private Integer checkFlag;
+    private Integer auditFlag;
     /**
      * 所属章节
      */
     @ApiModelProperty("所属章节")
     private Integer chapterId;
+    /**
+     * 所属课程
+     */
+    @ApiModelProperty("所属课程")
+    private Integer curriculumId;
+    /**
+     * 审批意见
+     */
+    private String auditComments;
+
+    @TableField(exist = false)
+    private String queryStr;
 
 
     @Override

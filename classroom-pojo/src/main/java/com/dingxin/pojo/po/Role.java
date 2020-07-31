@@ -20,6 +20,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Role extends Model<Role> {
 
     private static final long serialVersionUID=1L;
@@ -28,7 +29,6 @@ public class Role extends Model<Role> {
     /**
      * 角色名称
      */
-    @NotNull(message = "roleName must not be null")
     @ApiModelProperty(value = "角色名称")
     private String roleName;
     /**
@@ -39,6 +39,11 @@ public class Role extends Model<Role> {
      * 创建者ID
      */
     private Integer createUserId;
+    /**
+     * 创建者姓名
+     */
+    private String createUserName;
+
     /**
      * 创建时间
      */

@@ -1,8 +1,5 @@
 package com.dingxin.common.constant;
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 public interface CommonConstant {
 	/**
@@ -21,6 +18,18 @@ public interface CommonConstant {
 	 * 删除状态-未删除
 	 */
 	Integer DEL_FLAG = 0;
+	/**
+	 * 删除状态-删除
+	 */
+	Integer DEL_FLAG_TRUE = 1;
+	/**
+	 * 已禁用
+	 */
+	Integer DISABLE_TRUE = 1;
+	/**
+	 * 未禁用
+	 */
+	Integer DISABLE_FALSE = 0;
 
 	/**
 	 * localDateTime转long 参数为空时 默认值
