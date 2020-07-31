@@ -89,6 +89,11 @@ public class Curriculum extends Model<Curriculum> {
      * 删除标志(目前采用假删除的方式)
      */
     private Integer deleteFlag;
+    /**
+     * 审核状态(-1 未通过，0未审核，1审核通过)
+     */
+    private Integer auditFlag;
+
 
 
     @Override

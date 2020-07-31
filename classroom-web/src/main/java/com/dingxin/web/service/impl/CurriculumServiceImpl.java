@@ -1,15 +1,17 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.pojo.basic.BaseQuery4List;
-import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.dao.mapper.CurriculumMapper;
-import com.dingxin.pojo.vo.CurriculumVo;
-import com.dingxin.web.service.ICurriculumService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.dao.mapper.CurriculumMapper;
+import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.web.service.ICurriculumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +24,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     @Autowired
     private CurriculumMapper curriculumMapper;
 
-    public  abstract IPage<Curriculum> getPage(BaseQuery4List query);
+    public  abstract IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query);
 
     @Override
     public List<Curriculum> like(Curriculum data) {

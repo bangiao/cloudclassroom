@@ -81,8 +81,10 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
         //条件查询列表数据
         Page<OperationLog> page = new Page<OperationLog>(query.getCurrentPage(), query.getPageSize());
         OperationLogRequest operationLogQuery = query.getData();
-        if (operationLogQuery == null)
-            return null;
+        if (operationLogQuery == null){
+            //查询条件为空时 查询所有
+            return operationLogMapper.selectPage(page, Wrappers.query());
+        }
         LambdaQueryWrapper<OperationLog> optQuery = Wrappers.<OperationLog>lambdaQuery()
                 .ge(
                         operationLogQuery.getStartTime() != null,

@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.dao.mapper.CurriculumMapper;
-import com.dingxin.pojo.basic.BaseQuery4List;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.CurriculumRequest;
 import com.dingxin.web.service.impl.CurriculumServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * author: cuteG <br>
@@ -26,16 +29,31 @@ public class TeacherStrategy extends CurriculumServiceImpl {
     private CurriculumMapper curriculumMapper;
 
     @Override
-    public IPage<Curriculum> getPage(BaseQuery4List query) {
+    public IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query) {
         //todo
 //        String userId = ShiroUtils.getUserId();
-        String teacherName = "LBW";
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
+        CurriculumRequest requestData = query.getData();
+        if (Objects.isNull(requestData)){
+
+            return curriculumMapper.selectPage(page, Wrappers.query());
+        }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
+                .like(
+                        StringUtils.isNotBlank(requestData.getCurriculumName()),
+                        Curriculum::getCurriculumName,
+                        requestData.getCurriculumName())
+                .like(
+                        StringUtils.isNotBlank(requestData.getCurriculumType()),
+                        Curriculum::getCurriculumType,
+                        requestData.getCurriculumType())
                 .eq(
-                        StringUtils.isNotBlank(teacherName),
-                        Curriculum::getTeacherName,
-                        teacherName)
+                        requestData.getAuditFlag()!=null,
+                        Curriculum::getAuditFlag,
+                        requestData.getAuditFlag())
+                .and(
+                        StringUtils.isNotBlank(requestData.getTeacherName()),
+                        q->q.eq(Curriculum::getTeacherName,requestData.getTeacherName()))
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,

@@ -21,6 +21,7 @@
                     <result column="teacher_id" property="teacherId" />
                     <result column="watch_amount" property="watchAmount" />
                     <result column="delete_flag" property="deleteFlag" />
+                    <result column="audit_flag" property="auditFlag" />
         </resultMap>
 
 </mapper>

@@ -1,32 +1,29 @@
 package com.dingxin.web.controller;
-import com.dingxin.common.annotation.ManTag;
-import com.dingxin.common.annotation.UserTag;
-import com.dingxin.common.enums.ExceptionEnum;
-import com.dingxin.common.enums.RoleEnum;
-import com.dingxin.pojo.basic.BaseQuery4List;
-import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.po.Role;
-import com.dingxin.pojo.po.UserRole;
-import com.dingxin.pojo.vo.CurriculumVo;
-import com.dingxin.web.service.ICurriculumService;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dingxin.web.service.IRoleService;
+import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.enums.RoleEnum;
+import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.vo.CurriculumVo;
+import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IUserRoleService;
 import com.dingxin.web.service.strategy.curriculum.AdministratorStrategy;
 import com.dingxin.web.service.strategy.curriculum.CurriculumStrategyContext;
 import com.dingxin.web.service.strategy.curriculum.TeacherStrategy;
-import com.dingxin.web.shiro.ShiroUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
-import com.dingxin.pojo.basic.BaseResult;
-
-import static com.dingxin.common.enums.RoleEnum.TEACHER;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 后台管理课程管理接口
@@ -59,14 +56,14 @@ public class CurriculumController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取所有课程列表")
-    public BaseResult<Page<CurriculumVo>>list(@RequestBody BaseQuery4List query){
+    public BaseResult<Page<CurriculumVo>>list(@RequestBody BaseQuery<CurriculumRequest> query){
 
         //todo
 //        String userId = ShiroUtils.getUserId();
 //        UserRole userRole = userRoleService.getById(userId);
 //        Integer roleId = userRole.getRoleId();
 //        RoleEnum role = RoleEnum.getByCode(roleId);
-        RoleEnum role = RoleEnum.ADMINISTRATOR;
+        RoleEnum role = RoleEnum.TEACHER;
         IPage<Curriculum> pageList;
         switch (role){
             case TEACHER :
