@@ -43,6 +43,19 @@ public class ShiroUtils {
         }
         return null;
     }
+    /**
+     * 获取当前用户
+     *
+     * @return 当前用户
+     */
+    public static CasEmploys getUser() {
+        Object object = getUserEntity();
+        if (object instanceof CasEmploys) {
+            CasEmploys casEmploys = (CasEmploys) object;
+            return casEmploys;
+        }
+        return null;
+    }
 
     /**
      * 获取当前用户 名称
