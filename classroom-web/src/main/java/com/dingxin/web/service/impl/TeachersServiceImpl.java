@@ -7,14 +7,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.dao.mapper.TeachersMapper;
+import com.dingxin.pojo.privilege.CasDepts;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.web.service.ICasDeptsService;
 import com.dingxin.web.service.ITeachersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *  服务接口实现类
@@ -24,8 +27,8 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
 
     @Autowired
     private TeachersMapper teachersMapper;
-
-
+    @Autowired
+    private ICasDeptsService iCasDeptsService;
     @Override
     public List<Teachers> like(Teachers data) {
         LambdaQueryWrapper<Teachers> query = Wrappers.<Teachers>lambdaQuery()
@@ -128,15 +131,39 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
         qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
-        return page(page,qw);
+        IPage<Teachers> teachers = page(page, qw);
+        List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
+        LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
+        deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
+        List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
+        for (Teachers teacher: teachers.getRecords()) {
+            for (int i = 0; i < deptsList.size(); i++) {
+                if (teacher.getDwh().equalsIgnoreCase(deptsList.get(i).getZsjdwid())) {
+                    teacher.setZsjmc(deptsList.get(i).getZsjmc());
+                }
+            }
+        }
+        return teachers;
     }
 
     @Override
     public IPage<Teachers> queryPCPage(CommQueryListRequest query) {
         Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
-        return page(page,qw);
+        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
+        IPage<Teachers> teachers = page(page, qw);
+        List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
+        LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
+        deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
+        List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
+        for (Teachers teacher: teachers.getRecords()) {
+            for (int i = 0; i < deptsList.size(); i++) {
+                if (teacher.getDwh().equalsIgnoreCase(deptsList.get(i).getZsjdwid())) {
+                    teacher.setZsjmc(deptsList.get(i).getZsjmc());
+                }
+            }
+        }
+        return teachers;
     }
 
     @Override

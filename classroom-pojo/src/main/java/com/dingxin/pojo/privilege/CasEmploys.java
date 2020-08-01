@@ -69,8 +69,16 @@ public class CasEmploys extends Model<CasEmploys> {
 	@ApiModelProperty(value = "邮箱")
 	private String email;
 	/**
+	 * 职位
+	 */
+	@TableField("zw")
+	@ApiModelProperty(value = "职位")
+	private String zw;
+	/**
 	 * 用户组
 	 */
+	@TableField("Group")
+	@ApiModelProperty(value = "用户组")
 	private String group;
 
 	@TableField(exist = false)

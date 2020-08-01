@@ -241,9 +241,7 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
             // 保存专题课程中间表
             List<ProjectCurriculum> projectCurriculums = courseIds.stream().map(c -> {
                 ProjectCurriculum projectCurriculum = new ProjectCurriculum();
-                projectCurriculum.setCreateTime(now);
                 projectCurriculum.setCurriculumId(c);
-                projectCurriculum.setDelFlag(false);
                 projectCurriculum.setModifyTime(now);
                 projectCurriculum.setProjectId(projectManagement.getId());
                 return projectCurriculum;

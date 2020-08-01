@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
 
 /**
  *
@@ -58,6 +61,14 @@ public class TeachersController {
     public BaseResult<Teachers> search(@RequestBody IdRequest idRequest) {
         return BaseResult.success(teachersService.queryById(idRequest));
     }
-
+    /**
+     * 修改
+     */
+    @PostMapping("/update")
+    @ApiOperation(value = "修改讲师信息")
+    public BaseResult update(@RequestBody Teachers teachers) {
+        boolean retFlag = teachersService.updateById(teachers);
+        return BaseResult.success(retFlag);
+    }
 
 }

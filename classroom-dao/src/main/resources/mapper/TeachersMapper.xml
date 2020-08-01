@@ -26,6 +26,8 @@
                     <result column="LXRQ" property="lxrq" />
                     <result column="CJNY" property="cjny" />
                     <result column="DWH" property="dwh" />
+                    <result column="ZC" property="zc" />
+                    <result column="introduction" property="introduction" />
         </resultMap>
 
 </mapper>

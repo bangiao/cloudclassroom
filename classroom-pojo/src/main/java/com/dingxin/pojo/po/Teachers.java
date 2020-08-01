@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *  实体类
@@ -159,6 +160,25 @@ public class Teachers extends Model<Teachers> {
     @TableField("enable")
     @ApiModelProperty(value = "是否禁用")
     private Boolean enable;
+
+    /**
+     * 职称
+     */
+    @TableField("ZC")
+    @ApiModelProperty(value = "职称")
+    private String zc;
+    /**
+     * 单位
+     */
+    @TableField("introduction")
+    @ApiModelProperty(value = "个人介绍")
+    private String introduction;
+    /**
+     * 主数据名称（学院）
+     */
+    @ApiModelProperty(value = "学院")
+    @TableField(exist = false)
+    private String zsjmc;
     @Override
     protected Serializable pkVal() {
         return this.jg0101id;

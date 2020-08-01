@@ -105,11 +105,7 @@ public class ProjectManagementController {
     @PostMapping
     @ApiOperation(value = "新增专题管理信息")
     public BaseResult save(@Validated @RequestBody ProjectManagement projectManagement) {
-
         return projectManagementService.insertOne(projectManagement);
-
-
-
     }
 
     /**

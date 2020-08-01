@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dingxin.dao.mapper.CasDeptsMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="baseResultMap" type="com.dingxin.pojo.po.CasDepts">
+                    <id column="id" property="id" />
+                    <result column="ZSJDWID" property="zsjdwid" />
+                    <result column="ZSJMC" property="zsjmc" />
+                    <result column="CASDWID" property="casdwid" />
+                    <result column="CASDWMC" property="casdwmc" />
+                    <result column="CASFJDW" property="casfjdw" />
+                    <result column="DISABLE" property="disable" />
+        </resultMap>
+
+</mapper>
