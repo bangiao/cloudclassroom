@@ -21,6 +21,7 @@ import com.dingxin.web.service.ITeachersService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * 服务接口实现类
  */
 @Service
+@Transactional
 public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementMapper, ProjectManagement> implements IProjectManagementService {
 
 
