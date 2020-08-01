@@ -1,5 +1,6 @@
 package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.request.CommQueryListRequest;
@@ -28,5 +29,7 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
     IPage<ProjectManagementVo> searchProjectNameList(CommQueryListRequest query);
 
     IPage<ProjectManagement> searchByProjectName(CommQueryListRequest query);
+
+    BaseResult insertOne(ProjectManagement projectManagement);
 }
 

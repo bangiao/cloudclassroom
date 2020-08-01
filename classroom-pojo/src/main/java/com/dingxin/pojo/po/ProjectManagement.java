@@ -1,5 +1,6 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *  实体类
@@ -75,11 +77,7 @@ public class ProjectManagement extends Model<ProjectManagement> {
      */
     @ApiModelProperty(value = "是否删除 0：未删除 -1 ：删除")
     private Boolean delFlag;
-    /**
-     * 课程关联id
-     */
-    @ApiModelProperty(value = "课程关联id")
-    private String courseId;
+
     /**
      * 创建时间
      */
@@ -90,6 +88,9 @@ public class ProjectManagement extends Model<ProjectManagement> {
      */
     @ApiModelProperty(value = "修改时间")
     private LocalDateTime modifyTime;
+
+    @TableField(exist = false)
+    private List<Integer> courseIds;
 
 
     @Override

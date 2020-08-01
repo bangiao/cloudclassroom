@@ -26,8 +26,8 @@ public class ProjectCurriculum extends Model<ProjectCurriculum> {
      * id
      */
     private Integer id;
-    private String projectId;
-    private String curriculumId;
+    private Integer projectId;
+    private Integer curriculumId;
     private Boolean delFlag;
     /**
      * 创建时间

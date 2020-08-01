@@ -105,14 +105,11 @@ public class ProjectManagementController {
     @PostMapping
     @ApiOperation(value = "新增专题管理信息")
     public BaseResult save(@Validated @RequestBody ProjectManagement projectManagement) {
-        projectManagement.setModifyTime(LocalDateTime.now());
-        String courseId = projectManagement.getCourseId();
-        if (StringUtils.isNotEmpty(courseId)) {
-            String[] courseIdList = courseId.split(",");
-            projectManagement.setCourseNum(courseIdList.length);
-        }
-        boolean retFlag = projectManagementService.save(projectManagement);
-        return BaseResult.success(retFlag).setMsg("新增专题成功");
+
+        return projectManagementService.insertOne(projectManagement);
+
+
+
     }
 
     /**

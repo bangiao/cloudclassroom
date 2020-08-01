@@ -13,7 +13,6 @@
                     <result column="enable" property="enable" />
                     <result column="audit_status" property="auditStatus" />
                     <result column="del_flag" property="delFlag" />
-                    <result column="course_id" property="courseId" />
                     <result column="create_time" property="createTime" />
                     <result column="modify_time" property="modifyTime" />
         </resultMap>
