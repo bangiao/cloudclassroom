@@ -15,6 +15,7 @@ import com.dingxin.common.utils.DateUtils;
 import com.dingxin.common.utils.LogUtils;
 import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
+import com.dingxin.pojo.request.CommIdQueryListRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
@@ -113,15 +114,16 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      * @return
      */
     @Override
-    public IPage<StduentClassSeeRecord> queryPage(CommQueryListRequest query) {
+    public IPage<StduentClassSeeRecord> queryPage(CommIdQueryListRequest query) {
         LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
         qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
         String queryStr = query.getQueryStr();
         if (StringUtils.isNotEmpty(queryStr)) {
-            qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
+            qw.like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
                     .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
                     .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
         }
+        qw.eq(!Objects.isNull(query.getId()),StduentClassSeeRecord::getClassId,query.getId());
         Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
         IPage pageList = page(page, qw);
         return pageList;

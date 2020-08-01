@@ -3,6 +3,7 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
+import com.dingxin.pojo.request.CommIdQueryListRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 
@@ -28,7 +29,7 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
      * @param query
      * @return
      */
-    IPage<StduentClassSeeRecord> queryPage(CommQueryListRequest query);
+    IPage<StduentClassSeeRecord> queryPage(CommIdQueryListRequest query);
 
     /**
      * 获取单条记录

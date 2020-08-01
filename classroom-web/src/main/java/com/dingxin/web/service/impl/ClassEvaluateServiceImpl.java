@@ -144,7 +144,7 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
                     .like(ClassEvaluate::getClassName, query.getQueryStr());
         }
 //        伪代码
-        int type = 3;
+        int type = 1;
 //        管理员
         if (1 == type) {
             qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);

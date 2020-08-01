@@ -1,21 +1,18 @@
 package com.dingxin.web.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.UserTag;
-import com.dingxin.common.constant.CommonConstant;
-import com.dingxin.common.enums.AuditStatusEnum;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.ClassEvaluateInsertRequest;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.ThumbsUpRequest;
 import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

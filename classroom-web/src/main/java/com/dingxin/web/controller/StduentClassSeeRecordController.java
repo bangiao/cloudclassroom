@@ -6,6 +6,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
+import com.dingxin.pojo.request.CommIdQueryListRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.StduentClassSeeRecordInsertRequest;
@@ -42,7 +43,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生记录表列表")
-    public BaseResult<Page<StduentClassSeeRecord>> list(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<StduentClassSeeRecord>> list(@RequestBody CommIdQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.queryPage(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
     }
