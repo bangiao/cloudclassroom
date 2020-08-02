@@ -58,7 +58,7 @@ public class ProjectManagementController {
      * 列表查询
      */
     @PostMapping("/pc/list")
-    @ApiOperation(value = "获取专题管理列表,关键字查询列表")
+    @ApiOperation(value = "获取pc专题管理列表,关键字查询列表")
     public BaseResult<Page<ProjectManagement>> PCList(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         return BaseResult.success(projectManagementService.queryPCPage(query));
@@ -67,7 +67,7 @@ public class ProjectManagementController {
      * 列表查询
      */
     @PostMapping("/pc/listByCount")
-    @ApiOperation(value = "获取专题管理列表,关键字查询列表")
+    @ApiOperation(value = "pc根据观看次数获取列表")
     public BaseResult<Page<ProjectManagement>> PCListByCount(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         return BaseResult.success(projectManagementService.queryPCPageByCount(query));

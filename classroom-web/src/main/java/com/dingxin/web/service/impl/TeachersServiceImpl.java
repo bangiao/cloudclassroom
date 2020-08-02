@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -136,12 +137,11 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
         deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
         List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
+        Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
         for (Teachers teacher: teachers.getRecords()) {
-            for (int i = 0; i < deptsList.size(); i++) {
-                if (teacher.getDwh().equalsIgnoreCase(deptsList.get(i).getZsjdwid())) {
-                    teacher.setZsjmc(deptsList.get(i).getZsjmc());
-                }
-            }
+           if (collect.containsKey(teacher.getDwh())){
+               teacher.setZsjmc(collect.get(teacher.getDwh()));
+           }
         }
         return teachers;
     }
@@ -156,11 +156,10 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
         deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
         List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
+        Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
         for (Teachers teacher: teachers.getRecords()) {
-            for (int i = 0; i < deptsList.size(); i++) {
-                if (teacher.getDwh().equalsIgnoreCase(deptsList.get(i).getZsjdwid())) {
-                    teacher.setZsjmc(deptsList.get(i).getZsjmc());
-                }
+            if (collect.containsKey(teacher.getDwh())){
+                teacher.setZsjmc(collect.get(teacher.getDwh()));
             }
         }
         return teachers;
