@@ -1,32 +1,35 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.CurriculumMapper;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
 import com.dingxin.web.service.ICurriculumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- *  服务接口实现类
+ *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
  */
 @Service
+@Transactional
 public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curriculum> implements ICurriculumService {
 
     @Autowired
     private CurriculumMapper curriculumMapper;
 
-    public  abstract IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query);
-
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List<Curriculum> like(Curriculum data) {
         LambdaQueryWrapper<Curriculum> query = Wrappers.<Curriculum>lambdaQuery()
                 .like(
@@ -95,4 +98,21 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
 
     }
 
+    @Override
+    public void disableCurriculum(List<Integer> curriculumIds) {
+
+        if(curriculumIds == null || curriculumIds.isEmpty()){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Curriculum> disableQuery = Wrappers.<Curriculum>lambdaUpdate().
+                set(
+                        Curriculum::getDisableFlag,
+                        CommonConstant.DISABLE_TRUE)
+                .in(
+                        Curriculum::getId,
+                        curriculumIds);
+
+        update(disableQuery);
+    }
 }

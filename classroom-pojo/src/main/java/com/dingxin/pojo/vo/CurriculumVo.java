@@ -3,12 +3,10 @@ package com.dingxin.pojo.vo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.po.OperationLog;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -24,7 +22,7 @@ public class CurriculumVo {
     /**
      * 主键
      */
-    @ApiModelProperty(value = "一般页面不会显示,日志表主键",example = "10")
+    @ApiModelProperty(value = "一般页面不会显示,课程主键",example = "10")
     private Integer id;
     /**
      * 课程名称

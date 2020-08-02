@@ -1,10 +1,14 @@
 package com.dingxin.web.service.impl;
-import com.dingxin.pojo.po.CurriculumIntermediate;
-import com.dingxin.dao.mapper.CurriculumIntermediateMapper;
-import com.dingxin.web.service.ICurriculumIntermediateService;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.dao.mapper.CurriculumIntermediateMapper;
+import com.dingxin.pojo.po.CurriculumIntermediate;
+import com.dingxin.web.service.ICurriculumIntermediateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 

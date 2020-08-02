@@ -34,9 +34,16 @@ public class TeacherStrategy extends CurriculumServiceImpl {
 //        String userId = ShiroUtils.getUserId();
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
         CurriculumRequest requestData = query.getData();
+        //todo 获取登录者姓名
+        //获取当前登录的教师，根据教师的姓名查询教师对应的所有课程
+//        String teacherName = ShiroUtils.getUserName();
         if (Objects.isNull(requestData)){
 
-            return curriculumMapper.selectPage(page, Wrappers.query());
+            LambdaQueryWrapper<Curriculum> teacherBlankQuery = Wrappers.<Curriculum>lambdaQuery().eq(
+                    StringUtils.isNotBlank(requestData.getTeacherName()),
+                    Curriculum::getTeacherName,
+                    requestData.getTeacherName());
+            return curriculumMapper.selectPage(page, teacherBlankQuery);
         }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .like(
@@ -56,6 +63,7 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                         Curriculum::getTopicName,
                         requestData.getTopicName())
                 .and(
+                        //todo 获取登录者姓名
                         StringUtils.isNotBlank(requestData.getTeacherName()),
                         q->q.eq(Curriculum::getTeacherName,requestData.getTeacherName()))
                 .select(

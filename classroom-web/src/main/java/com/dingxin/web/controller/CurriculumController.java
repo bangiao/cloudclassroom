@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 后台管理课程管理接口
  */
@@ -115,5 +117,13 @@ public class CurriculumController {
     public BaseResult delete(@RequestBody Curriculum curriculum){
         boolean retFlag= curriculumService.remove(Wrappers.query(curriculum));
         return BaseResult.success(retFlag);
+    }
+
+    @PostMapping("/disable")
+    @ApiOperation(value = "禁用课程")
+    public BaseResult disable(@RequestBody List<Integer> curriculumIds){
+
+        curriculumService.disableCurriculum(curriculumIds);
+        return BaseResult.success();
     }
 }

@@ -1,23 +1,22 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.dao.mapper.CurriculumSetMapper;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.CurriculumIntermediate;
 import com.dingxin.pojo.po.CurriculumSet;
-import com.dingxin.dao.mapper.CurriculumSetMapper;
 import com.dingxin.web.service.ICurriculumIntermediateService;
 import com.dingxin.web.service.ICurriculumSetService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections.CollectionUtils;
-import org.graalvm.util.CollectionsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
