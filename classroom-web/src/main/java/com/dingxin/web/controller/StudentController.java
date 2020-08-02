@@ -1,5 +1,9 @@
 package com.dingxin.web.controller;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IStudentService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +18,7 @@ import com.dingxin.pojo.basic.BaseResult;
 /**
  * 学生信息表
  */
+@ManTag
 @RestController
 @RequestMapping("/student")
 @Api(tags = "学生信息表接口")
@@ -39,40 +44,14 @@ public class StudentController {
     /**
      * 单个查询
      */
-    @PostMapping("/search")
+    @PostMapping("/searchById")
     @ApiOperation(value = "获取学生信息表详情信息")
-    public BaseResult<Student> search(@RequestBody  Student student){
-        Student result = studentService.getOne(Wrappers.query(student));
+    public BaseResult<Student> search(@RequestBody IdRequest idRequest){
+        LambdaQueryWrapper<Student> qw = Wrappers.lambdaQuery();
+        qw.eq(null != idRequest.getId(),Student::getId,idRequest.getId());
+        Student result = studentService.getOne(qw);
         return BaseResult.success(result);
     }
 
-    /**
-     * 保存
-     */
-    @PostMapping
-    @ApiOperation(value = "新增学生信息表信息")
-    public BaseResult save(@RequestBody  Student student){
-        boolean retFlag= studentService.save(student);
-        return BaseResult.success(retFlag);
-    }
 
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改学生信息表信息")
-    public BaseResult update(@RequestBody Student student){
-        boolean retFlag= studentService.updateById(student);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation(value = "删除学生信息表信息")
-    public BaseResult delete(@RequestBody Student student){
-        boolean retFlag= studentService.remove(Wrappers.query(student));
-        return BaseResult.success(retFlag);
-    }
 }
