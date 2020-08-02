@@ -65,6 +65,14 @@ public class CrrStudentStudyCase extends Model<CrrStudentStudyCase> {
      */
     private String courseName;
     /**
+     * 课程类型
+     */
+    private String courseType;
+    /**
+     * 课时
+     */
+    private String courseHour;
+    /**
      * 学习时长
      */
     private Double studyTime;

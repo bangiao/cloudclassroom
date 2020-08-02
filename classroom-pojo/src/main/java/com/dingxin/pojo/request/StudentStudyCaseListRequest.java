@@ -16,7 +16,13 @@ public class StudentStudyCaseListRequest extends BaseQuery4List {
      * 模糊查询查询专用字段
      */
     @ApiModelProperty(value = "模糊查询查询专用字段")
-    private String queryStr;;
+    private String queryStr;
+
+    /**
+     * 学生id
+     */
+    @ApiModelProperty(value = "学生id")
+    private Integer studentId;
 
 
 }

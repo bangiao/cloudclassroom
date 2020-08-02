@@ -1,8 +1,13 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.CrrStudentStudyCase;
 import com.dingxin.dao.mapper.CrrStudentStudyCaseMapper;
+import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.request.StudentStudyCaseListRequest;
 import com.dingxin.web.service.ICrrStudentStudyCaseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +23,8 @@ public class CrrStudentStudyCaseServiceImpl extends ServiceImpl<CrrStudentStudyC
 
     @Autowired
     private CrrStudentStudyCaseMapper crrStudentStudyCaseMapper;
+    @Autowired
+    private ICrrStudentStudyCaseService crrStudentStudyCaseService;
 
 
     @Override
@@ -85,4 +92,13 @@ public class CrrStudentStudyCaseServiceImpl extends ServiceImpl<CrrStudentStudyC
 
     }
 
+    @Override
+    public IPage queryCoursePageList(StudentStudyCaseListRequest query) {
+        Page<CrrStudentStudyCase> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<CrrStudentStudyCase> qw = new LambdaQueryWrapper<>();
+        qw.eq(CrrStudentStudyCase::getDelFlag, CommonConstant.DEL_FLAG);
+        qw.eq(CrrStudentStudyCase::getStudentId,query.getStudentId());
+        IPage<CrrStudentStudyCase> caseIPage = crrStudentStudyCaseService.page(page, qw);
+        return caseIPage;
+    }
 }

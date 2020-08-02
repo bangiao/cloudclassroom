@@ -1,6 +1,10 @@
 package com.dingxin.web.service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.pojo.po.CrrStudentStudyCase;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.request.StudentStudyCaseListRequest;
+
 import java.util.List;
 
 /**
@@ -9,5 +13,7 @@ import java.util.List;
 public interface ICrrStudentStudyCaseService extends IService<CrrStudentStudyCase> {
 
     List<CrrStudentStudyCase> like(CrrStudentStudyCase data);
+
+    IPage queryCoursePageList(StudentStudyCaseListRequest student);
 
 }
