@@ -1,4 +1,4 @@
-package com.dingxin.pojo.privilege;
+package com.dingxin.pojo.po.privilege;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
