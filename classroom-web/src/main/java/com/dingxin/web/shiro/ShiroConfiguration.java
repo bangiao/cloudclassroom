@@ -4,6 +4,7 @@ import com.dingxin.web.shiro.cas.MyCasFilter;
 import com.dingxin.web.shiro.cas.MyCasRealm;
 import com.dingxin.web.shiro.jwt.JwtAuthenticationFilter;
 import com.dingxin.web.shiro.jwt.JwtRealm;
+import com.google.common.collect.Lists;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cas.CasFilter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -19,9 +20,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.apache.shiro.mgt.SecurityManager;
+import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 
 import javax.servlet.Filter;
 import java.util.ArrayList;
@@ -35,7 +38,8 @@ import java.util.Map;
  * @email jianghuaidi@szdxsoft.com
  * @date 2019/6/13
  */
-//@Configuration
+@Configuration
+@Import(BeanValidatorPluginsConfiguration.class)
 public class ShiroConfiguration {
 
     // CasServerUrlPrefix
@@ -45,172 +49,123 @@ public class ShiroConfiguration {
     // Cas登出页面地址
     public static final String casLogoutUrl = casServerUrlPrefix + "/logout";
     // 当前工程对外提供的服务地址
-    public static final String shiroServerUrlPrefix = "http://localhost:8882";
+    public static final String shiroServerUrlPrefix = "http://127.0.0.1:8091";
     // casFilter UrlPattern
     public static final String casFilterUrlPattern = "/cas";
     // 登录地址
     public static final String loginUrl = casLoginUrl + "?service=" + shiroServerUrlPrefix + casFilterUrlPattern;
 
 
-//    @Bean
-//    public EhCacheManager ehCacheManager(){
-//        EhCacheManager cacheManager = new EhCacheManager();
-//        cacheManager.setCacheManagerConfigFile("classpath:ehcache.xml");
-//        return cacheManager;
-//    }
-
     /**
-     * Shiro redis
-     * @param template
+     * Subject工厂管理器
+     *
      * @return
      */
-    @Bean(name = "shiroRedisCacheManager")
-    public ShiroRedisCacheManager cacheManager(@Qualifier("redisTemplate") RedisTemplate template){
-        return new ShiroRedisCacheManager(template);
+    @Bean
+    public DefaultWebSubjectFactory subjectFactory() {
+        return new DefaultWebSubjectFactory();
     }
 
-
-    @Bean(name = "myShiroCasRealm")
-    public MyCasRealm myShiroCasRealm(ShiroRedisCacheManager cacheManager) {
-        MyCasRealm realm = new MyCasRealm();
-        realm.setCacheManager(cacheManager);
-        realm.setCachingEnabled(true);
-        realm.setCasServerUrlPrefix(casServerUrlPrefix);
-        realm.setCasService(shiroServerUrlPrefix+casFilterUrlPattern);
-        return realm;
+    /**
+     * 会话管理器
+     *
+     * @return
+     */
+    public DefaultSessionManager sessionManager() {
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
+        // 关闭session定时检查，通过setSessionValidationSchedulerEnabled禁用掉会话调度器
+        sessionManager.setSessionValidationSchedulerEnabled(false);
+        return sessionManager;
     }
+
 
     @Bean(name = "casFilter")
     public CasFilter getCasFilter() {
         CasFilter casFilter = new MyCasFilter();
         casFilter.setName("casFilter");
         casFilter.setEnabled(true);
-        // 登录失败后跳转的URL，也就是 Shiro 执行 CasRealm 的 doGetAuthenticationInfo 方法向CasServer验证tiket
-//        casFilter.setFailureUrl(loginUrl);// 我们选择认证失败后再打开登录页面
         return casFilter;
     }
 
-    /**
-     * 自定义Realm
-     * @return
-     */
-    @Bean(name = "jwtRealm")
-    public JwtRealm jwtRealm() {
+    @Bean(name = "myjwtRealm")
+    public JwtRealm getJwtRealm() {
         JwtRealm jwtRealm = new JwtRealm();
-        // jwtRealm.setCredentialsMatcher(credentialsMatcher());
         jwtRealm.setCachingEnabled(false);
-        return jwtRealm;
+        return new JwtRealm();
     }
 
-    @Bean(name = "jwtAuthenticationFilter")
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
-        return jwtAuthenticationFilter;
-    }
-
-
-    /**
-     * Subject工厂管理器
-     * @return
-     */
     @Bean
-    public DefaultWebSubjectFactory subjectFactory(){
-        DefaultWebSubjectFactory subjectFactory = new StatelessDefaultSubjectFactory();
-        return subjectFactory;
+    public FilterRegistrationBean registration(JwtAuthenticationFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 
-    /**
-     * 会话管理器
-     * @return
-     */
-    public DefaultSessionManager sessionManager(){
-        DefaultSessionManager sessionManager =new DefaultSessionManager();
-        // 关闭session定时检查，通过setSessionValidationSchedulerEnabled禁用掉会话调度器
-        sessionManager.setSessionValidationSchedulerEnabled(false);
-        return  sessionManager;
+    @Bean(name = "jwtFilter")
+    public JwtAuthenticationFilter getJwtFiter() {
+        return new JwtAuthenticationFilter();
     }
 
-    @Bean(name = "securityManager")
-    public SecurityManager getDefaultWebSecurityManager(MyCasRealm myShiroCasRealm,RedisTemplate<String, Object> template) {
-        DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
-        List<Realm> realms = new ArrayList<Realm>();
-        realms.add(jwtRealm());
-        realms.add(myShiroCasRealm);
-        dwsm.setRealms(realms);
-//      <!-- 用户授权/认证信息Cache, 采用Redis 缓存 -->
-        dwsm.setCacheManager(cacheManager(template));
-        // 指定 SubjectFactory
-        dwsm.setSubjectFactory(subjectFactory());
-        dwsm.setSessionManager(sessionManager());
-        //
-        ((DefaultSessionStorageEvaluator) ((DefaultSubjectDAO)dwsm.getSubjectDAO()).getSessionStorageEvaluator()).setSessionStorageEnabled(false);
-        //
-        SecurityUtils.setSecurityManager(dwsm);
-        return dwsm;
+
+    @Bean(name = "myShiroCasRealm")
+    public MyCasRealm myShiroCasRealm() {
+        MyCasRealm realm = new MyCasRealm();
+        realm.setCachingEnabled(true);
+        realm.setCasServerUrlPrefix(casServerUrlPrefix);
+        realm.setCasService(shiroServerUrlPrefix + casFilterUrlPattern);
+        return realm;
     }
 
-    @Bean(name="shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager) {
-        ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
-        bean.setSecurityManager(manager);
-        // 配置登录的url和登录成功的url
-        bean.setLoginUrl(loginUrl);
-//        bean.setSuccessUrl("/swagger-ui.html");
-        // 配置访问权限
-        loadFilterChain(bean);
-        loadFilter(bean);
-        return bean;
+
+    //权限管理，配置主要是Realm的管理认证
+    @Bean
+    public SecurityManager securityManager(MyCasRealm myCasRealm) {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        //配置多个realm
+        ArrayList<Realm> realms = Lists.newArrayList();
+        realms.add(myCasRealm);
+        realms.add(getJwtRealm());
+        securityManager.setSubjectFactory(subjectFactory());
+        securityManager.setSessionManager(sessionManager());
+        securityManager.setRealms(realms);
+        ((DefaultSessionStorageEvaluator) ((DefaultSubjectDAO) securityManager.getSubjectDAO()).getSessionStorageEvaluator()).setSessionStorageEnabled(false);
+        SecurityUtils.setSecurityManager(securityManager);
+        return securityManager;
     }
 
-    private void loadFilter(ShiroFilterFactoryBean bean) {
-        Map<String, Filter> filters = new HashMap<>();
+    //Filter工厂，设置对应的过滤条件和跳转条件
+    @Bean("shiroFilter")
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
         filters.put("cas", getCasFilter());
-        filters.put("jwt", jwtAuthenticationFilter());
-        bean.setFilters(filters);
+        filters.put("jwt", getJwtFiter());
+//        filters.put("jwt", jwtAuthenticationFilter());
+
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        Map<String, String> map = new LinkedHashMap<>();
+//        map.put("/studentInfo", "anon");
+        map.put("/doc.html","anon");
+        map.put("/api-docs-ext","anon");
+        map.put("/swagger-resources","anon");
+        map.put("/api-docs","anon");
+        map.put("/swagger-ui.html","anon");
+        map.put("/swagger-resources/configuration/ui","anon");
+        map.put("/swagger-resources/configuration/security","anon");
+        //cas验证
+        map.put("/cas", "cas");
+        map.put("/**", "jwt");
+
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+        return shiroFilterFactoryBean;
     }
 
-    private void loadFilterChain(ShiroFilterFactoryBean bean) {
-        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        // authc：该过滤器下的页面必须登录后才能访问，它是Shiro内置的一个拦截器org.apache.shiro.web.filter.authc.FormAuthenticationFilter
-        // anon: 可以理解为不拦截
-        // user: 登录了就不拦截
-        // roles["admin"] 用户拥有admin角色
-        // perms["permission1"] 用户拥有permission1权限
-        // filter顺序按照定义顺序匹配，匹配到就验证，验证完毕结束。
-        // url匹配通配符支持：? * **,分别表示匹配1个，匹配0-n个（不含子路径），匹配下级所有路径
-        filterChainDefinitionMap.put("/act", "anon");
-        filterChainDefinitionMap.put("/external/setProjectsOAStatus", "anon");
-        filterChainDefinitionMap.put("/swagger-ui.html","anon");
-        filterChainDefinitionMap.put("/kafka/**","anon");
-        filterChainDefinitionMap.put("/swagger-resources/**","anon");
-        filterChainDefinitionMap.put("/cas", "cas"); //cas验证 需要 cas登陆
-        filterChainDefinitionMap.put("/api/**","jwt");
-        bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-    }
-
-
-    // 注册过滤器 到 ServletContainer
+    //加入注解的使用，不加入这个注解不生效
     @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
-        filterRegistration.setFilter(new DelegatingFilterProxy("shiroFilter"));
-        //  该值缺省为false,表示生命周期由SpringApplicationContext管理,设置为true则表示由ServletContainer管理
-        filterRegistration.addInitParameter("targetFilterLifecycle", "true");
-        filterRegistration.setEnabled(true);
-        filterRegistration.addUrlPatterns("/*");
-        return filterRegistration;
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
+        return authorizationAttributeSourceAdvisor;
     }
 
-    // Spring Mvc 支持shiro 注解 begin //
-    @Bean(name = "lifecycleBeanPostProcessor")
-    public LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
-        return new LifecycleBeanPostProcessor();
-    }
-
-    @Bean
-    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
-        AuthorizationAttributeSourceAdvisor aasa = new AuthorizationAttributeSourceAdvisor();
-        aasa.setSecurityManager(securityManager);
-        return aasa;
-    }
 }

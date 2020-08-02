@@ -5,8 +5,8 @@ spring:
     name: cloud-classroom
   profiles:
     active: dev
-knife4j:
-  basic:
-    enable: true #输入下面的用户名密码查看接口文档
-    username: nkdykt
-    password: nkdykt
+#knife4j:
+#  basic:
+#    enable: true #输入下面的用户名密码查看接口文档
+#    username: nkdykt
+#    password: nkdykt
