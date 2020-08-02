@@ -82,7 +82,7 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
      */
     @Override
     public IPage<ClassType> queryPage(CommQueryListRequest query) {
-        Page<ClassType> page = new Page<>();
+        Page<ClassType> page = new Page<>(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ClassType> qw = Wrappers.lambdaQuery();
         qw.eq(ClassType::getDelFlag, CommonConstant.DEL_FLAG);
         if (StringUtils.isNotEmpty(query.getQueryStr())) {
@@ -132,7 +132,7 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
         LambdaQueryWrapper<ClassType> qw = Wrappers.lambdaQuery();
         qw.eq(ClassType::getTypeName, convent.getTypeName()).eq(ClassType::getDelFlag, CommonConstant.DEL_FLAG);
         int count = count(qw);
-        if (count > 1) {
+        if (count >= 1) {
             throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());

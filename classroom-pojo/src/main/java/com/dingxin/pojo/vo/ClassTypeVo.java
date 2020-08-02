@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -44,11 +45,16 @@ public class ClassTypeVo {
      */
     @ApiModelProperty(value = "创建人名称")
     private String createPersonName;
+    /**
+     * 创建人名称
+     */
+    @ApiModelProperty(value = "创建时间")
+    private LocalDateTime createTime;
 
     public static ClassTypeVo convent(ClassType type) {
         if (Objects.isNull(type))
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
-        return ClassTypeVo.builder().id(type.getId()).typeName(type.getTypeName()).dataName(type.getDataName()).createPersonName(type.getCreatePersonName()).build();
+        return ClassTypeVo.builder().id(type.getId()).typeName(type.getTypeName()).dataName(type.getDataName()).createPersonName(type.getCreatePersonName()).createTime(type.getCreateTime()).build();
     }
 
     public static IPage<ClassTypeVo> convertToVoWithPage(IPage<ClassType> type) {

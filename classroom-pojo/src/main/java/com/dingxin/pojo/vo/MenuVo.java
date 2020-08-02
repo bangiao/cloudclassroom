@@ -40,7 +40,7 @@ public class MenuVo  {
      * 菜单名称
      */
     @ApiModelProperty(value = "菜单名称")
-    private String name;
+    private String label;
     /**
      * 菜单URL
      */
@@ -69,7 +69,7 @@ public class MenuVo  {
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         return MenuVo.builder().check(menu.getCheck()).orderNum(menu.getOrderNum())
                 .icon(menu.getIcon()).type(menu.getType()).url(menu.getUrl())
-                .name(menu.getName()).parentId(menu.getParentId()).id(menu.getId()).build();
+                .label(menu.getName()).parentId(menu.getParentId()).id(menu.getId()).build();
     }
     public static IPage<MenuVo> convertToVoWithPage(IPage<Menu> menu) {
         return menu.convert(MenuVo::convent);

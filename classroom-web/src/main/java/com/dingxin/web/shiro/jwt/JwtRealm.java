@@ -1,7 +1,7 @@
 package com.dingxin.web.shiro.jwt;
 
 import com.dingxin.common.utils.TokenUtil;
-import com.dingxin.pojo.privilege.CasEmploys;
+import com.dingxin.pojo.po.CasEmploys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

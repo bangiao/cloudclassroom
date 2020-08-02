@@ -1,4 +1,4 @@
-package com.dingxin.pojo.po.privilege;
+package com.dingxin.pojo.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;

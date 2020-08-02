@@ -13,12 +13,17 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.RoleMapper;
 import com.dingxin.pojo.po.Role;
+import com.dingxin.pojo.po.RoleMenu;
+import com.dingxin.pojo.po.UserRole;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.web.service.IRoleMenuService;
 import com.dingxin.web.service.IRoleService;
+import com.dingxin.web.service.IUserRoleService;
 import com.dingxin.web.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +37,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private IRoleMenuService roleMenuService;
+    @Autowired
+    private IUserRoleService userRoleService;
 
 
     @Override
@@ -80,7 +89,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public IPage<Role> queryPage(CommQueryListRequest query) {
         LambdaQueryWrapper<Role> qw = Wrappers.lambdaQuery();
         if (StringUtils.isNotEmpty(query.getQueryStr())) {
-            qw.select(Role::getId, Role::getRoleName, Role::getRemark, Role::getCreateTime, Role::getCreateUserName).eq(Role::getCreateUserName, query.getQueryStr())
+            qw.select(Role::getId, Role::getRoleName, Role::getRemark, Role::getCreateTime, Role::getCreateUserName).eq(Role::getRemark, query.getQueryStr()).or()
                     .eq(Role::getRoleName, query.getQueryStr());
         }
         qw.eq(Role::getDelFlag, CommonConstant.DEL_FLAG);
@@ -114,28 +123,38 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         qw.eq(Role::getId, convent.getId()).eq(Role::getDelFlag, CommonConstant.DEL_FLAG)
                 .eq(Role::getRoleName, convent.getRoleName());
         int count = count(qw);
-        if (count > 1) {
+        if (count >=1) {
             throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());
         // TODO: 2020/7/29   改值 取登录人信息
         convent.setCreateUserId(1);
-        convent.setCreateUserName(ShiroUtils.getUserName());
+//        convent.setCreateUserName(ShiroUtils.getUserName());
+        convent.setCreateUserName("杨大大");
         return saveOrUpdate(convent);
 
     }
 
     /**
      * 删除角色信息
-     *
+     *  真删除
      * @param id
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public boolean delete(IdRequest id) {
         LambdaUpdateWrapper<Role> qw = Wrappers.lambdaUpdate();
         qw.set(Role::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getId()), Role::getId, id.getId());
-        return update(qw);
+//        删除角色对应的菜单信息
+        LambdaQueryWrapper<RoleMenu> qe = Wrappers.lambdaQuery();
+        qe.eq(RoleMenu::getRoleId, id.getId());
+        roleMenuService.remove(qe);
+//        删除角色对应的用户信息
+        LambdaQueryWrapper<UserRole> casUser_id = Wrappers.lambdaQuery();
+        casUser_id.eq(UserRole::getRoleId, id.getId());
+        userRoleService.remove(casUser_id);
+        return remove(qw);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.dingxin.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.privilege.CasEmploys;
+import com.dingxin.pojo.po.CasEmploys;
 
 import java.util.List;
 

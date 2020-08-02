@@ -1,7 +1,7 @@
 package com.dingxin.web.shiro.cas;
 
 import com.dingxin.common.utils.TokenUtil;
-import com.dingxin.pojo.privilege.CasEmploys;
+import com.dingxin.pojo.po.CasEmploys;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

@@ -1,6 +1,6 @@
 package com.dingxin.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.privilege.CasDepts;
+import com.dingxin.pojo.po.CasDepts;
 
 import java.util.List;
 

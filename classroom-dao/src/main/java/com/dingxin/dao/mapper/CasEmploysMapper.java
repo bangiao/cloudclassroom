@@ -1,7 +1,7 @@
 package com.dingxin.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dingxin.pojo.privilege.CasEmploys;
+import com.dingxin.pojo.po.CasEmploys;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

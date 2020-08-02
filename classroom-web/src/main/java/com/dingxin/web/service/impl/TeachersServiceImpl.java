@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.dao.mapper.TeachersMapper;
-import com.dingxin.pojo.privilege.CasDepts;
+import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.ICasDeptsService;

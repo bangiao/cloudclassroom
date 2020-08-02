@@ -38,7 +38,7 @@ public class RoleMenuController {
      */
     @PostMapping("/listAll")
     @ApiOperation(value = "菜单所有菜单且被选中的也标记")
-    public BaseResult<Page<RoleMenu>> list(@RequestBody IdRequest id) {
+    public BaseResult<List> list(@RequestBody IdRequest id) {
         List<Menu> menus = roleMenuService.allMenu(id);
         IPage<Menu> page = new Page<>();
         page.setRecords(menus);

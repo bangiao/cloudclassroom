@@ -2,7 +2,7 @@ package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.dao.mapper.CasDeptsMapper;
-import com.dingxin.pojo.privilege.CasDepts;
+import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.web.service.ICasDeptsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

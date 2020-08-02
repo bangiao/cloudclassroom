@@ -64,7 +64,7 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
         LambdaQueryWrapper<Menu> qm = Wrappers.lambdaQuery();
         qm.eq(Menu::getDelFlag, CommonConstant.DEL_FLAG);
         LambdaQueryWrapper<RoleMenu> qr = Wrappers.lambdaQuery();
-        qr.eq(RoleMenu::getId, id.getId());
+        qr.eq(RoleMenu::getRoleId, id.getId());
         List<Integer> collect = list(qr).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
         List<Menu> menus = menuService.list(qm);
         for (Menu menu : menus) {
