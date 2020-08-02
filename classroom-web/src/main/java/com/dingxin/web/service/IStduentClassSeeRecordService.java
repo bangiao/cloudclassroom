@@ -7,6 +7,8 @@ import com.dingxin.pojo.request.CommIdQueryListRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -62,4 +64,10 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
      * @return
      */
     IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query);
+
+    /**
+     * 导出
+     * @param ids
+     */
+    void exportExcel(List<Integer> ids ,HttpServletResponse response) throws IOException;
 }

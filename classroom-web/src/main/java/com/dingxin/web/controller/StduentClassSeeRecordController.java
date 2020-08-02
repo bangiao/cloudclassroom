@@ -12,6 +12,7 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.StduentClassSeeRecordInsertRequest;
 import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -46,6 +49,15 @@ public class StduentClassSeeRecordController {
     public BaseResult<Page<StduentClassSeeRecord>> list(@RequestBody CommIdQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.queryPage(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
+    }
+
+    /**
+     * 列表查询
+     */
+    @PostMapping("/exportExcel")
+    @ApiOperation(value = "导出学生记录")
+    public void exportExcel(@RequestBody(required = false)List<Integer> ids, HttpServletResponse response) throws IOException {
+        stduentClassSeeRecordService.exportExcel(ids,response);
     }
 
     /**

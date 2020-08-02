@@ -12,12 +12,14 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
+import com.dingxin.common.utils.ExcelUtils;
 import com.dingxin.common.utils.LogUtils;
 import com.dingxin.dao.mapper.StduentClassSeeRecordMapper;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.request.CommIdQueryListRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
 import com.dingxin.web.shiro.ShiroUtils;
 import net.sf.jsqlparser.statement.execute.Execute;
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -197,6 +201,31 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
             LogUtils.error(e.getMessage());
             throw new BusinessException(ExceptionEnum.SYSTEM_ERROR);
         }
+
+
+    }
+
+    /**
+     * 导出
+     * @param ids
+     */
+    @Override
+    public void exportExcel(List<Integer> ids, HttpServletResponse response) throws IOException {
+        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+//        全部导出
+        List list =null;
+        if (ids.size()==0){
+            list = list();
+        }else {
+//            选中导出
+            qw.in(StduentClassSeeRecord::getId, ids).eq(StduentClassSeeRecord::getDelFlag,CommonConstant.DEL_FLAG);
+            list = list(qw);
+        }
+
+        if (Objects.isNull(list)&&list.size()==0){
+            throw new BusinessException(ExceptionEnum.DATA_ZERO);
+        }
+        ExcelUtils.exportXlsx(response,"学生记录", StduentClassSeeRecordVo.class, StduentClassSeeRecordVo.convertToVoList(list));
 
 
     }

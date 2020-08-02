@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author changxin.yuan
@@ -26,12 +27,20 @@ public class ExcelUtils {
      */
     public static <T extends BaseRowModel> void exportXlsx(
             HttpServletResponse res, @Nonnull String filenameWithoutExtension, Class<T> clazz, List<T> data) throws IOException {
-        setDownloadHeader(res, filenameWithoutExtension + ".xlsx");
-        ExcelWriter writer = new ExcelWriter(res.getOutputStream(), ExcelTypeEnum.XLSX);
-        Sheet sheet = new Sheet(1, 0, clazz);
-        sheet.setSheetName("sheet1");
-        writer.write(data, sheet);
-        writer.finish();
+        try {
+            setDownloadHeader(res, filenameWithoutExtension + ".xlsx");
+            ExcelWriter writer = new ExcelWriter(res.getOutputStream(), ExcelTypeEnum.XLSX);
+            Sheet sheet = new Sheet(1, 0, clazz);
+            sheet.setSheetName("sheet1");
+            writer.write(data, sheet);
+            writer.finish();
+            res.getOutputStream().flush();
+        }catch (IOException  e){
+            LogUtils.error(e.getMessage());
+        }finally {
+        }
+
+
     }
 
     /**

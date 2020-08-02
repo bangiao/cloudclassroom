@@ -27,6 +27,7 @@ public enum ExceptionEnum {
 
     DUPLICATE_DATA("4001","重复的数据"),
     COVENT_NULLPOINT("4002","转换源对象为空"),
+    DATA_ZERO("4003","查询对象不存在"),
 
         //5.系统级
     SYSTEM_ERROR("5001","系统内部异常"),
