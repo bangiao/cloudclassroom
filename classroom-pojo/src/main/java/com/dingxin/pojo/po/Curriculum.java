@@ -1,5 +1,6 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  *  实体类
@@ -98,6 +100,11 @@ public class Curriculum extends Model<Curriculum> {
      */
     private Integer auditFlag;
 
+    /**
+     * 上课时间
+     */
+    @TableField(exist = false)
+    private LocalDateTime classTime;
 
 
     @Override
