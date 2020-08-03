@@ -24,7 +24,11 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.dingxin</groupId>
+            <artifactId>classroom-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,16 +1,19 @@
 package com.dingxin.web.controller;
-import com.dingxin.common.annotation.UserTag;
-import com.dingxin.pojo.po.Video;
-import com.dingxin.web.service.IVideoService;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.dingxin.pojo.basic.BaseQuery;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import io.swagger.annotations.*;
-import org.apache.commons.collections.CollectionUtils;
+import com.dingxin.common.annotation.UserTag;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.web.service.IVideoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
@@ -31,53 +34,27 @@ public class VideoController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表",response = Video.class)
-    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
-        //查询列表数据
-        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = videoService.page(page,Wrappers.query(query.getData()));
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
-        }
-        return BaseResult.success(pageList);
-    }
-
-    /**
-     * 单个查询
-     */
-    @PostMapping("/search")
-    @ApiOperation(value = "获取详情信息")
-    public BaseResult<Video> search(@RequestBody  Video video){
-        Video result = videoService.getOne(Wrappers.query(video));
-        return BaseResult.success(result);
+    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<VideoListRequest> query){
+        return BaseResult.success(videoService.listQuery(query));
     }
 
     /**
      * 保存
      */
-    @PostMapping
-    @ApiOperation(value = "新增信息")
+    @PostMapping("/save")
+    @ApiOperation(value = "保存视频")
     public BaseResult save(@RequestBody  Video video){
-        boolean retFlag= videoService.save(video);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody Video video){
-        boolean retFlag= videoService.updateById(video);
-        return BaseResult.success(retFlag);
+        videoService.saveOrUpdate(video);
+        return BaseResult.success();
     }
 
     /**
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除信息")
+    @ApiOperation(value = "删除视频")
     public BaseResult delete(@RequestBody Video video){
-        boolean retFlag= videoService.remove(Wrappers.query(video));
-        return BaseResult.success(retFlag);
+        videoService.removeById(video.getId());
+        return BaseResult.success();
     }
 }

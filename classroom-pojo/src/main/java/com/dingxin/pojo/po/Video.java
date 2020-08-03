@@ -1,6 +1,5 @@
 package com.dingxin.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
@@ -52,17 +51,21 @@ public class Video extends Model<Video> {
      * 直播视频id
      */
     @ApiModelProperty("直播视频")
-    private Integer liveVideoId;
+    private String liveVideoId;
     /**
      * 讲师
      */
     @ApiModelProperty("讲师")
     private String teacherId;
+
+
+    private String teacherName;
+
     /**
      * 是否有效(禁用之后为无效)
      */
     @ApiModelProperty("是否有效(禁用之后为无效)")
-    private Boolean validFlag;
+    private Integer validFlag;
     /**
      * 审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频
      */
@@ -82,9 +85,6 @@ public class Video extends Model<Video> {
      * 审批意见
      */
     private String auditComments;
-
-    @TableField(exist = false)
-    private String queryStr;
 
 
     @Override

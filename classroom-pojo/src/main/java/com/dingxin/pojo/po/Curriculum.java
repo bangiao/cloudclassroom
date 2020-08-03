@@ -66,7 +66,7 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 是否禁用(是否有效)
      */
-    private Boolean disableFlag;
+    private Integer disableFlag;
     /**
      * 所属院系
      */

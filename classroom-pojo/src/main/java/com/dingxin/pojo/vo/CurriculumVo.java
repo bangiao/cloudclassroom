@@ -58,7 +58,7 @@ public class CurriculumVo {
 
 //    @ApiModelProperty(value = "审核状态(该课程下所有视频审核通过才会显示为通过)",example = "已审核上线")
     @ApiModelProperty(value = "是否有效(课程被禁用则课程下的所有视频被禁用)",example = "有效")
-    private Boolean validFlag;
+    private Integer validFlag;
     /**
      * 审核状态(-1 未通过，0未审核，1审核通过）
      */

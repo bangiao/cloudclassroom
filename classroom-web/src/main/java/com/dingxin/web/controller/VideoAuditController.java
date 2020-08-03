@@ -8,8 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.AuditStatusEnum;
-import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.po.VideoAudit;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Video;
@@ -59,15 +57,6 @@ public class VideoAuditController {
         return BaseResult.success(pageList);
     }
 
-    /**
-     * 单个查询
-     */
-    @PostMapping("/search")
-    @ApiOperation(value = "获取详情信息")
-    public BaseResult<Video> search(@RequestBody  Video videoAudit){
-        Video result = videoAuditService.getOne(Wrappers.query(videoAudit));
-        return BaseResult.success(result);
-    }
 
     /**
      * 保存
@@ -75,29 +64,11 @@ public class VideoAuditController {
     @PostMapping
     @ApiOperation(value = "新增信息")
     public BaseResult save(@RequestBody  Video videoAudit){
-        boolean retFlag= videoAuditService.save(videoAudit);
+        boolean retFlag= videoAuditService.saveOrUpdate(videoAudit);
         return BaseResult.success(retFlag);
     }
 
-    /**
-     * 修改
-     */
-    @PostMapping("/update")
-    @ApiOperation(value = "修改信息")
-    public BaseResult update(@RequestBody Video videoAudit){
-        boolean retFlag= videoAuditService.updateById(videoAudit);
-        return BaseResult.success(retFlag);
-    }
 
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation(value = "删除信息")
-    public BaseResult delete(@RequestBody Video videoAudit){
-        boolean retFlag= videoAuditService.remove(Wrappers.query(videoAudit));
-        return BaseResult.success(retFlag);
-    }
     /**
      * 视频审核列表查询
      */

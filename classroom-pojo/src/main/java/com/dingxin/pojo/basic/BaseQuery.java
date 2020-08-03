@@ -1,5 +1,6 @@
 package com.dingxin.pojo.basic;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,10 @@ public class BaseQuery<T> implements Serializable {
 
     @ApiModelProperty("查询对象")
     private T data;
+
+
+    public <R> Page<R> convertToPage(){
+        return new Page<R>(currentPage,pageSize);
+    }
 
 }
