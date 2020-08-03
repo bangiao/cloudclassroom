@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
 
@@ -34,4 +35,9 @@ public interface ICurriculumService extends IService<Curriculum> {
      * 删除课程及相关视频
      */
     void deleteCurriculumAndRelated(List<Integer> curriculumIds);
+
+    /**
+     * 查询详细课程信息，不查询已经删除的信息
+     */
+    Curriculum loadCurriculumDetails(IdRequest id);
 }

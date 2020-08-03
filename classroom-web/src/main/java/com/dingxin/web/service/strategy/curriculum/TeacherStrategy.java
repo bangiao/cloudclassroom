@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
@@ -62,6 +63,9 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                         StringUtils.isNotBlank(requestData.getTopicName()),
                         Curriculum::getTopicName,
                         requestData.getTopicName())
+                .eq(    //选取未删除的课程
+                        Curriculum::getDeleteFlag,
+                        CommonConstant.DISABLE_FALSE)
                 .and(
                         //todo 获取登录者姓名
                         StringUtils.isNotBlank(requestData.getTeacherName()),

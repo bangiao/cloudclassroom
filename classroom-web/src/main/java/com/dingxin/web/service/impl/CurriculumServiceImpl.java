@@ -9,6 +9,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,5 +143,25 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
 
         deleteCurriculum(curriculumIds);
         videoService.deleteCurriculumRelatedVideo(curriculumIds);
+    }
+
+    @Override
+    public Curriculum loadCurriculumDetails(IdRequest id) {
+        LambdaQueryWrapper<Curriculum> deleteQuery = Wrappers.<Curriculum>lambdaQuery()
+                .ne(
+                        Curriculum::getDeleteFlag,
+                        CommonConstant.DEL_FLAG_TRUE)
+                .eq(
+                        Curriculum::getId,id)
+                .select(
+                        Curriculum::getId,
+                        Curriculum::getTeacherName,
+                        Curriculum::getCurriculumName,
+                        Curriculum::getCurriculumType,
+                        Curriculum::getCurriculumDesc,
+                        Curriculum::getVideoDuration,
+                        Curriculum::getWatchAmount);
+
+        return getOne(deleteQuery);
     }
 }

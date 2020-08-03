@@ -11,6 +11,7 @@ import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IUserRoleService;
@@ -21,6 +22,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,9 +87,10 @@ public class CurriculumController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程详情信息")
-    public BaseResult<CurriculumVo> search(@RequestBody  Curriculum curriculum){
-        Curriculum result = curriculumService.getOne(Wrappers.query(curriculum));
-        CurriculumVo curriculumVo = CurriculumVo.convertToVo(result);
+    public BaseResult<CurriculumVo> search(@Validated @RequestBody IdRequest id){
+        Curriculum curriculumPo = curriculumService.loadCurriculumDetails(id);
+        CurriculumVo curriculumVo = CurriculumVo.convertToVo(curriculumPo);
+
         return BaseResult.success(curriculumVo);
     }
 
