@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 
  */
@@ -53,8 +55,8 @@ public class VideoController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除视频")
-    public BaseResult delete(@RequestBody Video video){
-        videoService.removeById(video.getId());
+    public BaseResult delete(@RequestBody List<Integer> videoIds){
+        videoService.deleteVideo(videoIds);
         return BaseResult.success();
     }
 }

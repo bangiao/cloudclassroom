@@ -15,5 +15,13 @@ public interface IVideoService extends IService<Video> {
     List<Video> like(Video data);
 
     IPage<Video> listQuery(BaseQuery<VideoListRequest> query);
+    /**
+     * 删除课程(假删除)
+     */
+    void deleteVideo(List<Integer> videoIds);
+    /**
+     * 删除课程(假删除删除课程的同时也会删除课程下的所有视频)
+     */
+    void deleteCurriculumRelatedVideo(List<Integer> curriculumIds);
 
 }

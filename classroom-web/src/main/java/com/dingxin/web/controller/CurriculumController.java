@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.OperationWatcher;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.pojo.basic.BaseQuery;
@@ -84,9 +85,10 @@ public class CurriculumController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程详情信息")
-    public BaseResult<Curriculum> search(@RequestBody  Curriculum curriculum){
+    public BaseResult<CurriculumVo> search(@RequestBody  Curriculum curriculum){
         Curriculum result = curriculumService.getOne(Wrappers.query(curriculum));
-        return BaseResult.success(result);
+        CurriculumVo curriculumVo = CurriculumVo.convertToVo(result);
+        return BaseResult.success(curriculumVo);
     }
 
     /**
@@ -94,6 +96,7 @@ public class CurriculumController {
      */
     @PostMapping
     @ApiOperation(value = "新增课程信息")
+    @OperationWatcher(operateDesc = "新增课程信息")
     public BaseResult save(@RequestBody  Curriculum curriculum){
         boolean retFlag= curriculumService.save(curriculum);
         return BaseResult.success(retFlag);
@@ -113,10 +116,11 @@ public class CurriculumController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除课程信息")
-    public BaseResult delete(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.remove(Wrappers.query(curriculum));
-        return BaseResult.success(retFlag);
+    @ApiOperation(value = "删除课程信息，与课程相关的信息都会被删除")
+    @OperationWatcher(operateDesc = "删除课程信息")
+    public BaseResult delete(@RequestBody List<Integer> curriculumIds){
+        curriculumService.deleteCurriculumAndRelated(curriculumIds);
+        return BaseResult.success();
     }
 
     @PostMapping("/disable")

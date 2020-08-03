@@ -1,11 +1,15 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Video;
@@ -15,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -94,4 +97,37 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         return iPage;
     }
 
+    @Override
+    public void deleteVideo(List<Integer> videoIds) {
+        if(videoIds == null || videoIds.isEmpty()){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Video> disableQuery = Wrappers.<Video>lambdaUpdate().
+                set(
+                        Video::getValidFlag,
+                        CommonConstant.DEL_FLAG_TRUE)
+                .in(
+                        Video::getId,
+                        videoIds);
+
+        update(disableQuery);
+    }
+
+    @Override
+    public void deleteCurriculumRelatedVideo(List<Integer> curriculumIds) {
+        if(curriculumIds == null || curriculumIds.isEmpty()){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Video> disableQuery = Wrappers.<Video>lambdaUpdate().
+                set(
+                        Video::getValidFlag,
+                        CommonConstant.DEL_FLAG_TRUE)
+                .in(
+                        Video::getCurriculumId,
+                        curriculumIds);
+
+        update(disableQuery);
+    }
 }

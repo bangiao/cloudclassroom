@@ -25,4 +25,13 @@ public interface ICurriculumService extends IService<Curriculum> {
      */
     void disableCurriculum(List<Integer> curriculumIds);
 
+    /**
+     * 删除课程
+     */
+    void deleteCurriculum(List<Integer> curriculumIds);
+
+    /**
+     * 删除课程及相关视频
+     */
+    void deleteCurriculumAndRelated(List<Integer> curriculumIds);
 }
