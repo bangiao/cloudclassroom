@@ -85,6 +85,10 @@ public class Video extends Model<Video> {
      * 审批意见
      */
     private String auditComments;
+    /**
+     * 删除标志位
+     */
+    private Integer deleteFlag;
 
 
     @Override

@@ -55,7 +55,7 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
                 .and(q->q
                         .eq(    //选取未删除的课程
                         Curriculum::getDeleteFlag,
-                        CommonConstant.DISABLE_FALSE))
+                        CommonConstant.DEL_FLAG))
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,

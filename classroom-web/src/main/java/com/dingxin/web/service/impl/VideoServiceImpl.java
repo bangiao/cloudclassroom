@@ -90,7 +90,17 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         Video::getVideoName,queryStr)
                     .or()
                     .like(StringUtils.isNotEmpty(queryStr),
-                            Video::getTeacherName,queryStr);
+                            Video::getTeacherName,queryStr)
+                    .eq(
+                            Video::getDeleteFlag,
+                            CommonConstant.DEL_FLAG)
+                    .select(
+                            Video::getId,
+                            Video::getLiveVideo,
+                            Video::getValidFlag,
+                            Video::getVideoDuration,
+                            Video::getVideoName,
+                            Video::getVideoAttachment);
         }
         Page<Video> page = query.convertToPage();
         IPage<Video> iPage = videoMapper.selectPage(page,queryWrapper);

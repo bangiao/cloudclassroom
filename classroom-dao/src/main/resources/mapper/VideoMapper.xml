@@ -16,6 +16,7 @@
                     <result column="chapter_id" property="chapterId" />
                     <result column="curriculum_id" property="curriculumId" />
                     <result column="audit_comments" property="auditComments" />
+                    <result column="delete_flag" property="deleteFlag" />
         </resultMap>
 
 </mapper>

@@ -1,12 +1,13 @@
 package com.dingxin.web.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
-import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IVideoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,8 +38,12 @@ public class VideoController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表",response = Video.class)
-    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<VideoListRequest> query){
-        return BaseResult.success(videoService.listQuery(query));
+    public BaseResult<Page<VideoVo>>list(@RequestBody BaseQuery<VideoListRequest> query){
+
+        IPage<Video> videoPoPage = videoService.listQuery(query);
+        IPage<VideoVo> videoVoPage = VideoVo.convertToVoWithPage(videoPoPage);
+
+        return BaseResult.success(videoVoPage);
     }
 
     /**

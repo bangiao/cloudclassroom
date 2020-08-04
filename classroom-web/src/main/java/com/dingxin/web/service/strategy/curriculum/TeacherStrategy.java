@@ -67,7 +67,7 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                                         teacherName))
                                 .eq(    //选取未删除的课程
                                         Curriculum::getDeleteFlag,
-                                        CommonConstant.DISABLE_FALSE)
+                                        CommonConstant.DEL_FLAG)
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,
