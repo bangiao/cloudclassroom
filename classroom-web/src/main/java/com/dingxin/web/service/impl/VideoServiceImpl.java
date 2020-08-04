@@ -10,11 +10,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +34,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Resource
     private VideoMapper videoMapper;
+
+    @Autowired
+    private ICurriculumService curriculumService;
 
 
     @Override
@@ -109,7 +117,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void deleteVideo(List<Integer> videoIds) {
-        if(videoIds == null || videoIds.isEmpty()){
+        if(CollectionUtils.isEmpty(videoIds)){
 
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
@@ -126,7 +134,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void deleteCurriculumRelatedVideo(List<Integer> curriculumIds) {
-        if(curriculumIds == null || curriculumIds.isEmpty()){
+        if(CollectionUtils.isEmpty(curriculumIds)){
 
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
@@ -139,5 +147,54 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         curriculumIds);
 
         update(disableQuery);
+    }
+
+    @Override
+    public void saveVideoRelated(VideoInsertRequest video) {
+        Video videoWillSave = Video.builder()
+                .auditFlag(CommonConstant.STATUS_NOAUDIT)
+                .deleteFlag(CommonConstant.DEL_FLAG)
+                .curriculumId(video.getCurriculumId())
+                .videoDuration(video.getVideoDuration())
+                .videoAttachment(video.getVideoAttachment())
+                .validFlag(video.getValidFlag())
+                .videoName(video.getVideoName())
+                .liveVideo(video.getLiveVideo())
+                .liveVideoId(video.getLiveVideoId())
+                .build();
+        Wrappers.<Video>lambdaQuery();
+        //save to video
+        save(videoWillSave);
+        //同时更新课表表的总时长
+        updateCurriculumVideoDuration(video.getCurriculumId());
+
+    }
+    //todo 需要改成异步的方法
+    private void updateCurriculumVideoDuration(Integer curriculumId){
+        if (curriculumId == null){
+            return;
+        }
+        LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
+                .eq(
+                        Video::getCurriculumId, curriculumId)
+                .select(
+                        Video::getVideoDuration);
+
+        List<Video> videos = list(videoDurationQuery);
+        Long totalVideoDuration = 0L;
+        //todo 线程安全问题
+        for (Video video : videos) {
+            Long videoDuration = video.getVideoDuration();
+            totalVideoDuration +=videoDuration;
+        }
+        LambdaUpdateWrapper<Curriculum> updateCurriculumVideoDuration = Wrappers.<Curriculum>lambdaUpdate()
+                .set(
+                        Curriculum::getVideoDuration,
+                        totalVideoDuration)
+                .in(
+                        Curriculum::getId,
+                        curriculumId);
+
+        curriculumService.update(updateCurriculumVideoDuration);
     }
 }
