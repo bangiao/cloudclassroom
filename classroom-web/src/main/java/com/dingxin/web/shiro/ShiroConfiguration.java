@@ -153,7 +153,7 @@ public class ShiroConfiguration {
          *         /webjars/** = anon
          */
 
-        map.put("/swagger-resources","anon");
+        map.put("/swagger-resources/**","anon");
         map.put("/v2/api-docs","anon");
         map.put("/v2/api-docs-ext","anon");
         map.put("/doc.html","anon");
