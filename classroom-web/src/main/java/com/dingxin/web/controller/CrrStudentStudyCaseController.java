@@ -15,10 +15,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.web.service.IStudentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 学生学习情况
@@ -41,7 +45,7 @@ public class CrrStudentStudyCaseController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<CrrStudentStudyCase>>list(@RequestBody StudentStudyCaseListRequest query){
+    public BaseResult<Page<CrrStudentStudyCase>> list(@RequestBody StudentStudyCaseListRequest query){
         //查询列表数据
         Page<CrrStudentStudyCase> page = new Page(query.getCurrentPage(),query.getPageSize());
         LambdaQueryWrapper<CrrStudentStudyCase> qw = new LambdaQueryWrapper<>();
@@ -97,7 +101,7 @@ public class CrrStudentStudyCaseController {
      */
     @PostMapping("/studentList")
     @ApiOperation(value = "学生信息列表查询")
-    public BaseResult<Page<Student>>studentList(@RequestBody StudentStudyCaseListRequest query){
+    public BaseResult<Page<Student>> studentList(@RequestBody StudentStudyCaseListRequest query){
         //查询列表数据
         Page<Student> page = new Page(query.getCurrentPage(),query.getPageSize());
         LambdaQueryWrapper<Student> qw = new LambdaQueryWrapper<>();
@@ -114,7 +118,7 @@ public class CrrStudentStudyCaseController {
      */
     @PostMapping("/courseList")
     @ApiOperation(value = "学习课程列表")
-    public BaseResult<Page<Student>>courseList(@RequestBody StudentStudyCaseListRequest query){
+    public BaseResult<Page<Student>> courseList(@RequestBody StudentStudyCaseListRequest query){
         IPage pageList = crrStudentStudyCaseService.queryCoursePageList(query);
         return BaseResult.success(pageList);
     }

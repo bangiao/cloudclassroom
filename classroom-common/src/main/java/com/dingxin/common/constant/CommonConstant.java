@@ -35,4 +35,5 @@ public interface CommonConstant {
 	 * localDateTime转long 参数为空时 默认值
 	 */
 	Long LONG_DEFAULT = -1L;
+
 }

@@ -6,6 +6,7 @@ import com.dingxin.pojo.po.Student;
 import com.dingxin.pojo.request.StudentStudyCaseListRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *  学生学习情况服务接口
@@ -14,6 +15,10 @@ public interface ICrrStudentStudyCaseService extends IService<CrrStudentStudyCas
 
     List<CrrStudentStudyCase> like(CrrStudentStudyCase data);
 
+    /**
+     * 学习课程列表
+     */
     IPage queryCoursePageList(StudentStudyCaseListRequest student);
+
 
 }
