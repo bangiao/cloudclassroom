@@ -145,13 +145,19 @@ public class ShiroConfiguration {
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, String> map = new LinkedHashMap<>();
 //        map.put("/studentInfo", "anon");
-        map.put("/doc.html","anon");
-        map.put("/api-docs-ext","anon");
+        /**
+         * /swagger-resources = anon
+         *         /v2/api-docs = anon
+         *         /v2/api-docs-ext = anon
+         *         /doc.html = anon
+         *         /webjars/** = anon
+         */
+
         map.put("/swagger-resources","anon");
-        map.put("/api-docs","anon");
-        map.put("/swagger-ui.html","anon");
-        map.put("/swagger-resources/configuration/ui","anon");
-        map.put("/swagger-resources/configuration/security","anon");
+        map.put("/v2/api-docs","anon");
+        map.put("/v2/api-docs-ext","anon");
+        map.put("/doc.html","anon");
+        map.put("/webjars/**","anon");
         //cas验证
         map.put("/cas", "cas");
         map.put("/**", "jwt");
