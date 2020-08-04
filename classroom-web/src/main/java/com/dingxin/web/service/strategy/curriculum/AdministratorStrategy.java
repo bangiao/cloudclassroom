@@ -31,22 +31,6 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
 
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
         String queryStr = query.getQueryStr();
-        if (StringUtils.isBlank(queryStr) && Objects.isNull(query.getAuditFlag())){
-
-            LambdaQueryWrapper<Curriculum> administratorBlankQuery = Wrappers.<Curriculum>lambdaQuery()
-                    .eq(    //选取未删除的课程
-                            Curriculum::getDeleteFlag,
-                            CommonConstant.DISABLE_FALSE)
-                    .select(
-                            Curriculum::getId,
-                            Curriculum::getTeacherName,
-                            Curriculum::getCurriculumName,
-                            Curriculum::getCurriculumType,
-                            Curriculum::getCurriculumDesc,
-                            Curriculum::getVideoDuration,
-                            Curriculum::getWatchAmount);
-            return curriculumMapper.selectPage(page, administratorBlankQuery);
-        }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .like(
                         StringUtils.isNotBlank(queryStr),

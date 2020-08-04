@@ -42,28 +42,6 @@ public class TeacherStrategy extends CurriculumServiceImpl {
 
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        if (StringUtils.isBlank(queryStr)){
-
-            LambdaQueryWrapper<Curriculum> teacherBlankQuery = Wrappers.<Curriculum>lambdaQuery()
-                    .eq(
-                            //获取当前登录讲师的课程
-                            StringUtils.isNotBlank(teacherName),
-                            Curriculum::getTeacherName,
-                            teacherName)
-                    .and(q->q
-                            .eq(    //选取未删除的课程
-                                    Curriculum::getDeleteFlag,
-                                    CommonConstant.DISABLE_FALSE))
-                    .select(
-                            Curriculum::getId,
-                            Curriculum::getTeacherName,
-                            Curriculum::getCurriculumName,
-                            Curriculum::getCurriculumType,
-                            Curriculum::getCurriculumDesc,
-                            Curriculum::getVideoDuration,
-                            Curriculum::getWatchAmount);
-            return curriculumMapper.selectPage(page, teacherBlankQuery);
-        }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .like(
                         StringUtils.isNotBlank(queryStr),
