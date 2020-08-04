@@ -8,7 +8,7 @@
                     <result column="CASID" property="casid" />
                     <result column="DISABLE" property="disable" />
                     <result column="DEPTS" property="depts" />
-                    <result column="Group" property="Group" />
+                    <result column="Groups" property="Groups" />
                     <result column="NAME" property="name" />
                     <result column="email" property="email" />
                     <result column="phonenum" property="phonenum" />

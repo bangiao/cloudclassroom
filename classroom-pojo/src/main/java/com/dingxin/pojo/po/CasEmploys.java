@@ -77,9 +77,9 @@ public class CasEmploys extends Model<CasEmploys> {
 	/**
 	 * 用户组
 	 */
-	@TableField("Group")
+	@TableField("Groups")
 	@ApiModelProperty(value = "用户组")
-	private String group;
+	private String groups;
 
 	@TableField(exist = false)
 	private String token;

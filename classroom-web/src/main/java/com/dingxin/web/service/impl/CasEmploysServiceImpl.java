@@ -40,9 +40,9 @@ public class CasEmploysServiceImpl extends ServiceImpl<CasEmploysMapper, CasEmpl
                     CasEmploys::getDepts,
                     data.getDepts())
                 .like(
-                    Objects.nonNull(data.getGroup()),
-                    CasEmploys::getGroup,
-                    data.getGroup())
+                    Objects.nonNull(data.getGroups()),
+                    CasEmploys::getGroups,
+                    data.getGroups())
                 .like(
                     Objects.nonNull(data.getName()),
                     CasEmploys::getName,

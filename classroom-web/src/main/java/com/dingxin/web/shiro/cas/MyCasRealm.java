@@ -1,5 +1,7 @@
 package com.dingxin.web.shiro.cas;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.utils.TokenUtil;
 import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.web.service.ICasEmploysService;
@@ -94,6 +96,10 @@ public class MyCasRealm extends CasRealm {
         }
         String wid = casToken.getUrl();
         String generateToken = tokenUtil.generateToken(wid);
+//        LambdaQueryWrapper<CasEmploys> queryWrapper = Wrappers.<CasEmploys>lambdaQuery().eq(CasEmploys::getSid, wid);
+//        CasEmploys employs = casEmploysService.getOne(queryWrapper);
+
+
         CasEmploys employs = casEmploysService.getById(wid);
         if (employs == null){
             return null;
