@@ -1,16 +1,14 @@
 package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.OperationWatcher;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.enums.RoleEnum;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
@@ -61,14 +59,13 @@ public class CurriculumController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取所有课程列表")
-    public BaseResult<Page<CurriculumVo>>list(@RequestBody BaseQuery<CurriculumRequest> query){
-
+    public BaseResult<Page<CurriculumVo>>list(@RequestBody CurriculumFuzzyQuery4List query){
         //todo
 //        String userId = ShiroUtils.getUserId();
 //        UserRole userRole = userRoleService.getById(userId);
 //        Integer roleId = userRole.getRoleId();
 //        RoleEnum role = RoleEnum.getByCode(roleId);
-        RoleEnum role = RoleEnum.TEACHER;
+        RoleEnum role = RoleEnum.ADMINISTRATOR;
         IPage<Curriculum> pageList;
         switch (role){
             case TEACHER :

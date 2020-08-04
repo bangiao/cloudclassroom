@@ -5,17 +5,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.CurriculumMapper;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.web.service.impl.CurriculumServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 /**
  * author: cuteG <br>
@@ -30,46 +29,67 @@ public class TeacherStrategy extends CurriculumServiceImpl {
     private CurriculumMapper curriculumMapper;
 
     @Override
-    public IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query) {
+    public IPage<Curriculum> getPage(CurriculumFuzzyQuery4List query) {
         //todo
 //        String userId = ShiroUtils.getUserId();
+//        String teacherName = ShiroUtils.getUserName();
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
-        CurriculumRequest requestData = query.getData();
+        String queryStr = query.getQueryStr();
         //todo 获取登录者姓名
         //获取当前登录的教师，根据教师的姓名查询教师对应的所有课程
-//        String teacherName = ShiroUtils.getUserName();
-        if (Objects.isNull(requestData)){
+        String teacherName = "LBW";
+        if (StringUtils.isBlank(teacherName)){
 
-            LambdaQueryWrapper<Curriculum> teacherBlankQuery = Wrappers.<Curriculum>lambdaQuery().eq(
-                    StringUtils.isNotBlank(requestData.getTeacherName()),
-                    Curriculum::getTeacherName,
-                    requestData.getTeacherName());
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
+        if (StringUtils.isBlank(queryStr)){
+
+            LambdaQueryWrapper<Curriculum> teacherBlankQuery = Wrappers.<Curriculum>lambdaQuery()
+                    .eq(
+                            //获取当前登录讲师的课程
+                            StringUtils.isNotBlank(teacherName),
+                            Curriculum::getTeacherName,
+                            teacherName)
+                    .and(q->q
+                            .eq(    //选取未删除的课程
+                                    Curriculum::getDeleteFlag,
+                                    CommonConstant.DISABLE_FALSE))
+                    .select(
+                            Curriculum::getId,
+                            Curriculum::getTeacherName,
+                            Curriculum::getCurriculumName,
+                            Curriculum::getCurriculumType,
+                            Curriculum::getCurriculumDesc,
+                            Curriculum::getVideoDuration,
+                            Curriculum::getWatchAmount);
             return curriculumMapper.selectPage(page, teacherBlankQuery);
         }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .like(
-                        StringUtils.isNotBlank(requestData.getCurriculumName()),
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
-                        requestData.getCurriculumName())
-                .like(
-                        StringUtils.isNotBlank(requestData.getCurriculumType()),
+                        queryStr)
+                .or().like(
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumType,
-                        requestData.getCurriculumType())
-                .eq(
-                        requestData.getAuditFlag()!=null,
+                        queryStr)
+                .or().eq(
+
                         Curriculum::getAuditFlag,
-                        requestData.getAuditFlag())
-                .like(
-                        StringUtils.isNotBlank(requestData.getTopicName()),
+                        queryStr)
+                .or().like(
                         Curriculum::getTopicName,
-                        requestData.getTopicName())
-                .eq(    //选取未删除的课程
-                        Curriculum::getDeleteFlag,
-                        CommonConstant.DISABLE_FALSE)
+                        queryStr)
                 .and(
-                        //todo 获取登录者姓名
-                        StringUtils.isNotBlank(requestData.getTeacherName()),
-                        q->q.eq(Curriculum::getTeacherName,requestData.getTeacherName()))
+                        StringUtils.isNotBlank(teacherName),
+                        q->q
+                                .eq(
+                                        //获取当前登录讲师的课程
+                                        Curriculum::getTeacherName,
+                                        teacherName))
+                                .eq(    //选取未删除的课程
+                                        Curriculum::getDeleteFlag,
+                                        CommonConstant.DISABLE_FALSE)
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,

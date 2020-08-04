@@ -1,9 +1,8 @@
 package com.dingxin.web.service.strategy.curriculum;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.web.service.impl.CurriculumServiceImpl;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class CurriculumStrategyContext {
     }
 
 
-    public IPage<Curriculum> getPageList(BaseQuery<CurriculumRequest> query){
+    public IPage<Curriculum> getPageList(CurriculumFuzzyQuery4List query){
 
         return curriculumService.getPage(query);
     }

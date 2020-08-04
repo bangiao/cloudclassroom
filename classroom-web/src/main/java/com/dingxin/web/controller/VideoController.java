@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * 
  */
-@UserTag
+@ManTag
 @RestController
 @RequestMapping("/video")
 @Api(tags = "视频接口")

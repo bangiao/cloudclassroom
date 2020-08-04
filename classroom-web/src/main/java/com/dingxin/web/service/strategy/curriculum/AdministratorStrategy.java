@@ -6,9 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CurriculumMapper;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.web.service.impl.CurriculumServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,38 +27,51 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
     private CurriculumMapper curriculumMapper;
 
     @Override
-    public IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query) {
+    public IPage<Curriculum> getPage(CurriculumFuzzyQuery4List query) {
 
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
-        CurriculumRequest requestData = query.getData();
-        if (Objects.isNull(requestData)){
+        String queryStr = query.getQueryStr();
+        if (StringUtils.isBlank(queryStr) && Objects.isNull(query.getAuditFlag())){
 
-            return curriculumMapper.selectPage(page, Wrappers.query());
+            LambdaQueryWrapper<Curriculum> administratorBlankQuery = Wrappers.<Curriculum>lambdaQuery()
+                    .eq(    //选取未删除的课程
+                            Curriculum::getDeleteFlag,
+                            CommonConstant.DISABLE_FALSE)
+                    .select(
+                            Curriculum::getId,
+                            Curriculum::getTeacherName,
+                            Curriculum::getCurriculumName,
+                            Curriculum::getCurriculumType,
+                            Curriculum::getCurriculumDesc,
+                            Curriculum::getVideoDuration,
+                            Curriculum::getWatchAmount);
+            return curriculumMapper.selectPage(page, administratorBlankQuery);
         }
         LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .like(
-                        StringUtils.isNotBlank(requestData.getCurriculumName()),
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
-                        requestData.getCurriculumName())
-                .like(
-                        StringUtils.isNotBlank(requestData.getCurriculumType()),
+                        queryStr)
+                .or().like(
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumType,
-                        requestData.getCurriculumType())
-                .like(
-                        StringUtils.isNotBlank(requestData.getTeacherName()),
+                        queryStr)
+                .or().like(
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getTeacherName,
-                        requestData.getTeacherName())
-                .like(
-                        StringUtils.isNotBlank(requestData.getTopicName()),
+                        queryStr)
+                .or().like(
+                        StringUtils.isNotBlank(queryStr),
                         Curriculum::getTopicName,
-                        requestData.getTopicName())
-                .eq(
-                        requestData.getAuditFlag()!=null,
+                        queryStr)
+                .or().eq(
+                        query.getAuditFlag()!=null,
                         Curriculum::getAuditFlag,
-                        requestData.getAuditFlag())
-                .eq(    //选取未删除的课程
+                        query.getAuditFlag())
+                .and(q->q
+                        .eq(    //选取未删除的课程
                         Curriculum::getDeleteFlag,
-                        CommonConstant.DISABLE_FALSE)
+                        CommonConstant.DISABLE_FALSE))
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,

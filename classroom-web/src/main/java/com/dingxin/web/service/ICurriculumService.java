@@ -2,9 +2,8 @@ package com.dingxin.web.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumRequest;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public interface ICurriculumService extends IService<Curriculum> {
     /**
      * 根据不同登录身份，获取课程列表
      */
-    IPage<Curriculum> getPage(BaseQuery<CurriculumRequest> query);
+    IPage<Curriculum> getPage(CurriculumFuzzyQuery4List query);
 
     /**
      *  禁用课程
