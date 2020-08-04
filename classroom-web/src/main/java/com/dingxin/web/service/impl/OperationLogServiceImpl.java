@@ -33,7 +33,6 @@ public class OperationLogServiceImpl extends ServiceImpl<OperationLogMapper, Ope
 
 
     @Override
-    @Transactional(propagation = Propagation.NEVER,isolation = Isolation.READ_COMMITTED)
     public List<OperationLog> like(OperationLog data) {
         LambdaQueryWrapper<OperationLog> query = Wrappers.<OperationLog>lambdaQuery()
                 .like(
