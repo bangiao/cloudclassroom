@@ -39,4 +39,6 @@ public interface ICurriculumService extends IService<Curriculum> {
      * 查询详细课程信息，不查询已经删除的信息
      */
     Curriculum loadCurriculumDetails(IdRequest id);
+
+    void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes);
 }

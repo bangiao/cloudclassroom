@@ -35,5 +35,13 @@ public interface CommonConstant {
 	 * localDateTime转long 参数为空时 默认值
 	 */
 	Long LONG_DEFAULT = -1L;
+	/**
+	 * 视频每次观看自增值
+	 */
+	Long PER_WATCH_INCREASE = 1L;
+	/**
+	 * 视频观看初始值
+	 */
+	Long WATCH_AMOUNT_INITIAL_VALUE = 0L;
 
 }

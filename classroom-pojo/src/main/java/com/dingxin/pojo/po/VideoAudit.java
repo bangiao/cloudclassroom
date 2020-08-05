@@ -45,7 +45,7 @@ public class VideoAudit extends Model<VideoAudit> {
     /**
      * 是否有效(讲道理默认值为有效)
      */
-    private Integer validFlag;
+    private Integer disableFlag;
     /**
      * 审批意见
      */

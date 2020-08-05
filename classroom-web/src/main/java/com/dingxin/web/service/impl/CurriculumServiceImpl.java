@@ -12,6 +12,7 @@ import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +25,7 @@ import java.util.Objects;
  *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
  */
 @Service
+@Slf4j
 public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper, Curriculum> implements ICurriculumService {
 
     @Autowired
@@ -164,5 +166,28 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         Curriculum::getWatchAmount);
 
         return getOne(deleteQuery);
+    }
+
+    @Override
+    public void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes) {
+        if (curriculumId ==null){
+
+            log.error("更新当前课程课程总时长失败，传参为 videoDuration:{},curriculumId:{}",videoDuration,curriculumId);
+            return;
+        }
+        LambdaUpdateWrapper<Curriculum> updateCurriculumVideoDuration = Wrappers.<Curriculum>lambdaUpdate()
+                .set(
+                        !(videoDuration==null || videoDuration < 0),
+                        Curriculum::getVideoDuration,
+                        videoDuration)
+                .set(
+                        !(watchTimes==null || watchTimes<0) ,
+                        Curriculum::getWatchAmount,
+                        watchTimes)
+                .in(
+                        Curriculum::getId,
+                        curriculumId);
+
+        update(updateCurriculumVideoDuration);
     }
 }

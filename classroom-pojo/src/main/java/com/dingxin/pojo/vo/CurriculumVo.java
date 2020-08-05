@@ -48,7 +48,7 @@ public class CurriculumVo {
      * 观看次数(该课程下所有视频的观看次数)
      */
     @ApiModelProperty(value = "观看次数(该课程下所有视频的观看次数)",example = "10")
-    private Integer watchAmount;
+    private Long watchAmount;
 
     /**
      * 视频时长(该课程下所有视频的累计时长)
@@ -58,7 +58,7 @@ public class CurriculumVo {
 
 //    @ApiModelProperty(value = "审核状态(该课程下所有视频审核通过才会显示为通过)",example = "已审核上线")
     @ApiModelProperty(value = "是否有效(课程被禁用则课程下的所有视频被禁用)",example = "有效")
-    private Integer validFlag;
+    private Integer disableFlag;
     /**
      * 审核状态(-1 未通过，0未审核，1审核通过）
      */
@@ -82,7 +82,7 @@ public class CurriculumVo {
                 .teacherName(curriculumVoPo.getTeacherName())
                 .watchAmount(curriculumVoPo.getWatchAmount())
                 .videoDuration(DateUtils.secondsToTime(curriculumVoPo.getVideoDuration()))
-                .validFlag(curriculumVoPo.getDisableFlag())
+                .disableFlag(curriculumVoPo.getDisableFlag())
                 .auditFlag(curriculumVoPo.getAuditFlag())
                 .topicName(curriculumVoPo.getTopicName())
                 .build();

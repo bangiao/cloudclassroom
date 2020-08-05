@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoListRequest;
 
@@ -27,5 +28,13 @@ public interface IVideoService extends IService<Video> {
     void deleteCurriculumRelatedVideo(List<Integer> curriculumIds);
 
     void saveVideoRelated(VideoInsertRequest video);
+
+    void updateCurriculumVideoDuration(Integer curriculumId);
+
+    void updateCurrentVideoWatchAmount(IdRequest videoId);
+
+    List<Video> loadAllValidVideoForCurrentCurriculum(Integer curriculumId);
+
+    void updateCurriculumWatchAmount(Integer curriculumId);
 
 }

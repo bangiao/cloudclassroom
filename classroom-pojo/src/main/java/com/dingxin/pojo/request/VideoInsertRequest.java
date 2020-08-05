@@ -63,5 +63,5 @@ public class VideoInsertRequest {
      * 是否有效(禁用之后为无效)
      */
     @ApiModelProperty("是否有效(禁用之后为无效)")
-    private Integer validFlag;
+    private Integer disableFlag;
 }

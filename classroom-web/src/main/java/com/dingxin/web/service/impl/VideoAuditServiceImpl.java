@@ -46,9 +46,9 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
                     Video::getLiveVideo,
                     data.getLiveVideo())
                 .like(
-                    Objects.nonNull(data.getValidFlag()),
-                    Video::getValidFlag,
-                    data.getValidFlag())
+                    Objects.nonNull(data.getDisableFlag()),
+                    Video::getDisableFlag,
+                    data.getDisableFlag())
                 .like(
                     Objects.nonNull(data.getAuditComments()),
                     Video::getAuditComments,

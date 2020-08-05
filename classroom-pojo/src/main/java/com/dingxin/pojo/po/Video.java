@@ -67,7 +67,7 @@ public class Video extends Model<Video> {
      * 是否有效(禁用之后为无效)
      */
     @ApiModelProperty("是否有效(禁用之后为无效)")
-    private Integer validFlag;
+    private Integer disableFlag;
     /**
      * 审核状态(审核中,已通过),审核状态决定能不能在页面看见该视频
      */
@@ -91,6 +91,10 @@ public class Video extends Model<Video> {
      * 删除标志位
      */
     private Integer deleteFlag;
+    /**
+     * 视频观看次数
+     */
+    private Long   watchAmount;
 
 
     @Override

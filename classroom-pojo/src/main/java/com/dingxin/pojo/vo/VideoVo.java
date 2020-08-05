@@ -54,7 +54,7 @@ public class VideoVo {
      * 是否有效(禁用之后为无效)
      */
     @ApiModelProperty("是否有效(禁用之后为无效)")
-    private Integer validFlag;
+    private Integer disableFlag;
 
     public static VideoVo convertToVo(Video videoPo){
         if (Objects.isNull(videoPo))
@@ -62,7 +62,7 @@ public class VideoVo {
         return VideoVo.builder()
                 .id(videoPo.getId())
                 .liveVideo(videoPo.getLiveVideo())
-                .validFlag(videoPo.getValidFlag())
+                .disableFlag(videoPo.getDisableFlag())
                 .videoDuration(videoPo.getVideoDuration())
                 .videoName(videoPo.getVideoName())
                 .videoAttachment(videoPo.getVideoAttachment())
