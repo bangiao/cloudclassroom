@@ -113,10 +113,8 @@ public class ProjectManagementController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改专题信息")
-    public BaseResult update(@RequestBody ProjectManagement projectManagement) {
-        projectManagement.setModifyTime(LocalDateTime.now());
-        boolean retFlag = projectManagementService.updateById(projectManagement);
-        return BaseResult.success(retFlag);
+    public BaseResult update(@RequestBody @Validated ProjectManagement projectManagement) {
+        return BaseResult.success(projectManagementService.updateProject(projectManagement));
     }
 
     /**

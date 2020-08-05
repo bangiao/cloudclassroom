@@ -29,22 +29,27 @@ public class CurriculumIntermediate extends Model<CurriculumIntermediate> {
     /**
      * 课程对应id
      */
+    @ApiModelProperty(value = "课程管理id")
     private Integer curriculumId;
     /**
      * 上课时间
      */
+    @ApiModelProperty(value = "上课时间")
     private LocalDateTime classTime;
     /**
      * 创建时间
      */
+    @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
+    @ApiModelProperty(value = "修改时间")
     private LocalDateTime modifyTime;
     /**
      * 是否删除 0：未删除 1 ：删
      */
+    @ApiModelProperty(value = "是否删除 0：未删除 1 ：删除")
     private Boolean delFlag;
 
     /**

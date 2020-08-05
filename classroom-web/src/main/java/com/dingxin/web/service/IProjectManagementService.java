@@ -31,5 +31,8 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
     IPage<ProjectManagement> searchByProjectName(CommQueryListRequest query);
 
     BaseResult insertOne(ProjectManagement projectManagement);
+
+    BaseResult updateProject(ProjectManagement projectManagement);
 }
+
 

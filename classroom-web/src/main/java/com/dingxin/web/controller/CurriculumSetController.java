@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,9 +36,6 @@ public class CurriculumSetController {
         //查询列表数据
         Page<CurriculumSet> page = new Page(query.getCurrentPage(),query.getPageSize());
         IPage pageList = curriculumSetService.page(page,Wrappers.query(query.getData()));
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
-        }
         return BaseResult.success(pageList);
     }
 
@@ -56,7 +54,7 @@ public class CurriculumSetController {
      */
     @PostMapping
     @ApiOperation(value = "新增课程表")
-    public BaseResult save(@RequestBody  CurriculumSet curriculumSet){
+    public BaseResult save(@RequestBody @Validated CurriculumSet curriculumSet){
         return BaseResult.success(curriculumSetService.saveCurriculumSet(curriculumSet));
     }
 
@@ -65,7 +63,7 @@ public class CurriculumSetController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改课程表")
-    public BaseResult update(@RequestBody CurriculumSet curriculumSet){
+    public BaseResult update(@RequestBody @Validated CurriculumSet curriculumSet){
         return BaseResult.success(curriculumSetService.updateCurriculumSet(curriculumSet));
     }
 

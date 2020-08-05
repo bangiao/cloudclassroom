@@ -228,6 +228,11 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         return page(page, qw);
     }
 
+    /**
+     * 新增专题
+     * @param projectManagement
+     * @return
+     */
     @Override
     public BaseResult insertOne(ProjectManagement projectManagement) {
         LocalDateTime now = LocalDateTime.now();
@@ -252,6 +257,43 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
             this.save(projectManagement);
         }
         return BaseResult.success().setMsg("新增专题成功");
+    }
+
+    /**
+     * 修改专题
+     * @param projectManagement
+     * @return
+     */
+    @Override
+    public BaseResult updateProject(ProjectManagement projectManagement) {
+        List<Integer> courseIds = projectManagement.getCourseIds();
+        LambdaQueryWrapper<ProjectCurriculum> projectCurriculumQw = Wrappers.lambdaQuery();
+        projectCurriculumQw.eq(ProjectCurriculum::getProjectId,projectManagement.getId()).eq(ProjectCurriculum::getDelFlag,CommonConstant.DEL_FLAG);
+        List<ProjectCurriculum> list = projectCurriculumService.list(projectCurriculumQw);
+        if (CollectionUtils.isNotEmpty(list)){
+            List<Integer> curriculumIds = list.stream().map(ProjectCurriculum::getCurriculumId).collect(Collectors.toList());
+            LambdaUpdateWrapper<ProjectCurriculum> qw = Wrappers.lambdaUpdate();
+            qw.set( ProjectCurriculum::getDelFlag, CommonConstant.DEL_FLAG_TRUE).in( ProjectCurriculum::getCurriculumId, curriculumIds);
+            projectCurriculumService.update(qw);
+        }
+        projectManagement.setModifyTime(LocalDateTime.now());
+        if (CollectionUtils.isNotEmpty(courseIds)) {
+            projectManagement.setCourseNum(courseIds.size());
+            this.updateById(projectManagement);
+            // 保存专题课程中间表
+            List<ProjectCurriculum> projectCurriculums = courseIds.stream().map(c -> {
+                ProjectCurriculum projectCurriculum = new ProjectCurriculum();
+                projectCurriculum.setCurriculumId(c);
+                projectCurriculum.setModifyTime(LocalDateTime.now());
+                projectCurriculum.setProjectId(projectManagement.getId());
+                return projectCurriculum;
+            }).collect(Collectors.toList());
+            projectCurriculumService.saveBatch(projectCurriculums);
+        } else {
+            projectManagement.setCourseNum(0);
+            this.updateById(projectManagement);
+        }
+        return BaseResult.success().setMsg("修改专题成功");
     }
 
 

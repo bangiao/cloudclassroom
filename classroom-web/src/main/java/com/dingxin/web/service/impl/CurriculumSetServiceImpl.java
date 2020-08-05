@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CurriculumSetMapper;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
@@ -22,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- *  服务接口实现类
+ * 服务接口实现类
  */
 @Service
 public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, CurriculumSet> implements ICurriculumSetService {
@@ -32,34 +33,34 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
 
     @Autowired
     private ICurriculumIntermediateService curriculumIntermediateService;
+
     @Override
     public List<CurriculumSet> like(CurriculumSet data) {
         LambdaQueryWrapper<CurriculumSet> query = Wrappers.<CurriculumSet>lambdaQuery()
                 .like(
-                    Objects.nonNull(data.getId()),
-                    CurriculumSet::getId,
-                    data.getId())
+                        Objects.nonNull(data.getId()),
+                        CurriculumSet::getId,
+                        data.getId())
                 .like(
-                    Objects.nonNull(data.getCurriculumName()),
-                    CurriculumSet::getCurriculumName,
-                    data.getCurriculumName())
+                        Objects.nonNull(data.getCurriculumName()),
+                        CurriculumSet::getCurriculumName,
+                        data.getCurriculumName())
                 .like(
-                    Objects.nonNull(data.getRemark()),
-                    CurriculumSet::getRemark,
-                    data.getRemark())
+                        Objects.nonNull(data.getRemark()),
+                        CurriculumSet::getRemark,
+                        data.getRemark())
                 .like(
-                    Objects.nonNull(data.getCreateTime()),
-                    CurriculumSet::getCreateTime,
-                    data.getCreateTime())
+                        Objects.nonNull(data.getCreateTime()),
+                        CurriculumSet::getCreateTime,
+                        data.getCreateTime())
                 .like(
-                    Objects.nonNull(data.getModifyTime()),
-                    CurriculumSet::getModifyTime,
-                    data.getModifyTime())
+                        Objects.nonNull(data.getModifyTime()),
+                        CurriculumSet::getModifyTime,
+                        data.getModifyTime())
                 .like(
-                    Objects.nonNull(data.getDelFlag()),
-                    CurriculumSet::getDelFlag,
-                    data.getDelFlag())
-;
+                        Objects.nonNull(data.getDelFlag()),
+                        CurriculumSet::getDelFlag,
+                        data.getDelFlag());
         return curriculumSetMapper.selectList(query);
 
 
@@ -67,6 +68,7 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
 
     /**
      * 新增课程表
+     *
      * @param curriculumSet
      * @return
      */
@@ -76,7 +78,7 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
         this.save(curriculumSet);
         //新增信息到中间表
         List<Curriculum> curriculums = curriculumSet.getCurriculums();
-        if (CollectionUtils.isNotEmpty(curriculums)){
+        if (CollectionUtils.isNotEmpty(curriculums)) {
             List<CurriculumIntermediate> curriculumIntermediates = curriculums.stream().map(s -> {
                 CurriculumIntermediate curriculumIntermediate = new CurriculumIntermediate();
                 curriculumIntermediate.setCurriculumSetId(curriculumSet.getId());
@@ -92,6 +94,7 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
 
     /**
      * 修改课程表
+     *
      * @param curriculumSet
      * @return
      */
@@ -99,15 +102,17 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
     public BaseResult updateCurriculumSet(CurriculumSet curriculumSet) {
         LambdaUpdateWrapper<CurriculumSet> qw = Wrappers.lambdaUpdate();
         qw
-                .set(StringUtils.isNotEmpty(curriculumSet.getCurriculumName()),CurriculumSet::getCurriculumName,curriculumSet.getCurriculumName())
-                .set(StringUtils.isNotEmpty(curriculumSet.getRemark()),CurriculumSet::getRemark,curriculumSet.getRemark())
-                .set(CurriculumSet::getModifyTime,LocalDateTime.now());
-        this.update(curriculumSet,qw);
-        LambdaQueryWrapper<CurriculumIntermediate> curriculumIntermediateQw = Wrappers.lambdaQuery();
-        curriculumIntermediateQw.eq(null != curriculumSet.getId(),CurriculumIntermediate::getId,curriculumSet.getId());
-        curriculumIntermediateService.remove(curriculumIntermediateQw);
+                .set(StringUtils.isNotEmpty(curriculumSet.getCurriculumName()), CurriculumSet::getCurriculumName, curriculumSet.getCurriculumName())
+                .set(StringUtils.isNotEmpty(curriculumSet.getRemark()), CurriculumSet::getRemark, curriculumSet.getRemark())
+                .set(CurriculumSet::getModifyTime, LocalDateTime.now());
+        this.update(curriculumSet, qw);
+        LambdaUpdateWrapper<CurriculumIntermediate> curriculumIntermediateQw = Wrappers.lambdaUpdate();
+        curriculumIntermediateQw
+                .set(null != curriculumSet.getId(), CurriculumIntermediate::getDelFlag, CommonConstant.DEL_FLAG_TRUE)
+                .eq(null != curriculumSet.getId(),CurriculumIntermediate::getCurriculumSetId, curriculumSet.getId());
+        curriculumIntermediateService.update(curriculumIntermediateQw);
         List<Curriculum> curriculums = curriculumSet.getCurriculums();
-        if (CollectionUtils.isNotEmpty(curriculums)){
+        if (CollectionUtils.isNotEmpty(curriculums)) {
             List<CurriculumIntermediate> curriculumIntermediates = curriculums.stream().map(s -> {
                 CurriculumIntermediate curriculumIntermediate = new CurriculumIntermediate();
                 curriculumIntermediate.setCurriculumId(s.getId());
