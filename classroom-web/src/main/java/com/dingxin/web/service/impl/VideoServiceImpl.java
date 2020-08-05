@@ -222,6 +222,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
         //跟新当前视频观看次数
         update(updateCurrentVideoQuery);
+        updateCurriculumWatchAmount(currentVideo.getCurriculumId());
+
     }
 
 
