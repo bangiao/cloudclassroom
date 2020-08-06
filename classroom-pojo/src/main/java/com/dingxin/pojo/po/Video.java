@@ -53,7 +53,7 @@ public class Video extends Model<Video> {
      * 直播视频id
      */
     @ApiModelProperty("直播视频")
-    private String liveVideoId;
+    private Integer liveVideoId;
     /**
      * 讲师
      */

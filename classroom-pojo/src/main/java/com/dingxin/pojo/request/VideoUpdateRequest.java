@@ -19,46 +19,47 @@ public class VideoUpdateRequest {
     /**
      * 视频表主键
      */
-    @ApiModelProperty("主键id")
+    @ApiModelProperty(value = "主键id",example = "1")
     @NotNull(message = "视频id不能为空哦,好兄弟")
     private Integer id;
     /**
      * 视频名称
      */
-    @ApiModelProperty("视频名称")
+    @ApiModelProperty(value = "视频名称",example = "大战空空")
     private String videoName;
     /**
      * 视频时长
      */
-    @ApiModelProperty("视频时长")
+    @ApiModelProperty(value = "视频时长",example = "51651651561651")
     private Long videoDuration;
     /**
      * 视频附件
      */
-    @ApiModelProperty("视频附件")
+    @ApiModelProperty(value = "视频附件",example = "h哈哈")
     private String videoAttachment;
     /**
      * 直播视频
      */
-    @ApiModelProperty("直播视频")
+    @ApiModelProperty(value = "直播视频",example = "哈哈哈哈")
     private String liveVideo;
     /**
      * 直播视频id
      */
-    @ApiModelProperty("直播视频")
-    private String liveVideoId;
+    @ApiModelProperty(value = "直播视频",example = "1")
+    private Integer liveVideoId;
     /**
      * 所属课程
      */
-    @ApiModelProperty("所属课程")
+    @ApiModelProperty(value = "所属课程id",example = "1")
     private Integer curriculumId;
     /**
      * 是否有效(禁用之后为无效)
      */
-    @ApiModelProperty("是否有效(禁用之后为无效)")
+    @ApiModelProperty(value = "是否有效(禁用之后为无效)",example = "1")
     private Integer disableFlag;
     /**
      * 视频大小
      */
+    @ApiModelProperty(value = "视频大小",example = "5.4G")
     private String videoSize;
 }

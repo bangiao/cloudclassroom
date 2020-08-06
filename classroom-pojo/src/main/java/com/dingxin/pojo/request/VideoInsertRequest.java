@@ -46,8 +46,8 @@ public class VideoInsertRequest {
     /**
      * 直播视频id
      */
-    @ApiModelProperty("直播视频")
-    private String liveVideoId;
+    @ApiModelProperty("直播视频id")
+    private Integer liveVideoId;
     /**
      * 所属课程
      */
