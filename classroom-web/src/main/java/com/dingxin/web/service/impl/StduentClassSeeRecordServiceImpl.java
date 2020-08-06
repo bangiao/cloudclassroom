@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.common.utils.ExcelUtils;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * 学生记录表 服务接口实现类
@@ -185,14 +187,31 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
     public IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query) {
         try {
             String userId = ShiroUtils.getUserId();
+            if (StringUtils.isEmpty(userId)){
+                throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+            }
+
             LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
-            qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG)
-                    .eq(StduentClassSeeRecord::getStudentId, userId);
+            qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
+            RoleEnum userType = ShiroUtils.getUserType();
+            if (userType.getCode()==CommonConstant.NORMAL_USER) {
+                    qw.eq(StduentClassSeeRecord::getStudentId, userId);
+            }else if (userType.getCode()==CommonConstant.TEACHER){
+                qw.eq(StduentClassSeeRecord::getTeacherId,userId);
+            }else {
+                throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+            }
             String queryStr = query.getQueryStr();
             if (StringUtils.isNotEmpty(queryStr)) {
-                qw.or().like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
-                        .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
-                        .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
+                qw.and((new Function<LambdaQueryWrapper<StduentClassSeeRecord>, LambdaQueryWrapper<StduentClassSeeRecord>>() {
+                    @Override
+                    public LambdaQueryWrapper<StduentClassSeeRecord> apply(LambdaQueryWrapper<StduentClassSeeRecord> stduentClassSeeRecordLambdaQueryWrapper) {
+                        LambdaQueryWrapper<StduentClassSeeRecord> qe = Wrappers.lambdaQuery();
+                        return qe.like(StduentClassSeeRecord::getStudentName, query.getQueryStr())
+                                .or().like(StduentClassSeeRecord::getStudentCode, query.getQueryStr())
+                                .or().like(StduentClassSeeRecord::getStudentClass, query.getQueryStr());
+                    }
+                }));
             }
             Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
             IPage pageList = page(page, qw);
