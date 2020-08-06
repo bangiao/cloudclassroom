@@ -1,19 +1,16 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.Api;
-import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.io.Serializable;
-import java.io.Serializable;
 
 /**
  * 课程收藏表 实体类
@@ -26,7 +23,7 @@ import java.io.Serializable;
 @Builder
 public class ClassCollection extends Model<ClassCollection> {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 主键

@@ -44,4 +44,17 @@ public interface CommonConstant {
 	 */
 	Long WATCH_AMOUNT_INITIAL_VALUE = 0L;
 
+	/**
+	 * 普通用户  也就是学生
+	 */
+	Integer NORMAL_USER=1;
+	/**
+	 * 老师
+	 */
+	Integer TEACHER=2;
+	/**
+	 * 管理员
+	 */
+	Integer ADMINISTRATOR=3;
+
 }

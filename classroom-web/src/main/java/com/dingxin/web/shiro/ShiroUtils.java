@@ -1,5 +1,7 @@
 package com.dingxin.web.shiro;
 
+import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.pojo.po.CasEmploys;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -54,6 +56,17 @@ public class ShiroUtils {
             CasEmploys casEmploys = (CasEmploys) object;
             return casEmploys;
         }
+        return null;
+    }
+
+    /**
+     * 获取当前人类型
+     */
+    public static RoleEnum getUserType(){
+        String userId = getUserId();
+        if (userId.startsWith(String.valueOf(CommonConstant.NORMAL_USER)))return RoleEnum.NORMAL_USER;
+        if (userId.startsWith(String.valueOf(CommonConstant.TEACHER)))return RoleEnum.TEACHER;
+        if (userId.startsWith(String.valueOf(CommonConstant.ADMINISTRATOR)))return RoleEnum.ADMINISTRATOR;
         return null;
     }
 

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
 import com.dingxin.pojo.po.ClassEvaluate;
@@ -16,6 +17,7 @@ import com.dingxin.pojo.request.ClassEvaluateListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.ThumbsUpRequest;
 import com.dingxin.web.service.IClassEvaluateService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -145,21 +147,24 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         }
 //        伪代码
         int type = 1;
-//        管理员
-        if (1 == type) {
+        RoleEnum userType = ShiroUtils.getUserType();
+        if (Objects.isNull(userType))
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        //        管理员
+        if (userType.getCode()==CommonConstant.NORMAL_USER){
             qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
         }
 //        老师查看老师的评价且已经审核通过的
-        else if (2 == type) {
-            qw.eq(ClassEvaluate::getTeacherId, 1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId, 1);
+        else if (userType.getCode()==CommonConstant.TEACHER) {
+            qw.eq(ClassEvaluate::getTeacherId, ShiroUtils.getUserId()).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId, query.getClassId());
         }
 //        学生查看课程相关的 评价不管有没有
-        else if (3 == type) {
-            qw.eq(ClassEvaluate::getClassId, 1).and((a) -> {
+        else if (userType.getCode()==CommonConstant.ADMINISTRATOR) {
+            qw.eq(ClassEvaluate::getClassId, query.getClassId()).and((a) -> {
                         LambdaQueryWrapper<ClassEvaluate> q = Wrappers.lambdaQuery();
                         return q.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).or((b) -> {
                             LambdaQueryWrapper<ClassEvaluate> qe = Wrappers.lambdaQuery();
-                            return qe.eq(ClassEvaluate::getStudentId, 1).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_NOAUDIT);
+                            return qe.eq(ClassEvaluate::getStudentId, ShiroUtils.getUserId()).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_NOAUDIT);
                         });
                     }
             );
