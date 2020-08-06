@@ -135,6 +135,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         videoIds);
 
         update(disableQuery);
+
+        //更新对应课程的观看次数和观看时长
+        updateRelatedCurriculumDurationAndWatchAmount(videoIds);
     }
 
     @Override
@@ -193,8 +196,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     @Override
-    public void updateCurrentVideoWatchAmount(IdRequest id) {
-        if (Objects.isNull(id)){
+    public void updateCurrentVideoWatchAmount(IdRequest videoId) {
+        if (Objects.isNull(videoId)){
             if (log.isWarnEnabled())
                 log.warn("更新当前视频观看次数失败");
             return;
@@ -202,7 +205,16 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         LambdaQueryWrapper<Video> getByIdQuery = Wrappers.<Video>lambdaQuery()
                 .eq(
                         Video::getId,
-                        id.getId())
+                        videoId.getId())
+                .eq(
+                        Video::getDisableFlag,
+                        CommonConstant.DISABLE_FALSE)
+                .eq(
+                        Video::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        Video::getAuditFlag,
+                        CommonConstant.STATUS_AUDIT)
                 .select(
                         Video::getWatchAmount);
         //查出当前视频
@@ -221,10 +233,11 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         watchAmount)
                 .in(
                         Video::getId,
-                        id.getId());
+                        videoId.getId());
 
         //跟新当前视频观看次数
         update(updateCurrentVideoQuery);
+        //同时更新当前视频对应课程的总观看次数
         updateCurriculumWatchAmount(currentVideo.getCurriculumId());
 
     }
@@ -275,4 +288,27 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         curriculumService.updateCurrentCurriculumVideoDurationOrWatchAmount(null,curriculumId,totalWatchAmount);
 
     }
+
+    //单独提出来，之后做成异步执行
+    private void updateRelatedCurriculumDurationAndWatchAmount(List<Integer> videoIds){
+
+        LambdaQueryWrapper<Video> listQueryParams = Wrappers.<Video>lambdaQuery()
+                .in(
+                        Video::getId,
+                        videoIds)
+                .select(
+                        Video::getCurriculumId,
+                        Video::getChapterId);
+        List<Video> listVideos = list(listQueryParams);
+        for (Video video : listVideos) {
+            Integer curriculumId = video.getCurriculumId();
+            //更新视频对应课程的观看次数
+            updateCurriculumWatchAmount(curriculumId);
+            //更新对应课程的时长
+            updateCurriculumVideoDuration(curriculumId);
+        }
+    }
+
+
+
 }

@@ -171,8 +171,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     @Override
     public void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes) {
         if (curriculumId ==null){
-
-            log.error("更新当前课程课程总时长失败，传参为 videoDuration:{},curriculumId:{}",videoDuration,curriculumId);
+            if(log.isWarnEnabled())
+                log.warn("更新当前课程课程总时长失败，传参为 videoDuration:{},curriculumId:{}",videoDuration,curriculumId);
             return;
         }
         LambdaUpdateWrapper<Curriculum> updateCurriculumVideoDuration = Wrappers.<Curriculum>lambdaUpdate()
