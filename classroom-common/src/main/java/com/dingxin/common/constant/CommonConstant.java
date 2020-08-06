@@ -5,7 +5,7 @@ public interface CommonConstant {
 	/**
 	 * 审核状态-未通过
 	 */
-	Integer STATUS_UNAPPROVE = -1;
+	Integer STATUS_UNAPPROVED = -1;
 	/**
 	 * 审核状态-待审核
 	 */

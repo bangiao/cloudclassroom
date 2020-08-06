@@ -72,7 +72,7 @@ public class ClassEvaluateAuditController {
     @ApiOperation(value = "批量审核未通过")
     public BaseResult auditBatchUnapprove(@Validated @RequestBody ClassEvaluateRequest classEvaluateRequest) {
         LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(ClassEvaluate::getStatus, CommonConstant.STATUS_UNAPPROVE);
+        wrapper.set(ClassEvaluate::getStatus, CommonConstant.STATUS_UNAPPROVED);
         wrapper.set(ClassEvaluate::getAuditComments, classEvaluateRequest.getAuditComments());
         wrapper.in(ClassEvaluate::getId, classEvaluateRequest.getIdList());
         classEvaluateService.update(wrapper);

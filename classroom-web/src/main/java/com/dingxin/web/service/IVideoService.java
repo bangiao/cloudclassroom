@@ -7,6 +7,7 @@ import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.pojo.request.VideoUpdateRequest;
 
 import java.util.List;
 
@@ -36,5 +37,9 @@ public interface IVideoService extends IService<Video> {
     List<Video> loadAllValidVideoForCurrentCurriculum(Integer curriculumId);
 
     void updateCurriculumWatchAmount(Integer curriculumId);
+
+    Video loadVideoDetails(IdRequest id);
+
+    void updateVideo(VideoUpdateRequest video);
 
 }

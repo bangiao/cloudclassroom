@@ -119,7 +119,7 @@ public class VideoAuditController {
     @ApiOperation(value = "批量审核未通过")
     public BaseResult auditBatchUnapprove(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
         LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(Video::getAuditFlag,CommonConstant.STATUS_UNAPPROVE);
+        wrapper.set(Video::getAuditFlag,CommonConstant.STATUS_UNAPPROVED);
         wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
         wrapper.in(Video::getId,videoAutoRequest.getIdList());
         videoService.update(wrapper);

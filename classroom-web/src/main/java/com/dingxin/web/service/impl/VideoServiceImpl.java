@@ -13,11 +13,11 @@ import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.basic.BaseQuery;
-import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.pojo.request.VideoUpdateRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -159,6 +157,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Override
     public void saveVideoRelated(VideoInsertRequest video) {
+        //todo 记得视频的大小这里还没有保存
         Video videoWillSave = Video.builder()
                 .auditFlag(CommonConstant.STATUS_NOAUDIT)
                 .deleteFlag(CommonConstant.DEL_FLAG)
@@ -171,7 +170,6 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .liveVideoId(video.getLiveVideoId())
                 .watchAmount(CommonConstant.WATCH_AMOUNT_INITIAL_VALUE)
                 .build();
-        Wrappers.<Video>lambdaQuery();
         //save to video
         save(videoWillSave);
 
@@ -309,6 +307,42 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         }
     }
 
+    @Override
+    public Video loadVideoDetails(IdRequest id) {
+        LambdaQueryWrapper<Video> loadOneQuery = Wrappers.<Video>lambdaQuery()
+                .eq(
+                        Video::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        Video::getAuditFlag,
+                        CommonConstant.STATUS_AUDIT)
+                .select(
+                        Video::getId,
+                        Video::getVideoName,
+                        Video::getVideoDuration,
+                        Video::getVideoAttachment,
+                        Video::getLiveVideo,
+                        Video::getDisableFlag,
+                        Video::getVideoSize);
+        return getOne(loadOneQuery);
+    }
 
+    @Override
+    public void updateVideo(VideoUpdateRequest video) {
 
+        Video videoWillUpdate = Video.builder()
+                .auditFlag(CommonConstant.STATUS_NOAUDIT)
+                .curriculumId(video.getCurriculumId())
+                .videoDuration(video.getVideoDuration())
+                .videoAttachment(video.getVideoAttachment())
+                .disableFlag(video.getDisableFlag())
+                .videoName(video.getVideoName())
+                .liveVideo(video.getLiveVideo())
+                .liveVideoId(video.getLiveVideoId())
+                .videoSize(video.getVideoSize())
+                .build();
+        LambdaUpdateWrapper<Video> updateCase = Wrappers.<Video>lambdaUpdate().eq(Video::getId, video.getId());
+
+        update(videoWillUpdate,updateCase);
+    }
 }
