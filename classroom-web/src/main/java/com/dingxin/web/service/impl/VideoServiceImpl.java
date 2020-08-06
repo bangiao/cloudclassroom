@@ -177,7 +177,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void updateCurriculumVideoDuration(Integer curriculumId){
         if (curriculumId!=null){
-            log.error("更新当前视频时长失败，传参为 curriculumIds:{}",curriculumId);
+            if (log.isWarnEnabled())
+                log.warn("更新当前视频时长失败，传参为 curriculumIds:{}",curriculumId);
             return;
         }
         List<Video> videos = loadAllValidVideoForCurrentCurriculum(curriculumId);
@@ -194,7 +195,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void updateCurrentVideoWatchAmount(IdRequest id) {
         if (Objects.isNull(id)){
-            log.error("更新当前视频观看次数失败");
+            if (log.isWarnEnabled())
+                log.warn("更新当前视频观看次数失败");
             return;
         }
         LambdaQueryWrapper<Video> getByIdQuery = Wrappers.<Video>lambdaQuery()
@@ -207,7 +209,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         Video currentVideo = getOne(getByIdQuery);
 
         if (Objects.isNull(currentVideo)){
-            log.error("更新当前视频观看次数失败,没有查到有关视频");
+            if (log.isWarnEnabled())
+                log.warn("更新当前视频观看次数失败,没有查到有关视频");
             return;
         }
         Long watchAmount = currentVideo.getWatchAmount();
@@ -230,7 +233,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public List<Video> loadAllValidVideoForCurrentCurriculum(Integer curriculumId) {
         if (curriculumId == null){
-            log.error("loadAllValidVideoForCurrentCurriculum 失败");
+            if (log.isWarnEnabled())
+                log.warn("loadAllValidVideoForCurrentCurriculum 失败");
             return null;
         }
         LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
@@ -254,7 +258,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void updateCurriculumWatchAmount(Integer curriculumId) {
         if (curriculumId == null){
-            log.error("updateCurriculumWatchAmount 失败");
+            if (log.isWarnEnabled())
+                log.warn("updateCurriculumWatchAmount 失败");
             return;
         }
         //获取当前视频对应课程的所有视频

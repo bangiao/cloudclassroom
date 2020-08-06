@@ -95,6 +95,10 @@ public class Video extends Model<Video> {
      * 视频观看次数
      */
     private Long   watchAmount;
+    /**
+     * 视频大小
+     */
+    private String videoSize;
 
 
     @Override

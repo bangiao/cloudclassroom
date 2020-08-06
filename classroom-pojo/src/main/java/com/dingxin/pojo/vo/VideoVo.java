@@ -55,6 +55,12 @@ public class VideoVo {
      */
     @ApiModelProperty("是否有效(禁用之后为无效)")
     private Integer disableFlag;
+    /**
+     * 是否有效(禁用之后为无效)
+     */
+    @ApiModelProperty(value = "视频大小",example = "5.4G")
+    private String videoSize;
+
 
     public static VideoVo convertToVo(Video videoPo){
         if (Objects.isNull(videoPo))
@@ -66,6 +72,7 @@ public class VideoVo {
                 .videoDuration(videoPo.getVideoDuration())
                 .videoName(videoPo.getVideoName())
                 .videoAttachment(videoPo.getVideoAttachment())
+                .videoSize(videoPo.getVideoSize())
                 .build();
 
 
