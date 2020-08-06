@@ -21,6 +21,11 @@ public class ClassEvaluateListRequest extends BaseQuery4List {
      */
     @ApiModelProperty(value = "模糊查询查询专用字段")
     private String queryStr;;
-
+    /**
+     * 课程id
+     */
+    @ApiModelProperty(value = "课程id")
+    @NotNull(message = "classId must not be null")
+    private Integer classId;
 
 }
