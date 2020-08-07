@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 /**
  * 重写casFilter,验证成功后返回前端页面
  *
- * @author weifuchow
  */
 public class MyCasFilter extends CasFilter {
 
@@ -44,10 +43,6 @@ public class MyCasFilter extends CasFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String ticket = httpRequest.getParameter(TICKET_PARAMETER);
         String url = httpRequest.getParameter(URL_PARAMETER);
-//        //TODO 测试完成后下面中间的删除
-//        String wid = httpRequest.getParameter("wid");
-//        return new MyCasToken(wid,wid);
-//        //TODO 测试完成后上面中间的删除
         return new MyCasToken(ticket, url);
     }
 

@@ -1,7 +1,5 @@
 package com.dingxin.web.shiro.cas;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.utils.TokenUtil;
 import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.web.service.ICasEmploysService;
@@ -11,19 +9,15 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.cas.CasAuthenticationException;
 import org.apache.shiro.cas.CasRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.jasig.cas.client.authentication.AttributePrincipal;
-import org.jasig.cas.client.validation.Assertion;
-import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+/**
+ * cas认证
+ */
 public class MyCasRealm extends CasRealm {
 
     @Autowired
@@ -88,15 +82,12 @@ public class MyCasRealm extends CasRealm {
 //        	e.printStackTrace();
 //            throw new CasAuthenticationException("验证ticket失败", e);
 //        }
-
         MyCasToken casToken = (MyCasToken) token;
         if (token==null){
             return null;
         }
         String wid = casToken.getUrl();
         String generateToken = tokenUtil.generateToken(wid);
-//        LambdaQueryWrapper<CasEmploys> queryWrapper = Wrappers.<CasEmploys>lambdaQuery().eq(CasEmploys::getSid, wid);
-//        CasEmploys employs = casEmploysService.getOne(queryWrapper);
         CasEmploys employs = casEmploysService.getById(wid);
         if (employs == null){
             return null;
