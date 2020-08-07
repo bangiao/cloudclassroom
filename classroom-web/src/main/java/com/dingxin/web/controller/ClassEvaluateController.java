@@ -40,7 +40,7 @@ public class ClassEvaluateController {
      */
     @PostMapping("/alllist")
     @ApiOperation(value = "获取所有课程评价表列表")
-    public BaseResult<Page<ClassEvaluate>> list(@RequestBody ClassEvaluateListRequest query) {
+    public BaseResult<Page<ClassEvaluateVo>> list(@RequestBody ClassEvaluateListRequest query) {
         IPage<ClassEvaluate> pageList = classEvaluateService.queryPage(query);
         return BaseResult.success(ClassEvaluateVo.convertToVoWithPage(pageList));
     }
@@ -50,7 +50,7 @@ public class ClassEvaluateController {
      */
     @PostMapping("/get")
     @ApiOperation(value = "获取课程评价表详情信息")
-    public BaseResult<ClassEvaluate> info(@RequestBody IdRequest id) {
+    public BaseResult<ClassEvaluateVo> info(@RequestBody IdRequest id) {
         ClassEvaluate classEvaluate = classEvaluateService.getByIdSelf(id);
         return BaseResult.success(ClassEvaluateVo.convertToVo(classEvaluate));
     }

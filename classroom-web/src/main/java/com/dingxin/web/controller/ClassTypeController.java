@@ -41,7 +41,7 @@ public class ClassTypeController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取课程类型列表")
-    public BaseResult<Page<ClassType>> list(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<ClassTypeVo>> list(@RequestBody CommQueryListRequest query) {
         IPage<ClassType> pageList = classTypeService.queryPage(query);
         return BaseResult.success(ClassTypeVo.convertToVoWithPage(pageList));
     }
@@ -61,7 +61,7 @@ public class ClassTypeController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程类型详情信息")
-    public BaseResult<ClassType> search(@RequestBody IdRequest idRequest) {
+    public BaseResult<ClassTypeVo> search(@RequestBody IdRequest idRequest) {
         ClassType result = classTypeService.getOneSelf(idRequest);
         return BaseResult.success(ClassTypeVo.convent(result));
     }

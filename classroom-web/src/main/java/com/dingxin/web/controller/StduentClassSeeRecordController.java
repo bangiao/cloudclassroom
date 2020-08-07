@@ -46,7 +46,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生记录表列表")
-    public BaseResult<Page<StduentClassSeeRecord>> list(@RequestBody CommIdQueryListRequest query) {
+    public BaseResult<Page<StduentClassSeeRecordVo>> list(@RequestBody CommIdQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.queryPage(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
     }
@@ -65,7 +65,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/selfList")
     @ApiOperation(value = "自己获取自己的记录列表")
-    public BaseResult<Page<StduentClassSeeRecord>> selfList(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<StduentClassSeeRecordVo>> selfList(@RequestBody CommQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.selfList(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
     }
@@ -75,7 +75,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/get")
     @ApiOperation(value = "获取学生记录表详情信息")
-    public BaseResult<StduentClassSeeRecord> info(@RequestBody IdRequest id) {
+    public BaseResult<StduentClassSeeRecordVo> info(@RequestBody IdRequest id) {
         StduentClassSeeRecord result = stduentClassSeeRecordService.getOneSelf(id);
         return BaseResult.success(StduentClassSeeRecordVo.convent(result));
     }

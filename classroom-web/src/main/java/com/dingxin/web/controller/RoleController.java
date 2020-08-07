@@ -41,7 +41,7 @@ public class RoleController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取角色列表")
-    public BaseResult<Page<Role>> list(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<RoleVo>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         IPage<Role> pageList = roleService.queryPage(query);
         return BaseResult.success(RoleVo.convertToVoWithPage(pageList));
@@ -52,7 +52,7 @@ public class RoleController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取角色详情信息")
-    public BaseResult<Role> search(@Validated @RequestBody IdRequest idRequest) {
+    public BaseResult<RoleVo> search(@Validated @RequestBody IdRequest idRequest) {
         Role result = roleService.getOneSelf(idRequest);
         return BaseResult.success(RoleVo.convent(result));
     }

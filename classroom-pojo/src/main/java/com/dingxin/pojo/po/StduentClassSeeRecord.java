@@ -45,7 +45,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      * 学校
      */
     @NotNull(message = "studentCode must not be null")
-    @ApiModelProperty(value = "学校")
+    @ApiModelProperty(value = "学号")
     private String studentCode;
     /**
      * 院校
@@ -57,7 +57,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      * 专业
      */
     @NotNull(message = "studentMajor must not be null")
-    @ApiModelProperty(value = "院校")
+    @ApiModelProperty(value = "专业")
     private String studentMajor;
     /**
      * 班级

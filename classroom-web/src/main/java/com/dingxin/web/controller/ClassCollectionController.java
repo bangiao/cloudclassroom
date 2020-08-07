@@ -40,7 +40,7 @@ public class ClassCollectionController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取课程收藏表列表")
-    public BaseResult<Page<ClassCollection>> list(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<ClassCollectionListVo>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         IPage<ClassCollection> pageList = classCollectionService.queryList(query);
         return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
@@ -51,7 +51,7 @@ public class ClassCollectionController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程收藏表详情信息")
-    public BaseResult<ClassCollection> search(@RequestBody IdRequest id) {
+    public BaseResult<ClassCollectionListVo> search(@RequestBody IdRequest id) {
         ClassCollection result = classCollectionService.getByIdSelf(id);
         return BaseResult.success(ClassCollectionListVo.convertToVo(result));
     }
