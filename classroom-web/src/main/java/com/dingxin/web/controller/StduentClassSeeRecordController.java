@@ -6,13 +6,12 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
-import com.dingxin.pojo.request.CommIdQueryListRequest;
-import com.dingxin.pojo.request.CommQueryListRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.StduentClassSeeRecordInsertRequest;
+import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
+import com.dingxin.pojo.vo.StudentClassListVo;
+import com.dingxin.pojo.vo.StudentRecordListVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 学生记录表
@@ -56,8 +56,8 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/exportExcel")
     @ApiOperation(value = "导出学生记录")
-    public void exportExcel(@RequestBody(required = false)List<Integer> ids, HttpServletResponse response) throws IOException {
-        stduentClassSeeRecordService.exportExcel(ids,response);
+    public void exportExcel(@RequestBody(required = false) List<Integer> ids, HttpServletResponse response) throws IOException {
+        stduentClassSeeRecordService.exportExcel(ids, response);
     }
 
     /**
@@ -109,6 +109,27 @@ public class StduentClassSeeRecordController {
     public BaseResult deleteBatch(@RequestBody List<Integer> list) {
         boolean retFlag = stduentClassSeeRecordService.deleteBatch(list);
         return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 学生信息列表查询
+     */
+    @PostMapping("/studentList")
+    @ApiOperation(value = "管理端 学生学习情况 学生列表")
+    public BaseResult<Page<Student>> studentList(@RequestBody StudentStudyStudentListRequest query) {
+        IPage<StudentRecordListVo> studentRecordListVoIPage = stduentClassSeeRecordService.studentList(query);
+        return BaseResult.success(studentRecordListVoIPage);
+    }
+
+    /**
+     * 学习课程列表
+     */
+    @PostMapping("/courseList")
+    @ApiOperation(value = "学习课程列表")
+    public BaseResult<Page<StudentClassListVo>> courseList(@Validated @RequestBody StudentStudyCaseListRequest query) {
+        List<Map<String, Object>> maps = stduentClassSeeRecordService.queryCoursePageList(query);
+
+        return BaseResult.success(StudentClassListVo.convertToVoWithPage(maps));
     }
 
 }
