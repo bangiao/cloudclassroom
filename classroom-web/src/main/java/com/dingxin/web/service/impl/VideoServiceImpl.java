@@ -12,7 +12,6 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
@@ -91,11 +90,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     @Override
-    public IPage<Video> listQuery(BaseQuery<VideoListRequest> query) {
+    public IPage<Video> listQuery(VideoListRequest query) {
         LambdaQueryWrapper<Video> queryWrapper = Wrappers.lambdaQuery();
-        VideoListRequest data = query.getData();
-        if(Objects.nonNull(data)){
-            String queryStr = data.getQueryStr();
+        String queryStr = query.getQueryStr();
+        if(Objects.nonNull(queryStr)){
             queryWrapper
                     .like(StringUtils.isNotEmpty(queryStr),
                         Video::getVideoName,queryStr)
@@ -113,7 +111,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                             Video::getVideoName,
                             Video::getVideoAttachment);
         }
-        Page<Video> page = query.convertToPage();
+        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
         IPage<Video> iPage = videoMapper.selectPage(page,queryWrapper);
         return iPage;
     }

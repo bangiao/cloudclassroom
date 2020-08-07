@@ -2,7 +2,6 @@ package com.dingxin.web.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
@@ -18,7 +17,7 @@ public interface IVideoService extends IService<Video> {
 
     List<Video> like(Video data);
 
-    IPage<Video> listQuery(BaseQuery<VideoListRequest> query);
+    IPage<Video> listQuery(VideoListRequest query);
     /**
      * 删除课程(假删除)
      */
