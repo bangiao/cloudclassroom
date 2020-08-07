@@ -56,9 +56,7 @@ public class OperationLogController {
     @ApiOperation(value = "列表条件查询")
     @OperationWatcher(operateDesc = "获取满足条件的所有日志列表")
     public BaseResult<Page<OperationLogVo>> listByQuery(@RequestBody BaseQuery<OperationLogRequest> query) {
-        if (Objects.isNull(query.getData())) {
-            return BaseResult.failed(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
-        }
+
         IPage<OperationLog> operationLogPo = operationLogService.queryPage(query);
         IPage<OperationLogVo> pageList = OperationLogVo.convertToVoWithPage(operationLogPo);
 
