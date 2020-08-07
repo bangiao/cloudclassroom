@@ -19,6 +19,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Viewpager extends Model<Viewpager> {
 
     private static final long serialVersionUID=1L;
@@ -41,6 +42,7 @@ public class Viewpager extends Model<Viewpager> {
      * 图片大小
      */
     @ApiModelProperty(value = "图片大小")
+
     private Long picSize;
     /**
      * 图片存放地址

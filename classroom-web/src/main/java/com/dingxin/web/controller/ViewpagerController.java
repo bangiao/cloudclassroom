@@ -2,17 +2,24 @@ package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.po.Viewpager;
 import com.dingxin.web.service.IViewpagerService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.apache.commons.collections.CollectionUtils;
 import com.dingxin.pojo.basic.BaseResult;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -55,10 +62,27 @@ public class ViewpagerController {
      * 保存
      */
     @PostMapping
-    @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  Viewpager viewpager){
-        boolean retFlag= viewpagerService.save(viewpager);
-        return BaseResult.success(retFlag);
+    @ApiOperation(value = "上传图片")
+    public BaseResult save(@RequestBody MultipartFile multipartFile) throws IOException {
+        if (!multipartFile.isEmpty()){
+            String filename = multipartFile.getOriginalFilename();
+            String extension = filename.substring(filename.lastIndexOf(".") + 1);
+            if (extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("gif")){
+                BASE64Encoder encoder = new BASE64Encoder();
+                Viewpager viewpager = Viewpager.builder()
+                        .picName(multipartFile.getOriginalFilename())
+                        .picSize(multipartFile.getSize())
+                        .picType(multipartFile.getContentType())
+                        .picUrl(encoder.encode(multipartFile.getBytes()))
+                        .modifyTime(LocalDateTime.now())
+                        .build();
+                return BaseResult.success(viewpagerService.save(viewpager));
+            }else {
+                return BaseResult.failed(ExceptionEnum.MULTIPARTFILE_TYPE_ERROR);
+            }
+
+        }
+        return BaseResult.success();
     }
 
     /**
