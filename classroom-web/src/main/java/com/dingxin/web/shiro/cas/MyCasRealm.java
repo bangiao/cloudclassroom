@@ -89,7 +89,6 @@ public class MyCasRealm extends CasRealm {
 //            throw new CasAuthenticationException("验证ticket失败", e);
 //        }
 
-
         MyCasToken casToken = (MyCasToken) token;
         if (token==null){
             return null;
@@ -98,8 +97,6 @@ public class MyCasRealm extends CasRealm {
         String generateToken = tokenUtil.generateToken(wid);
 //        LambdaQueryWrapper<CasEmploys> queryWrapper = Wrappers.<CasEmploys>lambdaQuery().eq(CasEmploys::getSid, wid);
 //        CasEmploys employs = casEmploysService.getOne(queryWrapper);
-
-
         CasEmploys employs = casEmploysService.getById(wid);
         if (employs == null){
             return null;

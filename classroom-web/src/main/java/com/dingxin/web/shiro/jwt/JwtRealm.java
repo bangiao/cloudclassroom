@@ -2,6 +2,7 @@ package com.dingxin.web.shiro.jwt;
 
 import com.dingxin.common.utils.TokenUtil;
 import com.dingxin.pojo.po.CasEmploys;
+import com.dingxin.web.service.ICasEmploysService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -24,7 +25,10 @@ public class JwtRealm extends AuthorizingRealm {
 
 
     @Autowired
-    private TokenUtil          tokenUtil;
+    private TokenUtil tokenUtil;
+    @Autowired
+    private ICasEmploysService casEmploysService;
+
 
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -48,26 +52,20 @@ public class JwtRealm extends AuthorizingRealm {
         return info;
     }
 
+    /**
+     * 解析token认证用户登录信息
+     * @param authenticationToken
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         JwtToken jwtToken = (JwtToken) authenticationToken;
-
         // 获取token
         String token = jwtToken.getToken();
-
-        // 从token中获取用户名
         String sid = tokenUtil.getUsernameFromToken(token);
-        //根据sid查询CAS用户信息
-        CasEmploys casEmploys = null;
-        try {
-//            casEmploys = casEmploysService.selectById(sid);
-            casEmploys = null;
-            casEmploys.setToken(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            new IncorrectCredentialsException("系统没有该用户,请等待");
-        }
-
+        CasEmploys casEmploys = casEmploysService.getById(sid);
+        casEmploys.setToken(token);
         return new SimpleAuthenticationInfo(casEmploys, token, sid);
     }
 

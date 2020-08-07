@@ -13,6 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *  实体类
@@ -83,6 +84,10 @@ public class CasEmploys extends Model<CasEmploys> {
 
 	@TableField(exist = false)
 	private String token;
+
+	@ApiModelProperty("角色列表")
+	@TableField(exist = false)
+	private List<Role> roles;
 
 
 	@Override
