@@ -38,8 +38,8 @@ import java.util.Map;
  * @email jianghuaidi@szdxsoft.com
  * @date 2019/6/13
  */
-@Configuration
-@Import(BeanValidatorPluginsConfiguration.class)
+//@Configuration
+//@Import(BeanValidatorPluginsConfiguration.class)
 public class ShiroConfiguration {
 
     // CasServerUrlPrefix

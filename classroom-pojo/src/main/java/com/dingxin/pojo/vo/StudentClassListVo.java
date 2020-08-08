@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.pojo.po.Role;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.po.Student;
 import com.google.common.collect.Lists;
@@ -14,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,35 +62,27 @@ public class StudentClassListVo extends Model<StudentClassListVo> {
      * 学习开始时间
      */
     @ApiModelProperty(value = "学习开始时间")
-    private String startStudentTime;
+    private LocalDateTime startStudentTime;
 
 
     /**
-     * 学习时长
+     * 学习时长字符串
      */
-    @ApiModelProperty(value = "学习时长")
-    private String xxsc;
+    @ApiModelProperty(value = "学习时长字符串")
+    private String studyLengthStr;
 
 
-    public static StudentClassListVo convent(Map<String,String> source) {
-        if (Objects.isNull(source)) {
+    public static StudentClassListVo convent(StduentClassSeeRecord record) {
+        if (Objects.isNull(record)) {
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return StudentClassListVo.builder().teacherName(source.get("teacher_name")).classType(source.get("class_type_name"))
-                .className(source.get("class_name")).classId(Integer.parseInt(source.get("class_id"))).studentId(Integer.parseInt(source.get("student_id"))).xxsc(source.get("xxsc"))
-                .startStudentTime(source.get("startStudentTime")).build();
+        return StudentClassListVo.builder().teacherName(record.getTeacherName()).classType(record.getClassName())
+                .className(record.getClassName()).studyLengthStr(record.getStudyLengthStr())
+                .startStudentTime(record.getCreateTime()).classId(record.getClassId()).studentId(record.getStudentId()).build();
     }
 
-    public static List<StudentClassListVo> convertToVoWithPage(List<Map<String, Object>> record) {
-        if (Objects.isNull(record)||record.size()==0){
-            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
-        }
-        ArrayList<StudentClassListVo> objects = Lists.newArrayList();
-        for (Map map : record) {
-            objects.add(StudentClassListVo.convent(map));
-        }
-        return  objects;
+    public static IPage<StudentClassListVo> convertToVoWithPage(IPage<StduentClassSeeRecord> record) {
+        return record.convert(StudentClassListVo::convent);
     }
-
 
 }

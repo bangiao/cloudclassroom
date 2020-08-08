@@ -95,8 +95,8 @@ public class StduentClassSeeRecordController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除学生记录表信息")
-    public BaseResult delete(@RequestBody IdRequest id) {
+    @ApiOperation(value = "管理端 学生学习情况 删除学生记录表信息")
+    public BaseResult delete(@Validated@RequestBody StudentStudyCaseListRequest id) {
         boolean retFlag = stduentClassSeeRecordService.delete(id);
         return BaseResult.success(retFlag);
     }
@@ -105,9 +105,30 @@ public class StduentClassSeeRecordController {
      * 批量删除删除
      */
     @PostMapping("/delete/batch")
-    @ApiOperation(value = "批量删除学生记录表信息")
+    @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list) {
         boolean retFlag = stduentClassSeeRecordService.deleteBatch(list);
+        return BaseResult.success(retFlag);
+    }
+
+
+    /**
+     * 删除
+     */
+    @PostMapping("/deleteForClass")
+    @ApiOperation(value = "管理端 学生学习情况 依课程Id删除学生记录表信息")
+    public BaseResult deleteForClass(@Validated@RequestBody StudentStudyCaseClassRequest scid) {
+        boolean retFlag = stduentClassSeeRecordService.deleteForClass(scid);
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 批量删除删除
+     */
+    @PostMapping("/deleteForClass/batch")
+    @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
+    public BaseResult deleteForClass(@RequestBody StudentStudyCaseClassBatchRequest list) {
+        boolean retFlag = stduentClassSeeRecordService.deleteForClassBatch(list);
         return BaseResult.success(retFlag);
     }
 
@@ -116,7 +137,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/studentList")
     @ApiOperation(value = "管理端 学生学习情况 学生列表")
-    public BaseResult<Page<Student>> studentList(@RequestBody StudentStudyStudentListRequest query) {
+    public BaseResult<Page<StudentRecordListVo>> studentList(@RequestBody StudentStudyStudentListRequest query) {
         IPage<StudentRecordListVo> studentRecordListVoIPage = stduentClassSeeRecordService.studentList(query);
         return BaseResult.success(studentRecordListVoIPage);
     }
@@ -125,11 +146,11 @@ public class StduentClassSeeRecordController {
      * 学习课程列表
      */
     @PostMapping("/courseList")
-    @ApiOperation(value = "学习课程列表")
+    @ApiOperation(value = " 管理端 学生学习情况 学习课程列表")
     public BaseResult<Page<StudentClassListVo>> courseList(@Validated @RequestBody StudentStudyCaseListRequest query) {
-        List<Map<String, Object>> maps = stduentClassSeeRecordService.queryCoursePageList(query);
+        IPage<StduentClassSeeRecord> iPage = stduentClassSeeRecordService.queryCoursePageList(query);
 
-        return BaseResult.success(StudentClassListVo.convertToVoWithPage(maps));
+        return BaseResult.success(StudentClassListVo.convertToVoWithPage(iPage));
     }
 
 }

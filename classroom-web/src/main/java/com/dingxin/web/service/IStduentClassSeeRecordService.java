@@ -47,7 +47,7 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
      * @param id
      * @return
      */
-    boolean delete(IdRequest id);
+    boolean delete(StudentStudyCaseListRequest id);
 
     /**
      * 批量删除
@@ -85,5 +85,18 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
      * @param query
      * @return
      */
-    List<Map<String, Object>> queryCoursePageList(StudentStudyCaseListRequest query);
+    IPage queryCoursePageList(StudentStudyCaseListRequest query);
+
+    /**
+     * 通过学生id课程id精准删除一条学习记录
+     * @param scid
+     * @return
+     */
+    boolean deleteForClass(StudentStudyCaseClassRequest scid);
+    /**
+     * 批量删除通过过学生id课程id精准删除一条学习记录
+     * @param
+     * @return
+     */
+    boolean deleteForClassBatch(StudentStudyCaseClassBatchRequest list);
 }

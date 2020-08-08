@@ -30,5 +30,10 @@ public class CurriculumFuzzyQuery4List extends BaseQuery4List {
      */
     @ApiModelProperty("审核状态(-1 未通过，0未审核，1审核通过)")
     private Integer auditFlag;
+    /**
+     * 课程类型
+     */
+    @ApiModelProperty("课程类型")
+    private Integer classType;
 
 }

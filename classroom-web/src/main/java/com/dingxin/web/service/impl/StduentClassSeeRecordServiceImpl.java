@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -159,9 +160,9 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      * @return
      */
     @Override
-    public boolean delete(IdRequest id) {
+    public boolean delete(StudentStudyCaseListRequest id) {
         LambdaUpdateWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaUpdate();
-        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getId()), StduentClassSeeRecord::getId, id.getId());
+        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getStudentId()), StduentClassSeeRecord::getStudentId, id.getStudentId());
         return update(qw);
     }
 
@@ -268,10 +269,17 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
         List<Integer> list = studentRecordListVoIPage.getRecords().stream().map(StudentRecordListVo::getId).collect(Collectors.toList());
         if (!Objects.isNull(list) || list.size() > 0) {
             QueryWrapper<StduentClassSeeRecord> qs = Wrappers.query();
-            qs.select("student_id", "sum(study_length)").eq("del_flag", CommonConstant.DEL_FLAG).in(list.size() > 0, "studentId", list).groupBy("studentId");
-            Map<Integer, Long> map = list(qs).stream().collect(Collectors.toMap(StduentClassSeeRecord::getStudentId, StduentClassSeeRecord::getStudyLength));
-            for (StudentRecordListVo record : studentRecordListVoIPage.getRecords()) {
-                record.setXxsc((DateUtils.formatDateTimeStr(map.get(record.getId()))));
+            qs.select("student_id", "sum(study_length) as sum ").eq("del_flag", CommonConstant.DEL_FLAG).in(list.size() > 0, "student_id", list).groupBy("student_id");
+            List<Map<String, Object>> maps = listMaps(qs);
+            if (!com.dingxin.common.utils.CollectionUtils.isEmpty(maps)) {
+                for (StudentRecordListVo record : studentRecordListVoIPage.getRecords()) {
+                    for (Map<String, Object> map : maps) {
+                        if (Integer.parseInt(map.get("student_id").toString()) == record.getId()) {
+                            record.setXxsc((DateUtils.formatDateTimeStr(Long.parseLong(map.get("sum").toString()))));
+                        }
+                    }
+
+                }
             }
         }
         return studentRecordListVoIPage;
@@ -286,17 +294,42 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      */
 
     @Override
-    public List<Map<String, Object>> queryCoursePageList(StudentStudyCaseListRequest query) {
-        QueryWrapper<StduentClassSeeRecord> qw = Wrappers.query();
-        qw.select("student_id", "class_id", "class_name", "class_type_name", "teacher_name", "sum(study_length) xxsc", "min(create_time) startStudentTime").eq("student_id", query.getStudentId())
-                .eq("calss_id", query.getClassId()).groupBy("student_id", "calss_id").orderByAsc("create_time desc");
-        List<Map<String, Object>> maps = listMaps(qw);
-        for (Map<String, Object> map : maps) {
-            map.put("xxsc", DateUtils.formatDateTimeStr(Long.parseLong(map.get("xxsc").toString())));
+    public IPage queryCoursePageList(StudentStudyCaseListRequest query) {
+        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
+        qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
+        qw.eq(StduentClassSeeRecord::getStudentId,query.getStudentId());
+
+        Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
+        IPage pageList = page(page, qw);
+
+
+        return pageList;
+    }
+    /**
+     * 通过学生id课程id精准删除一条学习记录
+     * @param scid
+     * @return
+     */
+    @Override
+    public boolean deleteForClass(StudentStudyCaseClassRequest scid) {
+        LambdaUpdateWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaUpdate();
+        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(scid.getStudentId()), StduentClassSeeRecord::getStudentId, scid.getStudentId())
+        .eq(StduentClassSeeRecord::getClassId,scid.getClassId());
+        return update(qw);
+    }
+    /**
+     * 批量删除通过过学生id课程id精准删除一条学习记录
+     * @param
+     * @return
+     */
+    @Override
+    public boolean deleteForClassBatch(StudentStudyCaseClassBatchRequest list) {
+        if (Objects.isNull(list)) {
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
-
-
-        return maps;
+        LambdaUpdateWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaUpdate();
+        qw.set(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(StduentClassSeeRecord::getStudentId,list.getStudentId()).in(StduentClassSeeRecord::getClassId, list.getClassIdList());
+        return update(qw);
     }
 
     /**
@@ -307,9 +340,21 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      */
     @Override
     public boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord) {
+        LambdaQueryWrapper<StduentClassSeeRecord>  qw= Wrappers.lambdaQuery();
+        qw.eq(StduentClassSeeRecord::getDelFlag,CommonConstant.DEL_FLAG)
+                .eq(StduentClassSeeRecord::getStudentId,stduentClassSeeRecord.getStudentId())
+                .eq(StduentClassSeeRecord::getClassId,stduentClassSeeRecord.getClassId());
+        StduentClassSeeRecord one = getOne(qw);
+        if (!Objects.isNull(one)){
+            one.setStudyLength(stduentClassSeeRecord.getStudyLength());
+            one.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
+            stduentClassSeeRecord=one;
+        }else {
 //        学习时长格式化
-        stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
-        return save(stduentClassSeeRecord);
+            stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
+        }
+
+        return saveOrUpdate(stduentClassSeeRecord);
 
     }
 

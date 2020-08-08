@@ -37,19 +37,6 @@ public class CrrStudentStudyCaseController {
     private IStudentService studentService;
 
 
-    /**
-     * 列表查询
-     */
-    @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
-    public BaseResult<Page<CrrStudentStudyCase>> list(@RequestBody StudentStudyCaseListRequest query) {
-        //查询列表数据
-        Page<CrrStudentStudyCase> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<CrrStudentStudyCase> qw = new LambdaQueryWrapper<>();
-        qw.eq(CrrStudentStudyCase::getDelFlag, CommonConstant.DEL_FLAG);
-        IPage pageList = crrStudentStudyCaseService.page(page, qw);
-        return BaseResult.success(pageList);
-    }
 
     /**
      * 单个查询

@@ -9,6 +9,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.po.Student;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Api("返回学生信息")
 public class StudentRecordListVo extends Model<StudentRecordListVo> {
 
     private static final long serialVersionUID=1L;
