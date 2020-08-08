@@ -56,8 +56,8 @@ public class VideoController {
     @ApiOperation(value = "保存视频")
     public BaseResult save(@Validated @RequestBody VideoInsertRequest video){
         videoService.saveVideoRelated(video);
-        //同时更新课表表的总时长
-        videoService.updateCurriculumVideoDuration(video.getCurriculumId());
+        //todo 同时更新课表表的总时长
+//        videoService.updateCurriculumVideoDuration(video.getCurriculumId());
 
         return BaseResult.success();
     }
