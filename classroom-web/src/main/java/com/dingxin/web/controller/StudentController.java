@@ -3,7 +3,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.StudentStudyStudentListRequest;
 import com.dingxin.web.service.IStudentService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -34,10 +36,8 @@ public class StudentController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生信息表列表")
-    public BaseResult<Page<Student>>list(@RequestBody BaseQuery<Student> query){
-        //查询列表数据
-        Page<Student> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = studentService.page(page,Wrappers.query(query.getData()));
+    public BaseResult<Page<Student>>list(@RequestBody StudentStudyStudentListRequest query){
+        IPage pageList = studentService.queryPageList(query);
         return BaseResult.success(pageList);
     }
 

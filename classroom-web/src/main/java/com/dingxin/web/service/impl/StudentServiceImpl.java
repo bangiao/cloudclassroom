@@ -1,8 +1,12 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.pojo.po.Student;
 import com.dingxin.dao.mapper.StudentMapper;
+import com.dingxin.pojo.request.StudentStudyStudentListRequest;
 import com.dingxin.web.service.IStudentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,4 +173,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     }
 
+    @Override
+    public IPage queryPageList(StudentStudyStudentListRequest query) {
+        //查询列表数据
+        Page<Student> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<Student> wrapper = Wrappers.lambdaQuery();
+        String queryStr = query.getQueryStr();
+        if(StringUtils.isNotEmpty(queryStr)){
+            wrapper.and(Wrapper -> Wrapper.like(Student::getXm,queryStr));
+        }
+        IPage pageList = this.page(page,wrapper);
+        return pageList;
+    }
 }
