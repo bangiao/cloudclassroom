@@ -141,4 +141,12 @@ public class CurriculumController {
         curriculumService.disableCurriculum(curriculumIds);
         return BaseResult.success();
     }
+
+    @PostMapping("/enable")
+    @ApiOperation(value = "启用课程")
+    public BaseResult enable(@RequestBody List<Integer> curriculumIds){
+
+        curriculumService.enableCurriculum(curriculumIds);
+        return BaseResult.success();
+    }
 }

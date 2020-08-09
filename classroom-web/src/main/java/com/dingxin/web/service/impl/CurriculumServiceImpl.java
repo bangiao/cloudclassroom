@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.IdRequest;
@@ -115,6 +116,23 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                 set(
                         Curriculum::getDisableFlag,
                         CommonConstant.DISABLE_TRUE)
+                .in(
+                        Curriculum::getId,
+                        curriculumIds);
+
+        update(disableQuery);
+    }
+
+    @Override
+    public void enableCurriculum(List<Integer> curriculumIds) {
+        if(CollectionUtils.isEmpty(curriculumIds)){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Curriculum> disableQuery = Wrappers.<Curriculum>lambdaUpdate().
+                set(
+                        Curriculum::getDisableFlag,
+                        CommonConstant.DISABLE_FALSE)
                 .in(
                         Curriculum::getId,
                         curriculumIds);
