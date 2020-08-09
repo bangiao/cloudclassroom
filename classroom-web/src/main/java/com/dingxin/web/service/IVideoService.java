@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Video;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.VideoInsertRequest;
-import com.dingxin.pojo.request.VideoListRequest;
-import com.dingxin.pojo.request.VideoUpdateRequest;
+import com.dingxin.pojo.request.*;
 
 import java.util.List;
 
@@ -80,4 +77,7 @@ public interface IVideoService extends IService<Video> {
      */
     void updateVideoRelatedCurriculumAuditFlag(Integer curriculumId);
 
+    IPage queryPageList(VideoListRequest query);
+
+    void audit(VideoAuditRequest videoAudit);
 }

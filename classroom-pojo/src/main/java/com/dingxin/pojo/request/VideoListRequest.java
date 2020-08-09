@@ -16,7 +16,14 @@ public class VideoListRequest extends BaseQuery4List {
      * 模糊查询查询专用字段
      */
     @ApiModelProperty(value = "模糊查询查询专用字段")
-    private String queryStr;;
+    private String queryStr;
+
+
+    /**
+     * 课程id
+     */
+    @ApiModelProperty(value = "课程id")
+    private Integer curriculumId;
 
 
 }

@@ -20,7 +20,7 @@ public class ClassEvaluateListRequest extends BaseQuery4List {
      * 模糊查询查询专用字段
      */
     @ApiModelProperty(value = "模糊查询查询专用字段")
-    private String queryStr;;
+    private String queryStr;
     /**
      * 课程id
      */

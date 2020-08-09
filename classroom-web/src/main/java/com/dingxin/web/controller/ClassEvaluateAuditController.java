@@ -42,12 +42,8 @@ public class ClassEvaluateAuditController {
      */
     @PostMapping("/audit")
     @ApiOperation(value = "审核")
-    public BaseResult audit(@RequestBody ClassEvaluate classEvaluate) {
-        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(ClassEvaluate::getStatus, classEvaluate.getStatus());
-        wrapper.set(ClassEvaluate::getAuditComments, classEvaluate.getAuditComments());
-        wrapper.eq(ClassEvaluate::getId, classEvaluate.getId());
-        classEvaluateService.update(wrapper);
+    public BaseResult audit(@RequestBody VideoAuditRequest videoAuditRequest) {
+        classEvaluateService.audit(videoAuditRequest);
         return BaseResult.success().setMsg("审核成功！");
     }
 
@@ -55,29 +51,12 @@ public class ClassEvaluateAuditController {
      * 批量审核通过
      */
     @PostMapping("/auditBatch")
-    @ApiOperation(value = "批量审核通过")
+    @ApiOperation(value = "批量审核")
     public BaseResult auditBatch(@Validated @RequestBody ClassEvaluateRequest classEvaluateRequest) {
-        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
-        wrapper.set(ClassEvaluate::getAuditComments, classEvaluateRequest.getAuditComments());
-        wrapper.in(ClassEvaluate::getId, classEvaluateRequest.getIdList());
-        classEvaluateService.update(wrapper);
+        classEvaluateService.auditBatch(classEvaluateRequest);
         return BaseResult.success().setMsg("批量审核成功！");
     }
 
-    /**
-     * 批量审核未通过
-     */
-    @PostMapping("/auditBatchUnapprove")
-    @ApiOperation(value = "批量审核未通过")
-    public BaseResult auditBatchUnapprove(@Validated @RequestBody ClassEvaluateRequest classEvaluateRequest) {
-        LambdaUpdateWrapper<ClassEvaluate> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(ClassEvaluate::getStatus, CommonConstant.STATUS_UNAPPROVED);
-        wrapper.set(ClassEvaluate::getAuditComments, classEvaluateRequest.getAuditComments());
-        wrapper.in(ClassEvaluate::getId, classEvaluateRequest.getIdList());
-        classEvaluateService.update(wrapper);
-        return BaseResult.success().setMsg("批量审核成功！");
-    }
 
     /**
      * 评价审核列表查询
@@ -85,16 +64,7 @@ public class ClassEvaluateAuditController {
     @PostMapping("/auditList")
     @ApiOperation(value = "评价审核列表查询")
     public BaseResult<Page<ClassEvaluate>> auditList(@RequestBody ClassEvaluateListRequest query) {
-
-        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<ClassEvaluate> qw = new LambdaQueryWrapper<>();
-        String queryStr = query.getQueryStr();
-        if(StringUtils.isNotEmpty(queryStr)){
-            qw.and(Wrapper -> Wrapper.like(ClassEvaluate::getClassName, queryStr).or().like(ClassEvaluate::getStudentName, queryStr));
-        }
-        qw.eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
-        qw.in(ClassEvaluate::getStatus, AuditStatusEnum.getAllStatus());
-        IPage pageList = classEvaluateService.page(page, qw);
+        IPage pageList = classEvaluateService.queryAuditPageList(query);
         return BaseResult.success(pageList);
     }
 }

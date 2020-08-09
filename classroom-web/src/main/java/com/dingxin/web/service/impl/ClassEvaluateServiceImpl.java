@@ -13,9 +13,7 @@ import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.shiro.ShiroUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -215,5 +213,48 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
         qw.eq(ClassEvaluate::getId, id.getId()).eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
         return getOne(qw);
+    }
+
+    /**
+     * 获取评价审核列表
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage queryAuditPageList(ClassEvaluateListRequest query) {
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
+        qw.eq(ClassEvaluate::getClassId,query.getClassId());
+        IPage<ClassEvaluate> iPage = this.page(page);
+        return iPage;
+    }
+
+    /**
+     *批量审核评价通过
+     * @param classEvaluateRequest
+     */
+
+    @Override
+    public void auditBatch(ClassEvaluateRequest classEvaluateRequest) {
+        LambdaUpdateWrapper<ClassEvaluate> wrapper = Wrappers.lambdaUpdate();
+        wrapper.set(ClassEvaluate::getStatus, classEvaluateRequest.getAuditStatus());
+        wrapper.set(ClassEvaluate::getAuditComments, classEvaluateRequest.getAuditComments());
+        wrapper.eq(ClassEvaluate::getClassId,classEvaluateRequest.getClassId());
+        wrapper.in(ClassEvaluate::getId, classEvaluateRequest.getIdList());
+        this.update(wrapper);
+    }
+
+    /**
+     * 单个审核
+     * @param classEvaluate
+     */
+    @Override
+    public void audit(VideoAuditRequest classEvaluate) {
+        LambdaUpdateWrapper<ClassEvaluate> wrapper = Wrappers.lambdaUpdate();
+        wrapper.set(ClassEvaluate::getStatus, classEvaluate.getAuditStatus());
+        wrapper.eq(ClassEvaluate::getId, classEvaluate.getId());
+        wrapper.eq(ClassEvaluate::getClassId,classEvaluate.getCurriculumId());
+        this.update(wrapper);
     }
 }

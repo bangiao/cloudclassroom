@@ -3,9 +3,7 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.pojo.request.*;
 
 import java.util.List;
 
@@ -54,4 +52,23 @@ public interface IClassEvaluateService extends IService<ClassEvaluate> {
      * @return
      */
     ClassEvaluate getByIdSelf(IdRequest id);
+
+    /**
+     * 获取评价列表
+     * @param query
+     * @return
+     */
+    IPage queryAuditPageList(ClassEvaluateListRequest query);
+
+    /**
+     * 批量审核评价
+     * @param classEvaluateRequest
+     */
+    void auditBatch(ClassEvaluateRequest classEvaluateRequest);
+
+    /**
+     * 单个审核评价
+     * @param videoAuditRequest
+     */
+    void audit(VideoAuditRequest videoAuditRequest);
 }
