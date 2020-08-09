@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,12 +19,12 @@ public class UserRoleInsertRequest {
      */
     @NotBlank(message = "casUserId must not be null")
     @ApiModelProperty(value = "用户id")
-    private String casUserId;
+    @Min(value = 1)
+    private List<String> sid;
     /**
      * 角色id集合
      */
     @NotNull(message = "roles must not be null")
-    @Size(min = 1)
-    @ApiModelProperty(value = "角色Id集合")
-    private List<Integer> roles;
+    @ApiModelProperty(value = "角色Id")
+    private Integer roleid;
 }

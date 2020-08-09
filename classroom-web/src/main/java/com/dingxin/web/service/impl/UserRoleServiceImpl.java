@@ -1,23 +1,30 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.UserRoleMapper;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.po.UserRole;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.IdRoleRequest;
 import com.dingxin.pojo.request.UserRoleInsertRequest;
-import com.dingxin.web.service.IMenuService;
-import com.dingxin.web.service.IRoleMenuService;
-import com.dingxin.web.service.IUserRoleService;
+import com.dingxin.pojo.vo.EmploysRoleVo;
+import com.dingxin.pojo.vo.TreeVo;
+import com.dingxin.web.service.*;
 import com.dingxin.web.shiro.ShiroUtils;
 import com.google.common.collect.Lists;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +42,10 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     private IMenuService menuService;
     @Autowired
     private IRoleMenuService roleMenuService;
+    @Autowired
+    private ICasDeptsService deptsService;
+    @Autowired
+    private ICasEmploysService employsService;
 
 
     @Override
@@ -93,12 +104,13 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     @Override
     public boolean saveSelf(UserRoleInsertRequest userRole) {
         LambdaQueryWrapper<UserRole> casUser_id = Wrappers.lambdaQuery();
-        casUser_id.eq(UserRole::getCasUserId, userRole.getCasUserId());
+        casUser_id.eq(UserRole::getCasUserId, userRole.getSid())
+        .eq(UserRole::getRoleId,userRole.getRoleid());
         remove(casUser_id);
         ArrayList<UserRole> userRoles = Lists.newArrayList();
-        List<Integer> roles = userRole.getRoles();
-        roles.forEach(e -> {
-            UserRole build = UserRole.builder().casUserId(userRole.getCasUserId()).roleId(e).build();
+        List<String> users = userRole.getSid();
+        users.forEach(e -> {
+            UserRole build = UserRole.builder().casUserId(e).roleId(userRole.getRoleid()).build();
             userRoles.add(build);
         });
         return saveBatch(userRoles);
@@ -113,9 +125,56 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     @Override
     public boolean deleteBatch(UserRoleInsertRequest request) {
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
-        qw.eq(UserRole::getCasUserId, request.getCasUserId())
-                .in(UserRole::getRoleId, request.getRoles());
+        qw.eq(UserRole::getRoleId,request.getRoleid())
+                .in(UserRole::getCasUserId, request.getSid());
         return remove(qw);
+    }
+
+    /**
+     * 部门树状结构
+     * @return
+     */
+    @Override
+    public List<TreeVo> depts() {
+        String userId = ShiroUtils.getUserId();
+        LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
+        qw.eq(UserRole::getCasUserId,userId);
+        int count = count(qw);
+
+        if (count==0){
+            throw new BusinessException(ExceptionEnum.USER_NOT_CAN_BE_QUERY_USER);
+        }
+        List<String> departmentCodes = ShiroUtils.getDepartmentCodes();
+
+        List<TreeVo> treeVoList =deptsService.queryTree(departmentCodes);
+
+
+        return treeVoList;
+    }
+
+    /**
+     * 根据所选节点返回人员信息
+     * @param id
+     * @return
+     */
+
+    @Override
+    public List<EmploysRoleVo> employs(IdRoleRequest id) {
+        List<CasEmploys>  employs=employsService.selectByDeptId(id.getId());
+        if (CollectionUtils.isEmpty(employs)||employs.size()==0){
+            return null;
+        }
+        List<EmploysRoleVo> var = EmploysRoleVo.listConvent(employs);
+        @NotNull(message = "roleId must not be null") Integer roleId = id.getRoleId();
+        LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
+        qw.eq(UserRole::getRoleId,roleId);
+        List<String> userids = list(qw).stream().map(e -> e.getCasUserId()).collect(Collectors.toList());
+        for (EmploysRoleVo employsRoleVo : var) {
+            if (userids.contains(employsRoleVo.getSid())){
+                employsRoleVo.setCheck(Boolean.TRUE);
+            }
+        }
+        return var;
     }
 
 

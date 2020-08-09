@@ -1,9 +1,14 @@
 package com.dingxin.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.UserRole;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.IdRoleRequest;
 import com.dingxin.pojo.request.UserRoleInsertRequest;
+import com.dingxin.pojo.vo.EmploysRoleVo;
+import com.dingxin.pojo.vo.TreeVo;
 
 import java.util.List;
 
@@ -36,4 +41,18 @@ public interface IUserRoleService extends IService<UserRole> {
      * @return
      */
     boolean deleteBatch(UserRoleInsertRequest request);
+
+
+    /**
+     * 部门树状结构
+     * @return
+     */
+    List<TreeVo> depts();
+
+    /**
+     * 根据所选节点返回人员信息
+     * @param id
+     * @return
+     */
+    List<EmploysRoleVo> employs(IdRoleRequest id);
 }

@@ -16,6 +16,7 @@ public enum ExceptionEnum {
     //1.权限
     PRIVILEGE_CAS_FAIL("1001","CAS验证失败"),
     PRIVILEGE_GET_USER_FAIL("1002","获取当前登录用户失败"),
+    USER_NOT_CAN_BE_QUERY_USER("1003","权限不足"),
 
     //2.主数据配置
 

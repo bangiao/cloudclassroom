@@ -1,6 +1,7 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CasEmploysMapper;
 import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.web.service.ICasEmploysService;
@@ -63,6 +64,18 @@ public class CasEmploysServiceImpl extends ServiceImpl<CasEmploysMapper, CasEmpl
         return casEmploysMapper.selectList(query);
 
 
+    }
+
+    /**
+     * 根据部门id查询下面所有人员信息
+     * @param id 部门id
+     * @return
+     */
+    @Override
+    public List<CasEmploys> selectByDeptId(Integer id) {
+        LambdaQueryWrapper<CasEmploys> qw = Wrappers.lambdaQuery();
+        qw.like(CasEmploys::getDepts,id).eq(CasEmploys::getDisable, CommonConstant.DEL_FLAG);
+        return list(qw);
     }
 
 }

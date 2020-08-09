@@ -7,8 +7,11 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.UserRole;
+import com.dingxin.pojo.request.IdRoleRequest;
 import com.dingxin.pojo.request.UserRoleInsertRequest;
+import com.dingxin.pojo.vo.EmploysRoleVo;
 import com.dingxin.pojo.vo.MenuVo;
+import com.dingxin.pojo.vo.TreeVo;
 import com.dingxin.web.service.IUserRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,4 +82,25 @@ public class UserRoleController {
         boolean retFlag = userRoleService.deleteBatch(request);
         return BaseResult.success(retFlag);
     }
+
+    /**
+     * 部门列表 树状结构
+     */
+    @PostMapping("/depts")
+    @ApiOperation(value = "部门列表 树状结构")
+    public BaseResult depts() {
+        List<TreeVo> list = userRoleService.depts();
+        return BaseResult.success(list);
+    }
+
+    /**
+     * 部门列表 树状结构
+     */
+    @PostMapping("/employs")
+    @ApiOperation(value = "部门列表 树状结构")
+    public BaseResult employs(@Validated @RequestBody IdRoleRequest id) {
+        List<EmploysRoleVo> list = userRoleService.employs(id);
+        return BaseResult.success(list);
+    }
+
 }
