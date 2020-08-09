@@ -148,6 +148,7 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
 */
         List<String> departmentCodes = Lists.newArrayList();
         departmentCodes.add("010");
+        departmentCodes.add("020");
         List<TreeVo> treeVoList =deptsService.queryTree(departmentCodes);
 
 

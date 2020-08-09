@@ -114,16 +114,18 @@ public class CasDeptsServiceImpl extends ServiceImpl<CasDeptsMapper, CasDepts> i
     public List<TreeVo> queryTree(List<String> departmentCodes) {
 
         LambdaQueryWrapper<CasDepts> qw = Wrappers.lambdaQuery();
-        if (CollectionUtils.isEmpty(departmentCodes)||departmentCodes.size()==0){
-            qw.in(CollectionUtils.isNotEmpty(departmentCodes)&&departmentCodes.size()>0,CasDepts::getZsjdwid,departmentCodes);
-        }
+        qw.in(CollectionUtils.isNotEmpty(departmentCodes)&&departmentCodes.size()>0,CasDepts::getZsjdwid,departmentCodes);
         List<CasDepts> list = list(qw);
         if (CollectionUtils.isEmpty(list)||list.size()==0){
             throw new BusinessException(ExceptionEnum.DATA_ZERO);
         }
+        List<TreeVo> transformation = Lists.newArrayList();
 //        没有子节点
+
         List<CasDepts> noChildrenList = list.stream().filter(e -> !e.getCasfjdw().equals("1")).collect(Collectors.toList());
-        List<TreeVo> transformation = transformation(noChildrenList);
+        if (CollectionUtils.isNotEmpty(noChildrenList)) {
+            transformation = transformation(noChildrenList);
+        }
 
         //        获取有子节点的数组id
         List<String> parentids = list.stream().filter(e -> e.getCasfjdw().equals("1")).map(e -> e.getZsjdwid()).collect(Collectors.toList());
