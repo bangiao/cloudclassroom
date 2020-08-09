@@ -1,5 +1,6 @@
 package com.dingxin.web.service;
 
+import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Video;
@@ -35,7 +36,7 @@ public interface IVideoService extends IService<Video> {
     /**
      * 删除课程下的所有视频
      */
-    void deleteCurriculumRelatedVideo(List<Integer> curriculumIds);
+    void deleteCurriculumRelatedVideo(List<Integer> curriculumIds, Func<Video,?> column);
     /**
      * 保存视频
      * @param video
@@ -69,9 +70,14 @@ public interface IVideoService extends IService<Video> {
      */
     Video loadVideoDetails(IdRequest id);
     /**
-     * 更新当前视频
+     * 更新当前视频信息
      * @param video
      */
     void updateVideo(VideoUpdateRequest video);
+    /**
+     * 更新当前视频对应课程的审核状态
+     * @param curriculumId
+     */
+    void updateVideoRelatedCurriculumAuditFlag(Integer curriculumId);
 
 }
