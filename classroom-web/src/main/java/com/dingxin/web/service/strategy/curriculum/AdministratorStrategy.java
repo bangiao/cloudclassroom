@@ -64,7 +64,8 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
                         Curriculum::getCurriculumDesc,
                         Curriculum::getVideoDuration,
                         Curriculum::getWatchAmount,
-                        Curriculum::getAuditFlag);
+                        Curriculum::getAuditFlag,
+                        Curriculum::getDisableFlag);
 
         return curriculumMapper.selectPage(page, curriculumQuery);
     }
