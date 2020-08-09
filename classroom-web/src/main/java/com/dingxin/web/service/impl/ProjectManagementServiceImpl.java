@@ -296,5 +296,20 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         return BaseResult.success().setMsg("修改专题成功");
     }
 
+    /**
+     * 批量删除
+     * @param idList
+     * @return
+     */
+    @Override
+    public BaseResult logicDeleteByIds(List<Integer> idList) {
+        List<ProjectManagement> dbLists = (List<ProjectManagement>) this.listByIds(idList);
+        dbLists.stream().forEach(pm->{
+            pm.setDelFlag(true);
+        });
+        this.updateBatchById(dbLists);
+        return new BaseResult().setMsg("删除成功");
+    }
+
 
 }

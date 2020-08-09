@@ -33,6 +33,8 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
     BaseResult insertOne(ProjectManagement projectManagement);
 
     BaseResult updateProject(ProjectManagement projectManagement);
+
+    BaseResult logicDeleteByIds(List<Integer> idList);
 }
 
 

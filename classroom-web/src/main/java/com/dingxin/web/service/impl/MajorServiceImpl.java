@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.dao.mapper.MajorMapper;
 import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Major;
+import com.dingxin.pojo.request.MajorRequest;
 import com.dingxin.pojo.request.StudentStudyStudentListRequest;
 import com.dingxin.web.service.IMajorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +63,14 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
         wrapper.like(Major::getMajorName,query.getQueryStr());
         IPage pageList = this.page(page,wrapper);
         return pageList;
+    }
+
+    @Override
+    public BaseResult<List<Major>> selectList(MajorRequest request) {
+        String deptId = request.getDeptId();
+        LambdaQueryWrapper<Major> eq = Wrappers.<Major>lambdaQuery().eq(Major::getCollegeCode, deptId);
+        List<Major> list = this.list(eq);
+        BaseResult result = BaseResult.success(list, "查询成功");
+        return result;
     }
 }

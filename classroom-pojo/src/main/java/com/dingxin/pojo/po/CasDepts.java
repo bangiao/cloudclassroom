@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *  实体类
@@ -62,6 +63,10 @@ public class CasDepts extends Model<CasDepts> {
 	@TableField("DISABLE")
 	@ApiModelProperty(value = "是否禁用")
 	private Integer disable;
+
+	@TableField(exist = false)
+	@ApiModelProperty("子部门")
+	private List<CasDepts> subDepts;
 
 
 	@Override

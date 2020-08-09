@@ -3,13 +3,17 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.annotation.ManTag;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.pojo.basic.BaseQuery4List;
 import com.dingxin.pojo.po.Major;
+import com.dingxin.pojo.request.MajorRequest;
 import com.dingxin.pojo.request.StudentStudyStudentListRequest;
 import com.dingxin.web.service.IMajorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import com.dingxin.pojo.basic.BaseResult;
+
+import java.util.List;
 
 /**
  * 专业管理
@@ -33,6 +37,14 @@ public class MajorController {
     public BaseResult<Page<Major>>list(@RequestBody StudentStudyStudentListRequest query){
         IPage pageList = majorService.queryPageList(query);
         return BaseResult.success(pageList);
+    }
+    /**
+     * 列表查询
+     */
+    @PostMapping("/selectList")
+    @ApiOperation(value = "用于前端获取下拉列表")
+    public BaseResult<List<Major>> selectlist(@RequestBody MajorRequest request){
+        return majorService.selectList(request);
     }
 
     /**

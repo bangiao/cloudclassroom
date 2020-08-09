@@ -89,6 +89,10 @@ public class ProjectManagement extends Model<ProjectManagement> {
     @ApiModelProperty(value = "修改时间")
     private LocalDateTime modifyTime;
 
+    @ApiModelProperty("专题图片URL")
+    @TableField(value = "pic_url")
+    private String picUrl;
+
     @TableField(exist = false)
     private List<Integer> courseIds;
 

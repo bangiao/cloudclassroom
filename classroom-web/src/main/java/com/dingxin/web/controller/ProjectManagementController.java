@@ -123,6 +123,6 @@ public class ProjectManagementController {
     @PostMapping("/delete")
     @ApiOperation(value = "删除专题信息")
     public BaseResult delete(@RequestBody List<Integer> idList) {
-        return BaseResult.success(projectManagementService.deleteByIds(idList)).setMsg("删除成功");
+        return projectManagementService.logicDeleteByIds(idList);
     }
 }
