@@ -93,6 +93,14 @@ public class ProjectManagement extends Model<ProjectManagement> {
     @TableField(value = "pic_url")
     private String picUrl;
 
+    @ApiModelProperty("部门ID")
+    @NotNull(message = "院系ID不能为null")
+    private String deptId;
+
+    @ApiModelProperty("专业ID")
+    @NotNull(message = "专业ID不能为null")
+    private String majorId;
+
     @TableField(exist = false)
     private List<Integer> courseIds;
 
