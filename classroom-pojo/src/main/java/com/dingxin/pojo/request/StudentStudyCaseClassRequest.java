@@ -8,17 +8,23 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Api("学生学习情况课程列表请求数据传输对象")
-public class StudentStudyCaseListRequest extends BaseQuery4List {
+@Api("学生学习情况课程删除数据传输对象")
+public class StudentStudyCaseClassRequest{
 
     private static final long serialVersionUID = 1L;
 
-
     /**
-     * 学生id
+     * 课程id
      */
-    @NotNull(message = "学生id不能为空")
+    @NotNull(message = "studentId")
     @ApiModelProperty(value = "学生id")
     private Integer studentId;
+
+    /**
+     * 课程id
+     */
+    @NotNull(message = "classId")
+    @ApiModelProperty(value = "课程id")
+    private Integer classId;
 
 }

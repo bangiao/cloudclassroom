@@ -10,6 +10,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IUserRoleService;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 后台管理课程管理接口
@@ -77,6 +79,15 @@ public class CurriculumController {
         }
 
         return BaseResult.success(CurriculumVo.convertToVoWithPage(pageList));
+    }
+    /**
+     * 列表查询
+     */
+    @PostMapping("/listall")
+    @ApiOperation(value = "获取所有课程列表下拉")
+    public BaseResult<Page<CurriculumVo>>listall(TeacherIdRequest idRequest){
+        List<Map<String, Object>> list=curriculumService.listall(idRequest);
+        return BaseResult.success(list);
     }
 
     /**

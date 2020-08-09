@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -43,6 +45,15 @@ public class TeachersController {
     public BaseResult<Page<Teachers>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         return BaseResult.success(teachersService.queryPage(query));
+    }
+    /**
+     * 讲师管理列表查询
+     */
+    @PostMapping("/listall")
+    @ApiOperation(value = "获取列表下拉")
+    public BaseResult<Map> listall() {
+        //查询列表数据
+        return BaseResult.success(teachersService.queryAll());
     }
     /**
      * 讲师管理Pc列表查询

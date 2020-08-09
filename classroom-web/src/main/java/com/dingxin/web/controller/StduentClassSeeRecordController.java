@@ -6,13 +6,12 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
-import com.dingxin.pojo.request.CommIdQueryListRequest;
-import com.dingxin.pojo.request.CommQueryListRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.StduentClassSeeRecordInsertRequest;
+import com.dingxin.pojo.po.Student;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
+import com.dingxin.pojo.vo.StudentClassListVo;
+import com.dingxin.pojo.vo.StudentRecordListVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 学生记录表
@@ -46,7 +46,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生记录表列表")
-    public BaseResult<Page<StduentClassSeeRecord>> list(@RequestBody CommIdQueryListRequest query) {
+    public BaseResult<Page<StduentClassSeeRecordVo>> list(@RequestBody CommIdQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.queryPage(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
     }
@@ -56,8 +56,8 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/exportExcel")
     @ApiOperation(value = "导出学生记录")
-    public void exportExcel(@RequestBody(required = false)List<Integer> ids, HttpServletResponse response) throws IOException {
-        stduentClassSeeRecordService.exportExcel(ids,response);
+    public void exportExcel(@RequestBody(required = false) List<Integer> ids, HttpServletResponse response) throws IOException {
+        stduentClassSeeRecordService.exportExcel(ids, response);
     }
 
     /**
@@ -65,7 +65,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/selfList")
     @ApiOperation(value = "自己获取自己的记录列表")
-    public BaseResult<Page<StduentClassSeeRecord>> selfList(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page<StduentClassSeeRecordVo>> selfList(@RequestBody CommQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.selfList(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));
     }
@@ -75,7 +75,7 @@ public class StduentClassSeeRecordController {
      */
     @PostMapping("/get")
     @ApiOperation(value = "获取学生记录表详情信息")
-    public BaseResult<StduentClassSeeRecord> info(@RequestBody IdRequest id) {
+    public BaseResult<StduentClassSeeRecordVo> info(@RequestBody IdRequest id) {
         StduentClassSeeRecord result = stduentClassSeeRecordService.getOneSelf(id);
         return BaseResult.success(StduentClassSeeRecordVo.convent(result));
     }
@@ -95,8 +95,8 @@ public class StduentClassSeeRecordController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除学生记录表信息")
-    public BaseResult delete(@RequestBody IdRequest id) {
+    @ApiOperation(value = "管理端 学生学习情况 删除学生记录表信息")
+    public BaseResult delete(@Validated@RequestBody StudentStudyCaseListRequest id) {
         boolean retFlag = stduentClassSeeRecordService.delete(id);
         return BaseResult.success(retFlag);
     }
@@ -105,10 +105,52 @@ public class StduentClassSeeRecordController {
      * 批量删除删除
      */
     @PostMapping("/delete/batch")
-    @ApiOperation(value = "批量删除学生记录表信息")
+    @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
     public BaseResult deleteBatch(@RequestBody List<Integer> list) {
         boolean retFlag = stduentClassSeeRecordService.deleteBatch(list);
         return BaseResult.success(retFlag);
+    }
+
+
+    /**
+     * 删除
+     */
+    @PostMapping("/deleteForClass")
+    @ApiOperation(value = "管理端 学生学习情况 依课程Id删除学生记录表信息")
+    public BaseResult deleteForClass(@Validated@RequestBody StudentStudyCaseClassRequest scid) {
+        boolean retFlag = stduentClassSeeRecordService.deleteForClass(scid);
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 批量删除删除
+     */
+    @PostMapping("/deleteForClass/batch")
+    @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
+    public BaseResult deleteForClass(@RequestBody StudentStudyCaseClassBatchRequest list) {
+        boolean retFlag = stduentClassSeeRecordService.deleteForClassBatch(list);
+        return BaseResult.success(retFlag);
+    }
+
+    /**
+     * 学生信息列表查询
+     */
+    @PostMapping("/studentList")
+    @ApiOperation(value = "管理端 学生学习情况 学生列表")
+    public BaseResult<Page<StudentRecordListVo>> studentList(@RequestBody StudentStudyStudentListRequest query) {
+        IPage<StudentRecordListVo> studentRecordListVoIPage = stduentClassSeeRecordService.studentList(query);
+        return BaseResult.success(studentRecordListVoIPage);
+    }
+
+    /**
+     * 学习课程列表
+     */
+    @PostMapping("/courseList")
+    @ApiOperation(value = " 管理端 学生学习情况 学习课程列表")
+    public BaseResult<Page<StudentClassListVo>> courseList(@Validated @RequestBody StudentStudyCaseListRequest query) {
+        IPage<StduentClassSeeRecord> iPage = stduentClassSeeRecordService.queryCoursePageList(query);
+
+        return BaseResult.success(StudentClassListVo.convertToVoWithPage(iPage));
     }
 
 }

@@ -58,6 +58,7 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                 .or().like(
                         Curriculum::getTopicName,
                         queryStr)
+                .or().eq(Curriculum::getClassTypeId,query.getClassType())
                 .and(
                         StringUtils.isNotBlank(teacherName),
                         q->q

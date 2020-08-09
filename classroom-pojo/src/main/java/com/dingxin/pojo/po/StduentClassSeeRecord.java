@@ -45,7 +45,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      * 学校
      */
     @NotNull(message = "studentCode must not be null")
-    @ApiModelProperty(value = "学校")
+    @ApiModelProperty(value = "学号")
     private String studentCode;
     /**
      * 院校
@@ -57,7 +57,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      * 专业
      */
     @NotNull(message = "studentMajor must not be null")
-    @ApiModelProperty(value = "院校")
+    @ApiModelProperty(value = "专业")
     private String studentMajor;
     /**
      * 班级
@@ -90,6 +90,18 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
     @ApiModelProperty(value = "课程名字")
     private String className;
     /**
+     * 课程类型名称
+     */
+    @NotNull(message = "classTypeName must not be null")
+    @ApiModelProperty(value = "课程类型名称")
+    private String classTypeName;
+    /**
+     * 课程类型id
+     */
+    @ApiModelProperty(value = "课程类型Id")
+    private String classTypeId;
+
+    /**
      * 学习时长
      */
     @ApiModelProperty(value = "学习时长")
@@ -99,6 +111,7 @@ public class StduentClassSeeRecord extends Model<StduentClassSeeRecord> {
      */
     @ApiModelProperty(value = "学习时长字符串")
     private String studyLengthStr;
+
     /**
      * 创建时间
      */

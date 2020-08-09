@@ -171,5 +171,17 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         qw.eq(Teachers::getJg0101id,idRequest.getId()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
         return getOne(qw);
     }
+    /**
+     * 获取所有讲师的下拉列表值
+     * @param query
+     * @return
+     */
+    @Override
+    public List<Map<String,Object>> queryAll() {
+        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
+        qw.select(Teachers::getJg0101id,Teachers::getXm);
+        return listMaps(qw);
+
+    }
 
 }

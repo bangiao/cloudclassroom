@@ -10,6 +10,7 @@ import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -189,5 +191,19 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         curriculumId);
 
         update(updateCurriculumVideoDuration);
+    }
+
+    /**
+     * 课程列表全部数据
+     * @return
+     */
+    @Override
+    public List<Map<String, Object>> listall(TeacherIdRequest idRequest) {
+        LambdaQueryWrapper<Curriculum> qw = Wrappers.lambdaQuery();
+        qw.select(Curriculum::getId,Curriculum::getCurriculumName)
+        .eq(Curriculum::getTeacherId,idRequest.getJg0101id())
+        .eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG);
+        List<Map<String, Object>> maps = listMaps(qw);
+        return maps;
     }
 }

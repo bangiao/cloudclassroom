@@ -4,69 +4,74 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import java.io.Serializable;
 
 /**
- *  实体类
+ *  首页banner实体类
  */
-@TableName("ccr_viewpager")
+@TableName("ccr_banner_manage")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Viewpager extends Model<Viewpager> {
+public class BannerManage extends Model<BannerManage> {
 
     private static final long serialVersionUID=1L;
 
-    /**
-     * id
-     */
+
     private Integer id;
     /**
-     * 图片名称
+     * 标题
      */
-    @ApiModelProperty(value = "图片名称")
-    private String picName;
+    @ApiModelProperty(value = "标题")
+    private String title;
     /**
-     * 图片类型
+     * 内容
      */
-    @ApiModelProperty(value = "图片类型")
-    private String picType;
+    @ApiModelProperty(value = "内容")
+    private String content;
     /**
-     * 图片大小
+     * 附件
      */
-    @ApiModelProperty(value = "图片大小")
-
-    private Long picSize;
+    @ApiModelProperty(value = "附件")
+    private String fileName;
     /**
-     * 图片存放地址
+     * 附件流
      */
-    @ApiModelProperty(value = "图片存放地址")
-    private String picUrl;
+    @ApiModelProperty(value = "附件流")
+    private String fileUrl;
+    /**
+     * 使用途径
+     */
+    @ApiModelProperty(value = "使用途径")
+    private Integer useType;
+    /**
+     * 创建人
+     */
+    @ApiModelProperty(value = "创建人")
+    private String createPerson;
     /**
      * 创建时间
      */
-    @TableField("createTime")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
     /**
      * 修改时间
      */
-    @TableField("modifyTime")
     @ApiModelProperty(value = "修改时间")
     private LocalDateTime modifyTime;
     /**
-     * 时候删除
+     * 是否删除
      */
-    @TableField("del_Flag")
     @ApiModelProperty(value = "是否删除")
-    private Boolean delFlag;
+    private Integer delFlag;
+    /**
+     * 是否有效
+     */
+    @ApiModelProperty(value = "是否有效")
+    private Integer isValid;
 
 
     @Override

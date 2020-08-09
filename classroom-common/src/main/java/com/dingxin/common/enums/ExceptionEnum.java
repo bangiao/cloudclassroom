@@ -23,7 +23,7 @@ public enum ExceptionEnum {
     PARAMTER_ERROR("3001","参数校验失败"),
     VERIFY_EXCEL_ERROR("3002","EXCEL内容错误"),
     REQUIRED_PARAM_IS_NULL("3003","所需参数不能为空"),
-
+    MULTIPARTFILE_TYPE_ERROR("3004","上传图片类型不正确"),
     //4.业务流程异常
 
     DUPLICATE_DATA("4001","重复的数据"),

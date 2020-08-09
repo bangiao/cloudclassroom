@@ -94,24 +94,22 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     public IPage<Video> listQuery(VideoListRequest query) {
         LambdaQueryWrapper<Video> queryWrapper = Wrappers.lambdaQuery();
         String queryStr = query.getQueryStr();
-        if(Objects.nonNull(queryStr)){
-            queryWrapper
-                    .like(StringUtils.isNotEmpty(queryStr),
-                        Video::getVideoName,queryStr)
-                    .or()
-                    .like(StringUtils.isNotEmpty(queryStr),
-                            Video::getTeacherName,queryStr)
-                    .eq(
-                            Video::getDeleteFlag,
-                            CommonConstant.DEL_FLAG)
-                    .select(
-                            Video::getId,
-                            Video::getLiveVideo,
-                            Video::getDisableFlag,
-                            Video::getVideoDuration,
-                            Video::getVideoName,
-                            Video::getVideoAttachment);
-        }
+        queryWrapper
+                .like(StringUtils.isNotEmpty(queryStr),
+                        Video::getVideoName, queryStr)
+                .or()
+                .like(StringUtils.isNotEmpty(queryStr),
+                        Video::getTeacherName, queryStr)
+                .eq(
+                        Video::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .select(
+                        Video::getId,
+                        Video::getLiveVideo,
+                        Video::getDisableFlag,
+                        Video::getVideoDuration,
+                        Video::getVideoName,
+                        Video::getVideoAttachment);
         Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
         IPage<Video> iPage = videoMapper.selectPage(page,queryWrapper);
         return iPage;

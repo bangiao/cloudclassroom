@@ -1,7 +1,5 @@
 package com.dingxin.pojo.request;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
@@ -15,8 +13,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -58,7 +54,7 @@ public class StduentClassSeeRecordInsertRequest {
      * 专业
      */
     @NotBlank(message = "studentMajor must not be null")
-    @ApiModelProperty(value = "院校")
+    @ApiModelProperty(value = "专业")
     private String studentMajor;
     /**
      * 班级
