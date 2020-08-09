@@ -22,12 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * 重写casFilter,验证成功后返回前端页面
- *
  */
 public class MyCasFilter extends CasFilter {
 
@@ -35,6 +35,7 @@ public class MyCasFilter extends CasFilter {
     private static final String TICKET_PARAMETER = "ticket";
     private static final String URL_PARAMETER = "url";
     private static final Integer STUDENT_ROLE = 3;
+    private static final Integer TEACHER_PREFEX = 3;
     private static final Integer TEACHER_ROLE = 4;
 
 
@@ -67,34 +68,46 @@ public class MyCasFilter extends CasFilter {
 
         CasEmploys principal = (CasEmploys) subject.getPrincipal();
         String sid = principal.getSid();
-        List<UserRole> userRoles = userRoleService.list(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getCasUserId, sid));
 
-        if (CollectionUtils.isEmpty(userRoles)) {
-            String s = sid.substring(0, 1);
-            UserRole userRole = new UserRole();
-            userRole.setCasUserId(sid);
-
-            if (STUDENT_PREFEX.equals(s)) {
-                userRole.setRoleId(STUDENT_ROLE);
-                role = roleService.getById(STUDENT_ROLE);
-            } else {
-                userRole.setRoleId(TEACHER_ROLE);
-                role = roleService.getById(TEACHER_ROLE);
-            }
-            userRoleService.save(userRole);
-            roles.add(role);
-
-        } else {
-            roles = roleService.list(Wrappers.<Role>lambdaQuery()
-                    .in(
-                            CollectionUtils.isNotEmpty(userRoles),
-                            Role::getId,
-                            userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList())
-                    )
-            );
+        String s = sid.substring(0, 1);
+//        if (STUDENT_PREFEX.equals(s)||TEACHER_PREFEX.equals(s)){
+        List<UserRole> userRoles = userRoleService.list(Wrappers.<UserRole>lambdaQuery()
+                .eq(UserRole::getCasUserId, sid));
+        if (CollectionUtils.isNotEmpty(userRoles)) {
+            roles = (List<Role>) roleService
+                    .listByIds(userRoles
+                            .stream()
+                            .map(UserRole::getRoleId)
+                            .collect(Collectors.toList()));
         }
+//        }
+//        List<UserRole> userRoles = userRoleService.list(Wrappers.<UserRole>lambdaQuery().eq(UserRole::getCasUserId, sid));
+//
+//        if (CollectionUtils.isEmpty(userRoles)) {
+//            String s = sid.substring(0, 1);
+//            UserRole userRole = new UserRole();
+//            userRole.setCasUserId(sid);
+//
+//            if (STUDENT_PREFEX.equals(s)) {
+//                userRole.setRoleId(STUDENT_ROLE);
+//                role = roleService.getById(STUDENT_ROLE);
+//            } else {
+//                userRole.setRoleId(TEACHER_ROLE);
+//                role = roleService.getById(TEACHER_ROLE);
+//            }
+//            userRoleService.save(userRole);
+//            roles.add(role);
+//
+//        } else {
+//            roles = roleService.list(Wrappers.<Role>lambdaQuery()
+//                    .in(
+//                            CollectionUtils.isNotEmpty(userRoles),
+//                            Role::getId,
+//                            userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList())
+//                    )
+//            );
+//        }
         principal.setRoles(roles);
-
         HttpServletResponse servletResponse = (HttpServletResponse) response;
         servletResponse.setHeader("Content-Type", "application/json;charset=UTF-8");
         servletResponse.setCharacterEncoding("UTF-8");

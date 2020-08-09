@@ -51,10 +51,10 @@ public interface CommonConstant {
 	/**
 	 * 老师
 	 */
-	Integer TEACHER=2;
+	Integer TEACHER=3;
 	/**
 	 * 管理员
 	 */
-	Integer ADMINISTRATOR=3;
+	Integer ADMINISTRATOR=7;
 
 }
