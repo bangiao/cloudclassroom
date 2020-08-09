@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class MpGenerator {
 
-    public static final String prefix = "D:";
+    public static final String prefix = "D:\\code";
 
     /**
      * <p>
@@ -85,9 +85,9 @@ public class MpGenerator {
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
-        strategy.setTablePrefix(new String[]{"nkd_", "sys_", "ccr_"});// 此处可以修改为您的表前缀
+        strategy.setTablePrefix(new String[]{"nkd_", "sys_", "ccr_","cas_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-                strategy.setInclude(new String[]{"sys_menu","sys_role","sys_role_menu","sys_user_role"}); // 需要生成的表
+                strategy.setInclude(new String[]{"ccr_major"}); // 需要生成的表
         strategy.setExclude(new String[]{}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -111,10 +111,10 @@ public class MpGenerator {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setParent("com.dingxin");
+        pc.setParent("com.dingxin.cas");
         pc.setController("web.controller");
-        pc.setService("web.service");
-        pc.setServiceImpl("web.service.impl");
+        pc.setService("service");
+        pc.setServiceImpl("service.impl");
         pc.setEntity("pojo.po");
         pc.setMapper("dao.mapper");
         //        pc.setModuleName("demo");
