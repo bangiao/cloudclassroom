@@ -96,9 +96,14 @@ public class Curriculum extends Model<Curriculum> {
      */
     private Integer deleteFlag;
     /**
-     * 审核状态(-1 未通过，0未审核，1审核通过)
+     * 课程审核状态(-1 未通过，0未审核，1审核通过)
      */
     private Integer auditFlag;
+    /**
+     * 课程评价审核状态 (-1 未通过，0未审核，1审核通过)
+     */
+    private Integer evaluateStatus;
+
 
     /**
      * 上课时间

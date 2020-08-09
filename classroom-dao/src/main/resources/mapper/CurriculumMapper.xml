@@ -23,6 +23,7 @@
                     <result column="watch_amount" property="watchAmount" />
                     <result column="delete_flag" property="deleteFlag" />
                     <result column="audit_flag" property="auditFlag" />
+                    <result column="evaluate_status" property="evaluateStatus" />
         </resultMap>
 
 </mapper>

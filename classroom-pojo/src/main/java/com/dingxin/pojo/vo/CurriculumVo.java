@@ -69,6 +69,11 @@ public class CurriculumVo {
      */
     @ApiModelProperty(value = "专题名",example = "vue从入门到精通")
     private String topicName;
+    /**
+     * 课程评价审核状态 (-1 未通过，0未审核，1审核通过)
+     */
+    @ApiModelProperty(value = "课程评价审核状态",example = "-1 未通过，0未审核，1审核通过")
+    private Integer evaluateStatus;
 
 
     public static CurriculumVo convertToVo(Curriculum curriculumVoPo){
@@ -85,6 +90,7 @@ public class CurriculumVo {
                 .disableFlag(curriculumVoPo.getDisableFlag())
                 .auditFlag(curriculumVoPo.getAuditFlag())
                 .topicName(curriculumVoPo.getTopicName())
+                .evaluateStatus(curriculumVoPo.getEvaluateStatus())
                 .build();
 
     }
