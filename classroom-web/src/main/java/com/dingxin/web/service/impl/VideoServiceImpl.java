@@ -13,6 +13,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
+import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.*;
 import com.dingxin.web.service.ICurriculumService;
@@ -37,6 +38,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Autowired
     private ICurriculumService curriculumService;
+
+    @Autowired
+    private IVideoService videoService;
 
 
     @Override
@@ -336,8 +340,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .videoSize(video.getVideoSize())
                 .build();
         LambdaUpdateWrapper<Video> updateCase = Wrappers.<Video>lambdaUpdate().eq(Video::getId, video.getId());
-
+        //更新视频
         update(videoWillUpdate,updateCase);
+        //编辑视频之后，对应课程的审核状态修改为未审核
+        updateVideoRelatedCurriculumAuditFlag(video.getCurriculumId());
     }
 
     @Override
@@ -362,7 +368,19 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .select(
                         Video::getVideoDuration);
 
-        list(videoDurationQuery);
+        List<Video> videoList = list(videoDurationQuery);
+        //如果查询当前课程下 未删除未禁用且未审核的视频不为空，则设置课程的审核状态为未审核
+        if (CollectionUtils.isNotEmpty(videoList)) {
+            LambdaUpdateWrapper<Curriculum> updateCurriculumAuditFlag = Wrappers.<Curriculum>lambdaUpdate()
+                    .set(
+                            Curriculum::getAuditFlag,
+                            CommonConstant.STATUS_NOAUDIT)
+                    .in(
+                            Curriculum::getId,
+                            curriculumId);
+
+            curriculumService.update(updateCurriculumAuditFlag);
+        }
 
     }
 
@@ -392,5 +410,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         wrapper.eq(Video::getId,videoAudit.getId());
         wrapper.eq(Video::getCurriculumId,videoAudit.getCurriculumId());
         this.update(wrapper);
+        //同时修改/更新对应课程的审核状态
+        videoService.updateVideoRelatedCurriculumAuditFlag(videoAudit.getCurriculumId());
     }
 }
