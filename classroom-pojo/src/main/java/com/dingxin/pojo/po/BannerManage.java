@@ -23,6 +23,11 @@ public class BannerManage extends Model<BannerManage> {
 
     private Integer id;
     /**
+     * 序号
+     */
+    @ApiModelProperty(value = "序号")
+    private Integer sortId;
+    /**
      * 标题
      */
     @ApiModelProperty(value = "标题")
@@ -70,8 +75,8 @@ public class BannerManage extends Model<BannerManage> {
     /**
      * 是否有效
      */
-    @ApiModelProperty(value = "是否有效")
-    private Integer isValid;
+    @ApiModelProperty(value = "是否有效(0启用1禁用)")
+    private Integer disable;
 
 
     @Override

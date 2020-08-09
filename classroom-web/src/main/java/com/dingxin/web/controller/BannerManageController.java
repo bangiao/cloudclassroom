@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.pojo.po.BannerManage;
+import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IBannerManageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,14 @@ public class BannerManageController {
     public BaseResult delete(@RequestBody IdRequest id){
         boolean retFlag = bannerManageService.deleteBannerManage(id);
         return BaseResult.success(retFlag);
+    }
+    /**
+     * 启用/禁用接口
+     */
+    @PostMapping("/enableStatus")
+    @ApiOperation(value = "启用/禁用接口")
+    public BaseResult enableStatus(@RequestBody BannerRequest bannerRequest){
+        boolean enableStatus = bannerManageService.enableStatus(bannerRequest);
+        return BaseResult.success(enableStatus);
     }
 }

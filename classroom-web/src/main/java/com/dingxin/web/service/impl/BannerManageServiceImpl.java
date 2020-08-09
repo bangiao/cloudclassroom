@@ -5,10 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.BannerManage;
 import com.dingxin.dao.mapper.BannerManageMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IBannerManageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,9 +74,9 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
                     BannerManage::getDelFlag,
                     data.getDelFlag())
                 .like(
-                    Objects.nonNull(data.getIsValid()),
-                    BannerManage::getIsValid,
-                    data.getIsValid())
+                    Objects.nonNull(data.getDisable()),
+                    BannerManage::getDisable,
+                    data.getDisable())
 ;
         return bannerManageMapper.selectList(query);
 
@@ -95,5 +99,29 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
         wrapper.set(BannerManage::getDelFlag, CommonConstant.DEL_FLAG_TRUE);
         boolean retFlag = this.update(wrapper);
         return retFlag;
+    }
+
+    @Override
+    public boolean enableStatus(BannerRequest bannerRequest) {
+        Integer disable = bannerRequest.getDisable();
+        //如果是禁用状态的话  就直接改状态
+        if(disable == CommonConstant.DISABLE_TRUE){
+            LambdaUpdateWrapper<BannerManage> wrapper = Wrappers.lambdaUpdate();
+            wrapper.eq(BannerManage::getId,bannerRequest.getId());
+            wrapper.set(BannerManage::getDisable,bannerRequest.getDisable());
+            return this.update(wrapper);
+        } else {
+            LambdaQueryWrapper<BannerManage> query = Wrappers.lambdaQuery();
+            query.eq(BannerManage::getDisable,CommonConstant.DISABLE_FALSE);
+            int count = this.count(query);
+            if(count >= 3){
+                throw  new BusinessException(ExceptionEnum.BANNER_MSG);
+            }else {
+                LambdaUpdateWrapper<BannerManage> wrapper = Wrappers.lambdaUpdate();
+                wrapper.eq(BannerManage::getId,bannerRequest.getId());
+                wrapper.set(BannerManage::getDisable,bannerRequest.getDisable());
+                return this.update(wrapper);
+            }
+        }
     }
 }

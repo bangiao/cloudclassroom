@@ -30,6 +30,7 @@ public enum ExceptionEnum {
     DUPLICATE_DATA("4001","重复的数据"),
     COVENT_NULLPOINT("4002","转换源对象为空"),
     DATA_ZERO("4003","查询对象不存在"),
+    BANNER_MSG("4004","启用banner图不能超过3个，请先禁用"),
 
 
     VOD_UPLOAD_ERROR("4101","vod上传失败"),

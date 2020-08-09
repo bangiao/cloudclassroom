@@ -4,6 +4,7 @@ import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.BannerManage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.BannerManage;
+import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface IBannerManageService extends IService<BannerManage> {
     IPage queryPageList(BaseQuery<BannerManage> query);
 
     boolean deleteBannerManage(IdRequest id);
+
+    boolean enableStatus(BannerRequest bannerRequest);
 }

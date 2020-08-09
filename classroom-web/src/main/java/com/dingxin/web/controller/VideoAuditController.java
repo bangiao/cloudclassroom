@@ -10,7 +10,9 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.CurriculumAuditListRequest;
 import com.dingxin.pojo.request.VideoAuditRequest;
 import com.dingxin.pojo.request.VideoAutoRequest;
 import com.dingxin.pojo.request.VideoListRequest;
@@ -47,28 +49,12 @@ public class VideoAuditController {
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取列表")
-    public BaseResult<Page<Video>>list(@RequestBody BaseQuery<Video> query){
+    @ApiOperation(value = "获取课程审核列表")
+    public BaseResult<Page<Curriculum>>list(@RequestBody CurriculumAuditListRequest query){
         //查询列表数据
-        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = videoAuditService.page(page,Wrappers.query(query.getData()));
-        if(CollectionUtils.isEmpty(pageList.getRecords())){
-            return BaseResult.success();
-        }
+        IPage pageList = videoAuditService.queryPageList(query);
         return BaseResult.success(pageList);
     }
-
-
-    /**
-     * 保存
-     */
-    @PostMapping
-    @ApiOperation(value = "新增信息")
-    public BaseResult save(@RequestBody  Video videoAudit){
-        boolean retFlag= videoAuditService.saveOrUpdate(videoAudit);
-        return BaseResult.success(retFlag);
-    }
-
 
     /**
      * 视频审核列表查询

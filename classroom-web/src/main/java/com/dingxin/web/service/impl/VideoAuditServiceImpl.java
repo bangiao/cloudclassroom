@@ -1,10 +1,15 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.dao.mapper.VideoMapper;
+import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.CurriculumAuditListRequest;
+import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +25,8 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
 
     @Autowired
     private VideoMapper videoMapper;
+    @Autowired
+    private ICurriculumService curriculumService;
 
 
     @Override
@@ -67,4 +74,13 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
 
     }
 
+    @Override
+    public IPage queryPageList(CurriculumAuditListRequest query) {
+        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<Curriculum> wrapper = Wrappers.lambdaQuery();
+        wrapper.like(Curriculum::getCurriculumName,query.getCurriculumName());
+        wrapper.eq(Curriculum::getAuditFlag,query.getAuditFlag()).or(Wrappers -> Wrappers.eq(Curriculum::getEvaluateStatus,query.getAuditFlag()));
+        IPage<Curriculum> iPage = curriculumService.page(page);
+        return iPage;
+    }
 }
