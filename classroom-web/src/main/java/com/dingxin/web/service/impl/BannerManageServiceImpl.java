@@ -15,6 +15,7 @@ import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IBannerManageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -88,6 +89,7 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
         Page<BannerManage> page = new Page(query.getCurrentPage(),query.getPageSize());
         LambdaQueryWrapper<BannerManage> qw = Wrappers.lambdaQuery();
         qw.eq(BannerManage::getDelFlag, CommonConstant.DEL_FLAG);
+        qw.orderByAsc(BannerManage::getDisable);
         IPage pageList = this.page(page,qw);
         return pageList;
     }
@@ -113,6 +115,7 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
         } else {
             LambdaQueryWrapper<BannerManage> query = Wrappers.lambdaQuery();
             query.eq(BannerManage::getDisable,CommonConstant.DISABLE_FALSE);
+            query.eq(BannerManage::getDelFlag,CommonConstant.DEL_FLAG);
             int count = this.count(query);
             if(count >= 3){
                 throw  new BusinessException(ExceptionEnum.BANNER_MSG);
@@ -122,6 +125,26 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
                 wrapper.set(BannerManage::getDisable,bannerRequest.getDisable());
                 return this.update(wrapper);
             }
+        }
+    }
+
+    @Override
+    public boolean updateBannerManage(BannerManage bannerManage) {
+        String fileUrl = bannerManage.getFileUrl();
+        LambdaUpdateWrapper<BannerManage> qw = Wrappers.lambdaUpdate();
+        if(StringUtils.isEmpty(fileUrl)){
+            qw.set(BannerManage::getFileUrl,null)
+                    .set(BannerManage::getFileName,null)
+                    .set(BannerManage::getTitle,bannerManage.getTitle())
+                    .set(BannerManage::getContent,bannerManage.getContent())
+                    .set(BannerManage::getUseType,bannerManage.getUseType())
+                    .set(BannerManage::getSortId,bannerManage.getSortId())
+                    .set(BannerManage::getCreatePerson,bannerManage.getCreatePerson())
+                    .set(BannerManage::getCreateTime,bannerManage.getCreateTime());
+            qw.eq(BannerManage::getId,bannerManage.getId());
+            return this.update(qw);
+        }else {
+            return this.saveOrUpdate(bannerManage);
         }
     }
 }
