@@ -11,6 +11,7 @@ import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.VideoAuditRequest;
 import com.dingxin.pojo.request.VideoAutoRequest;
 import com.dingxin.pojo.request.VideoListRequest;
 import com.dingxin.web.service.IVideoAuditService;
@@ -75,15 +76,7 @@ public class VideoAuditController {
     @PostMapping("/auditList")
     @ApiOperation(value = "视频审核列表查询")
     public BaseResult<Page<Video>>auditList(@RequestBody VideoListRequest query){
-
-        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
-        LambdaQueryWrapper<Video> qw = new LambdaQueryWrapper<>();
-        String queryStr = query.getQueryStr();
-        if(StringUtils.isNotEmpty(queryStr)){
-            qw.and(Wrapper -> Wrapper.like(Video::getVideoName,queryStr));
-        }
-        qw.in(Video::getAuditFlag, AuditStatusEnum.getAllStatus());
-        IPage pageList = videoService.page(page, qw);
+        IPage pageList = videoService.queryPageList(query);
         return BaseResult.success(pageList);
     }
     /**
@@ -91,38 +84,34 @@ public class VideoAuditController {
      */
     @PostMapping("/audit")
     @ApiOperation(value = "审核")
-    public BaseResult audit(@RequestBody  Video videoAudit){
-        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(Video::getAuditFlag,videoAudit.getAuditFlag());
-        wrapper.set(Video::getAuditComments,videoAudit.getAuditComments());
-        wrapper.eq(Video::getId,videoAudit.getId());
-        videoService.update(wrapper);
+    public BaseResult audit(@RequestBody VideoAuditRequest videoAudit){
+        videoService.audit(videoAudit);
         return BaseResult.success().setMsg("审核成功！");
     }
-    /**
-     * 批量审核通过
-     */
-    @PostMapping("/auditBatch")
-    @ApiOperation(value = "批量审核通过")
-    public BaseResult auditBatch(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
-        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(Video::getAuditFlag, CommonConstant.STATUS_AUDIT);
-        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
-        wrapper.in(Video::getId,videoAutoRequest.getIdList());
-        videoService.update(wrapper);
-        return BaseResult.success().setMsg("批量审核成功！");
-    }
-    /**
-     * 批量审核未通过
-     */
-    @PostMapping("/auditBatchUnapprove")
-    @ApiOperation(value = "批量审核未通过")
-    public BaseResult auditBatchUnapprove(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
-        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(Video::getAuditFlag,CommonConstant.STATUS_UNAPPROVED);
-        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
-        wrapper.in(Video::getId,videoAutoRequest.getIdList());
-        videoService.update(wrapper);
-        return BaseResult.success().setMsg("批量审核成功！");
-    }
+//    /**
+//     * 批量审核通过
+//     */
+//    @PostMapping("/auditBatch")
+//    @ApiOperation(value = "批量审核通过")
+//    public BaseResult auditBatch(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
+//        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.set(Video::getAuditFlag, CommonConstant.STATUS_AUDIT);
+//        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
+//        wrapper.in(Video::getId,videoAutoRequest.getIdList());
+//        videoService.update(wrapper);
+//        return BaseResult.success().setMsg("批量审核成功！");
+//    }
+//    /**
+//     * 批量审核未通过
+//     */
+//    @PostMapping("/auditBatchUnapprove")
+//    @ApiOperation(value = "批量审核未通过")
+//    public BaseResult auditBatchUnapprove(@Validated @RequestBody VideoAutoRequest videoAutoRequest){
+//        LambdaUpdateWrapper<Video> wrapper = new LambdaUpdateWrapper<>();
+//        wrapper.set(Video::getAuditFlag,CommonConstant.STATUS_UNAPPROVED);
+//        wrapper.set(Video::getAuditComments,videoAutoRequest.getAuditComments());
+//        wrapper.in(Video::getId,videoAutoRequest.getIdList());
+//        videoService.update(wrapper);
+//        return BaseResult.success().setMsg("批量审核成功！");
+//    }
 }

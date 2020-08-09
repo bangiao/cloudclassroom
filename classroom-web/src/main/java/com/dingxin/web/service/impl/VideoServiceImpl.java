@@ -13,10 +13,7 @@ import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.po.Video;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.VideoInsertRequest;
-import com.dingxin.pojo.request.VideoListRequest;
-import com.dingxin.pojo.request.VideoUpdateRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -340,5 +337,33 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         LambdaUpdateWrapper<Video> updateCase = Wrappers.<Video>lambdaUpdate().eq(Video::getId, video.getId());
 
         update(videoWillUpdate,updateCase);
+    }
+
+    /**
+     * 获取视频审核列表
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage queryPageList(VideoListRequest query) {
+        Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<Video> qw = Wrappers.lambdaQuery();
+        qw.eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG);
+        qw.eq(Video::getCurriculumId,query.getCurriculumId());
+        IPage<Video> iPage = this.page(page);
+        return iPage;
+    }
+
+    /**
+     * 视频审核-单个
+     * @param videoAudit
+     */
+    @Override
+    public void audit(VideoAuditRequest videoAudit) {
+        LambdaUpdateWrapper<Video> wrapper = Wrappers.lambdaUpdate();
+        wrapper.set(Video::getAuditFlag,videoAudit.getAuditStatus());
+        wrapper.eq(Video::getId,videoAudit.getId());
+        wrapper.eq(Video::getCurriculumId,videoAudit.getCurriculumId());
+        this.update(wrapper);
     }
 }
