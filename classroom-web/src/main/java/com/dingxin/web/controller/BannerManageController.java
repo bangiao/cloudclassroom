@@ -69,7 +69,7 @@ public class BannerManageController {
     @PostMapping("/update")
     @ApiOperation(value = "修改信息")
     public BaseResult update(@RequestBody BannerManage bannerManage){
-        boolean retFlag= bannerManageService.updateById(bannerManage);
+        boolean retFlag= bannerManageService.updateBannerManage(bannerManage);
         return BaseResult.success(retFlag);
     }
 

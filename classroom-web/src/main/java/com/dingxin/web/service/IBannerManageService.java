@@ -21,4 +21,6 @@ public interface IBannerManageService extends IService<BannerManage> {
     boolean deleteBannerManage(IdRequest id);
 
     boolean enableStatus(BannerRequest bannerRequest);
+
+    boolean updateBannerManage(BannerManage bannerManage);
 }

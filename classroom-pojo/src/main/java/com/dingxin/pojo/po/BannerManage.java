@@ -1,5 +1,7 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.*;
 import io.swagger.annotations.ApiModelProperty;
@@ -40,11 +42,14 @@ public class BannerManage extends Model<BannerManage> {
     /**
      * 附件
      */
+
+    @TableField(value = "file_name",strategy = FieldStrategy.IGNORED)
     @ApiModelProperty(value = "附件")
     private String fileName;
     /**
      * 附件流
      */
+    @TableField(value = "file_url",strategy = FieldStrategy.IGNORED)
     @ApiModelProperty(value = "附件流")
     private String fileUrl;
     /**
