@@ -1,5 +1,6 @@
 package com.dingxin.web.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -337,6 +338,32 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         LambdaUpdateWrapper<Video> updateCase = Wrappers.<Video>lambdaUpdate().eq(Video::getId, video.getId());
 
         update(videoWillUpdate,updateCase);
+    }
+
+    @Override
+    public void updateVideoRelatedCurriculumAuditFlag(Integer curriculumId) {
+        if (curriculumId == null){
+            if (log.isWarnEnabled())
+                log.warn("loadAllValidVideoForCurrentCurriculum 失败");
+            return ;
+        }
+        LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
+                .eq(
+                        Video::getCurriculumId, curriculumId)
+                .eq(
+                        Video::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        Video::getAuditFlag,
+                        CommonConstant.STATUS_UNAPPROVED)
+                .eq(
+                        Video::getDisableFlag,
+                        CommonConstant.DISABLE_FALSE)
+                .select(
+                        Video::getVideoDuration);
+
+        list(videoDurationQuery);
+
     }
 
     /**
