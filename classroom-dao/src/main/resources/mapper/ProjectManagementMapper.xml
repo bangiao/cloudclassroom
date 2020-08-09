@@ -16,6 +16,8 @@
                     <result column="create_time" property="createTime" />
                     <result column="modify_time" property="modifyTime" />
                     <result column="pic_url" property="picUrl" />
+                    <result column="dept_id" property="deptId" />
+                    <result column="major_id" property="majorId" />
         </resultMap>
 
 </mapper>

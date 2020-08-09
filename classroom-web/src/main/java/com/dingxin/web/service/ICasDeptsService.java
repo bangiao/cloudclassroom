@@ -1,5 +1,7 @@
 package com.dingxin.web.service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.vo.TreeVo;
 
@@ -12,6 +14,7 @@ public interface ICasDeptsService extends IService<CasDepts> {
 
     List<CasDepts> like(CasDepts data);
 
+    BaseResult<Page<CasDepts>> queryPageList();
     /**
      *  根据人员部门编号获取机构数
      * @param departmentCodes 人员所属部门编号集合

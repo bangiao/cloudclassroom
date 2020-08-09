@@ -136,16 +136,18 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
      */
     @Override
     public List<TreeVo> depts() {
-        String userId = ShiroUtils.getUserId();
+  /*      String userId = ShiroUtils.getUserId();
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
-        qw.eq(UserRole::getCasUserId,userId);
+        qw.eq(UserRole::getCasUserId,"70000281");
         int count = count(qw);
 
         if (count==0){
             throw new BusinessException(ExceptionEnum.USER_NOT_CAN_BE_QUERY_USER);
         }
         List<String> departmentCodes = ShiroUtils.getDepartmentCodes();
-
+*/
+        List<String> departmentCodes = Lists.newArrayList();
+        departmentCodes.add("010");
         List<TreeVo> treeVoList =deptsService.queryTree(departmentCodes);
 
 
