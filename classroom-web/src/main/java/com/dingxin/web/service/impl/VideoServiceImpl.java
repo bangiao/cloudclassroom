@@ -136,7 +136,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     @Override
-    public void deleteCurriculumRelatedVideo(List<Integer> curriculumIds, Func<Video,?> column) {
+    public void deleteCurriculumRelatedVideo(List<Integer> curriculumIds) {
         if(CollectionUtils.isEmpty(curriculumIds)){
 
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
@@ -359,7 +359,6 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .eq(
                         Video::getAuditFlag,
                         CommonConstant.STATUS_UNAPPROVED)
-                .or().eq()
                 .eq(
                         Video::getDisableFlag,
                         CommonConstant.DISABLE_FALSE)

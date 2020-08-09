@@ -36,7 +36,7 @@ public interface IVideoService extends IService<Video> {
     /**
      * 删除课程下的所有视频
      */
-    void deleteCurriculumRelatedVideo(List<Integer> curriculumIds, Func<Video,?> column);
+    void deleteCurriculumRelatedVideo(List<Integer> curriculumIds);
     /**
      * 保存视频
      * @param video
