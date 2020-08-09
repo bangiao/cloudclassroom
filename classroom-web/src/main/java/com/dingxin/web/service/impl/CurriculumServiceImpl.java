@@ -16,7 +16,6 @@ import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -133,7 +132,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         //将课程表本身flag设置为删除
         LambdaUpdateWrapper<Curriculum> disableQuery = Wrappers.<Curriculum>lambdaUpdate().
                 set(
-                        Curriculum::getDisableFlag,
+                        Curriculum::getDeleteFlag,
                         CommonConstant.DEL_FLAG_TRUE)
                 .in(
                         Curriculum::getId,

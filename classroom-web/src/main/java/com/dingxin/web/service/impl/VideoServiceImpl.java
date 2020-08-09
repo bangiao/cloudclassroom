@@ -1,6 +1,5 @@
 package com.dingxin.web.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,7 +14,11 @@ import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.VideoAuditRequest;
+import com.dingxin.pojo.request.VideoInsertRequest;
+import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.pojo.request.VideoUpdateRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -366,7 +369,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         Video::getDisableFlag,
                         CommonConstant.DISABLE_FALSE)
                 .select(
-                        Video::getVideoDuration);
+                        Video::getId);
 
         List<Video> videoList = list(videoDurationQuery);
         //如果查询当前课程下 未删除未禁用且未审核的视频不为空，则设置课程的审核状态为未审核

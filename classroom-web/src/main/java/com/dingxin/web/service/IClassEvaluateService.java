@@ -3,7 +3,11 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.request.ClassEvaluateRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.pojo.request.VideoAuditRequest;
 
 import java.util.List;
 
@@ -71,4 +75,13 @@ public interface IClassEvaluateService extends IService<ClassEvaluate> {
      * @param videoAuditRequest
      */
     void audit(VideoAuditRequest videoAuditRequest);
+    /**
+     *
+     * @param classEvaluate
+     */
+    void saveEvaluation(ClassEvaluate classEvaluate);
+    /**
+     * 更新课程对应的课程评价状态
+     */
+    void updateCurriculumRelatedEvaluateStatus(Integer curriculumId);
 }

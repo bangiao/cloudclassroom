@@ -13,9 +13,16 @@ import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.request.ClassEvaluateRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.pojo.request.VideoAuditRequest;
 import com.dingxin.web.service.IClassEvaluateService;
+import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.shiro.ShiroUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +36,13 @@ import java.util.Objects;
  */
 @Service
 @Transactional
+@Slf4j
 public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, ClassEvaluate> implements IClassEvaluateService {
     @Autowired
     private ClassEvaluateMapper classEvaluateMapper;
+
+    @Autowired
+    private ICurriculumService curriculumService;
 
     @Override
     public List<ClassEvaluate> like(ClassEvaluate data) {
@@ -243,6 +254,8 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         wrapper.eq(ClassEvaluate::getClassId,classEvaluateRequest.getClassId());
         wrapper.in(ClassEvaluate::getId, classEvaluateRequest.getIdList());
         this.update(wrapper);
+
+        updateCurriculumRelatedEvaluateStatus(classEvaluateRequest.getClassId());
     }
 
     /**
@@ -256,5 +269,47 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         wrapper.eq(ClassEvaluate::getId, classEvaluate.getId());
         wrapper.eq(ClassEvaluate::getClassId,classEvaluate.getCurriculumId());
         this.update(wrapper);
+        updateCurriculumRelatedEvaluateStatus(classEvaluate.getCurriculumId());
+    }
+
+    //保存的时候同时更新对应课程的课程评价状态
+    @Override
+    public void saveEvaluation(ClassEvaluate classEvaluate) {
+        save(classEvaluate);
+        updateCurriculumRelatedEvaluateStatus(classEvaluate.getClassId());
+    }
+
+    @Override
+    public void updateCurriculumRelatedEvaluateStatus(Integer curriculumId) {
+        if (curriculumId == null){
+            log.error("updateCurriculumRelatedEvaluateStatus 失败,当前评价对应课程ID为空，小朋友");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaQueryWrapper<ClassEvaluate> validEvaluateQuery = Wrappers.<ClassEvaluate>lambdaQuery()
+                .eq(
+                        ClassEvaluate::getClassId,
+                        curriculumId)
+                .eq(
+                        ClassEvaluate::getDelFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        ClassEvaluate::getStatus,
+                        CommonConstant.STATUS_UNAPPROVED)
+                .select(
+                        ClassEvaluate::getId);
+
+        List<ClassEvaluate> videoList = list(validEvaluateQuery);
+        //如果查询当前课程下存在未删除且未审核的评价，则设置课程的审核状态为未审核
+        if (com.dingxin.common.utils.CollectionUtils.isNotEmpty(videoList)) {
+            LambdaUpdateWrapper<Curriculum> updateCurriculumAuditFlag = Wrappers.<Curriculum>lambdaUpdate()
+                    .set(
+                            Curriculum::getEvaluateStatus,
+                            CommonConstant.STATUS_NOAUDIT)
+                    .in(
+                            Curriculum::getId,
+                            curriculumId);
+
+            curriculumService.update(updateCurriculumAuditFlag);
+        }
     }
 }

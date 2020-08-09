@@ -62,8 +62,8 @@ public class ClassEvaluateController {
     @ApiOperation(value = "新增课程评价表信息")
     public BaseResult save(@Validated @RequestBody ClassEvaluateInsertRequest insertRequest) {
         ClassEvaluate covent = ClassEvaluateInsertRequest.covent(insertRequest);
-        boolean retFlag = classEvaluateService.save(covent);
-        return BaseResult.success(retFlag);
+        classEvaluateService.saveEvaluation(covent);
+        return BaseResult.success();
     }
 
     /**
