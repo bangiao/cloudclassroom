@@ -8,16 +8,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseResult;
-import com.dingxin.pojo.po.ProjectCurriculum;
-import com.dingxin.pojo.po.ProjectManagement;
+import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
-import com.dingxin.web.service.IProjectCurriculumService;
-import com.dingxin.web.service.IProjectManagementService;
+import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dingxin.web.service.ITeachersService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +39,13 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     private ITeachersService teachersService;
     @Autowired
     private IProjectCurriculumService projectCurriculumService;
+    @Autowired
+    private ICurriculumService curriculumService;
+    @Autowired
+    private ICasDeptsService deptsService;
+    @Autowired
+    private IMajorService majorService;
+
 
 
     @Override
@@ -170,7 +175,18 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     public ProjectManagement searchOneById(IdRequest idRequest) {
         LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
         qw.eq(ProjectManagement::getId, idRequest.getId()).eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG);
-        return getOne(qw);
+        ProjectManagement projectManagement = getOne(qw);
+
+        List<Integer> currIds = projectCurriculumService.list(Wrappers
+                .<ProjectCurriculum>lambdaQuery()
+                .eq(ProjectCurriculum::getProjectId, projectManagement.getId()))
+                .stream().map(ProjectCurriculum::getCurriculumId)
+                .collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(currIds)){
+            List<Curriculum> curricula = (List<Curriculum>) curriculumService.listByIds(currIds);
+            projectManagement.setCurriculumList(curricula);
+        }
+        return projectManagement;
     }
 
     /**
@@ -239,6 +255,15 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         projectManagement.setModifyTime(now);
         projectManagement.setWatchNum(0);
         projectManagement.setLecturerName(teachersService.getById(projectManagement.getLecturerId()).getXm());
+        String majorId = projectManagement.getMajorId();
+        String deptId = projectManagement.getDeptId();
+        Major major = majorService.getOne(Wrappers.<Major>lambdaQuery().eq(
+                Major::getMajorCode, majorId
+        ));
+        projectManagement.setMajorName(major.getMajorName());
+        projectManagement.setDeptName(deptsService.getOne(Wrappers.<CasDepts>lambdaQuery().eq(
+                CasDepts::getZsjdwid,deptId
+        )).getZsjmc());
         List<Integer> courseIds = projectManagement.getCourseIds();
         if (CollectionUtils.isNotEmpty(courseIds)) {
             projectManagement.setCourseNum(courseIds.size());

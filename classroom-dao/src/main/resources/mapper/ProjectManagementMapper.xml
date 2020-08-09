@@ -18,6 +18,8 @@
                     <result column="pic_url" property="picUrl" />
                     <result column="dept_id" property="deptId" />
                     <result column="major_id" property="majorId" />
+                    <result column="dept_name" property="deptName" />
+                    <result column="major_name" property="majorName" />
         </resultMap>
 
 </mapper>

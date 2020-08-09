@@ -101,8 +101,18 @@ public class ProjectManagement extends Model<ProjectManagement> {
     @NotNull(message = "专业ID不能为null")
     private String majorId;
 
+    @ApiModelProperty("专业名称")
+    private String majorName;
+
+    @ApiModelProperty("部门名称")
+    private String deptName;
+
+
     @TableField(exist = false)
     private List<Integer> courseIds;
+
+    @TableField(exist = false)
+    private List<Curriculum> curriculumList;
 
 
     @Override
