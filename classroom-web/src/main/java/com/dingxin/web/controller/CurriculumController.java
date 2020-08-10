@@ -9,6 +9,7 @@ import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
+import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.CurriculumListVo;
@@ -118,9 +119,10 @@ public class CurriculumController {
     @PostMapping
     @ApiOperation(value = "新增课程信息")
     @OperationWatcher(operateDesc = "新增课程信息")
-    public BaseResult save(@RequestBody  Curriculum curriculum){
-        boolean retFlag= curriculumService.save(curriculum);
-        return BaseResult.success(retFlag);
+    public BaseResult save(@RequestBody CurriculumInsertRequest curriculum){
+//        boolean retFlag= curriculumService.save(curriculum);
+//        return BaseResult.success(retFlag);
+        return null;
     }
 
     /**
