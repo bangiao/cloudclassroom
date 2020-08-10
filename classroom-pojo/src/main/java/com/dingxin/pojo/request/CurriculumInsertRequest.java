@@ -38,7 +38,6 @@ public class CurriculumInsertRequest {
      */
     @ApiModelProperty(value = "章节和视频信息",example = "[\n" +
             "\n" +
-            "    {\"curriculumName\":\"\",\"curriculumType\":\"\",\"teacherName\":\"\",\"chapterAndVideoInfo\": \n" +
             "        {\"chapterDesc\":\"\",\"curriculumId\":\"\",\"parentId\":\"\",\"chapterName\":\"\",\"chapterOrderNumber\":\"\",\"videoInfo\":{\n" +
             "\t\"curriculumId\": 0,\n" +
             "\t\"disableFlag\": 0,\n" +
@@ -49,6 +48,6 @@ public class CurriculumInsertRequest {
             "\t\"videoDuration\": 0,\n" +
             "\t\"videoName\": \"\",\n" +
             "\t\"videoSize\": \"5.4G\"\n" +
-            "}}}]",dataType = "List")
+            "}}]",dataType = "List")
     private List<ChapterAndVideoInsertRequest> chapterAndVideoInfo;
 }
