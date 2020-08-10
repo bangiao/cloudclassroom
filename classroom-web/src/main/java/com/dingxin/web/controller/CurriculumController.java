@@ -11,6 +11,7 @@ import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.vo.CurriculumListVo;
 import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IUserRoleService;
@@ -86,8 +87,8 @@ public class CurriculumController {
     @PostMapping("/listall")
     @ApiOperation(value = "获取所有课程列表下拉")
     public BaseResult<Page<CurriculumVo>>listall(TeacherIdRequest idRequest){
-        List<Map<String, Object>> list=curriculumService.listall(idRequest);
-        return BaseResult.success(list);
+        List<Curriculum> list=curriculumService.listall(idRequest);
+        return BaseResult.success(CurriculumListVo.convertToVoWithPage(list));
     }
 
     /**
@@ -101,7 +102,16 @@ public class CurriculumController {
 
         return BaseResult.success(curriculumVo);
     }
-
+    /**
+     * 单个查询
+     */
+    @PostMapping("/searchByTeacher")
+    @ApiOperation(value = "根据讲师获取课程详情信息")
+    public BaseResult<CurriculumListVo> searchByTeacher(@Validated @RequestBody IdRequest id){
+        List<Curriculum> curriculumList = curriculumService.searchByTeacher(id);
+        List<CurriculumListVo> curriculumListVos = CurriculumListVo.convertToVoWithPage(curriculumList);
+        return BaseResult.success(curriculumListVos);
+    }
     /**
      * 保存
      */

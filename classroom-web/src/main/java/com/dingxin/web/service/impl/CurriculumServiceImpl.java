@@ -14,14 +14,17 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
@@ -174,7 +177,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         Curriculum::getDeleteFlag,
                         CommonConstant.DEL_FLAG_TRUE)
                 .eq(
-                        Curriculum::getId,id)
+                        Curriculum::getId,id.getId())
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,
@@ -215,12 +218,29 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
      * @return
      */
     @Override
-    public List<Map<String, Object>> listall(TeacherIdRequest idRequest) {
+    public List<Curriculum> listall(TeacherIdRequest idRequest) {
         LambdaQueryWrapper<Curriculum> qw = Wrappers.lambdaQuery();
         qw.select(Curriculum::getId,Curriculum::getCurriculumName)
         .eq(Curriculum::getTeacherId,idRequest.getJg0101id())
         .eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG);
-        List<Map<String, Object>> maps = listMaps(qw);
-        return maps;
+        //List<Map<String, Object>> maps = listMaps(qw);
+        List<Curriculum> list = this.list(qw);
+        return list;
+    }
+
+    @Override
+    public List<Curriculum> searchByTeacher(IdRequest id) {
+        LambdaQueryWrapper<Curriculum> deleteQuery = Wrappers.<Curriculum>lambdaQuery()
+                .eq(
+                        Curriculum::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        Curriculum::getTeacherId,id.getId())
+                .select(
+                        Curriculum::getId,
+                        Curriculum::getCurriculumName);
+
+
+        return list(deleteQuery);
     }
 }
