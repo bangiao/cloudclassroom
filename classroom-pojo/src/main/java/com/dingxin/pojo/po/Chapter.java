@@ -1,13 +1,11 @@
 package com.dingxin.pojo.po;
 
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -41,6 +39,15 @@ public class Chapter extends Model<Chapter> {
      * 父章节
      */
     private Integer parentId;
+    /**
+     * 章节名称
+     */
+    private String chapterName;
+    /**
+     * 章节序号
+     */
+    private Integer chapterOrderNumber;
+
 
 
     @Override
