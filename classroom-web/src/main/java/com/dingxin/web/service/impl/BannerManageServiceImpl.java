@@ -1,25 +1,29 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.dao.mapper.BannerManageMapper;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.BannerManage;
-import com.dingxin.dao.mapper.BannerManageMapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IBannerManageService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  *  首页banner服务接口实现类
@@ -129,6 +133,20 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
     }
 
     @Override
+    public boolean saveBannerManage(BannerManage bannerManage) {
+        List<BannerManage> list = this.list();
+        Optional<BannerManage> optional = list.stream().max(Comparator.comparingInt(BannerManage::getSortId));
+        if(optional.isPresent()){
+            BannerManage manage = optional.get();
+            bannerManage.setSortId(manage.getSortId()+1);
+        }else {
+            bannerManage.setSortId(1);
+        }
+        bannerManage.setCreatePerson(ShiroUtils.getUserName());
+        return this.save(bannerManage);
+    }
+
+    @Override
     public boolean updateBannerManage(BannerManage bannerManage) {
         String fileUrl = bannerManage.getFileUrl();
         LambdaUpdateWrapper<BannerManage> qw = Wrappers.lambdaUpdate();
@@ -137,10 +155,7 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
                     .set(BannerManage::getFileName,null)
                     .set(BannerManage::getTitle,bannerManage.getTitle())
                     .set(BannerManage::getContent,bannerManage.getContent())
-                    .set(BannerManage::getUseType,bannerManage.getUseType())
-                    .set(BannerManage::getSortId,bannerManage.getSortId())
-                    .set(BannerManage::getCreatePerson,bannerManage.getCreatePerson())
-                    .set(BannerManage::getCreateTime,bannerManage.getCreateTime());
+                    .set(BannerManage::getUseType,bannerManage.getUseType());
             qw.eq(BannerManage::getId,bannerManage.getId());
             return this.update(qw);
         }else {
