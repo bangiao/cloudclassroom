@@ -1,8 +1,7 @@
 package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dingxin.pojo.basic.BaseQuery;
-import com.dingxin.pojo.po.BannerManage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.po.BannerManage;
 import com.dingxin.pojo.request.BannerRequest;
 import com.dingxin.pojo.request.IdRequest;
@@ -21,6 +20,8 @@ public interface IBannerManageService extends IService<BannerManage> {
     boolean deleteBannerManage(IdRequest id);
 
     boolean enableStatus(BannerRequest bannerRequest);
+
+    boolean saveBannerManage(BannerManage bannerManage);
 
     boolean updateBannerManage(BannerManage bannerManage);
 }
