@@ -42,7 +42,7 @@ public class TeacherStrategy extends CurriculumServiceImpl {
 
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
+        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery().and(q->q
                 .like(
                         StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
@@ -57,18 +57,26 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                         queryStr)
                 .or().like(
                         Curriculum::getTopicName,
-                        queryStr)
-                .or().eq(Curriculum::getClassTypeId,query.getClassType())
-                .and(
-                        StringUtils.isNotBlank(teacherName),
-                        q->q
-                                .eq(
-                                        //获取当前登录讲师的课程
-                                        Curriculum::getTeacherName,
-                                        teacherName))
-                                .eq(    //选取未删除的课程
-                                        Curriculum::getDeleteFlag,
-                                        CommonConstant.DEL_FLAG)
+                        queryStr));
+
+        curriculumQuery.and(
+                StringUtils.isNotBlank(teacherName),
+                q->q
+                        .eq(
+                                //获取当前登录讲师的课程
+                                Curriculum::getTeacherName,
+                                teacherName))
+                .eq(    //选取未删除的课程
+                        Curriculum::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .eq(
+                        query.getClassTypeId()!=null,
+                        Curriculum::getClassTypeId,
+                        query.getClassTypeId())
+                .eq(
+                        query.getAuditFlag()!=null,
+                        Curriculum::getAuditFlag,
+                        query.getAuditFlag())
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,
@@ -79,6 +87,7 @@ public class TeacherStrategy extends CurriculumServiceImpl {
                         Curriculum::getWatchAmount,
                         Curriculum::getAuditFlag,
                         Curriculum::getDisableFlag);
+
 
         return curriculumMapper.selectPage(page, curriculumQuery);
     }

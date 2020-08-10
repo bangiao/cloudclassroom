@@ -34,6 +34,6 @@ public class CurriculumFuzzyQuery4List extends BaseQuery4List {
      * 课程类型
      */
     @ApiModelProperty("课程类型")
-    private Integer classType;
+    private Integer classTypeId;
 
 }

@@ -31,7 +31,7 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
 
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
         String queryStr = query.getQueryStr();
-        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
+        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery().and(q->q
                 .like(
                         StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
@@ -47,25 +47,29 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
                 .or().like(
                         StringUtils.isNotBlank(queryStr),
                         Curriculum::getTopicName,
-                        queryStr)
-                .or().eq(
+                        queryStr));
+        curriculumQuery.and(q->q
+                .eq(    //选取未删除的课程
+                        Curriculum::getDeleteFlag,
+                        CommonConstant.DEL_FLAG))
+                .eq(
                         query.getAuditFlag()!=null,
                         Curriculum::getAuditFlag,
                         query.getAuditFlag())
-                .and(q->q
-                        .eq(    //选取未删除的课程
-                        Curriculum::getDeleteFlag,
-                        CommonConstant.DEL_FLAG))
-                .select(
-                        Curriculum::getId,
-                        Curriculum::getTeacherName,
-                        Curriculum::getCurriculumName,
-                        Curriculum::getCurriculumType,
-                        Curriculum::getCurriculumDesc,
-                        Curriculum::getVideoDuration,
-                        Curriculum::getWatchAmount,
-                        Curriculum::getAuditFlag,
-                        Curriculum::getDisableFlag);
+                .eq(
+                        query.getClassTypeId()!=null,
+                        Curriculum::getClassTypeId,
+                        query.getClassTypeId()).select(
+                Curriculum::getId,
+                Curriculum::getTeacherName,
+                Curriculum::getCurriculumName,
+                Curriculum::getCurriculumType,
+                Curriculum::getCurriculumDesc,
+                Curriculum::getVideoDuration,
+                Curriculum::getWatchAmount,
+                Curriculum::getAuditFlag,
+                Curriculum::getDisableFlag);
+
 
         return curriculumMapper.selectPage(page, curriculumQuery);
     }

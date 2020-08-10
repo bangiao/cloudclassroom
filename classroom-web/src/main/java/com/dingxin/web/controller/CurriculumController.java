@@ -137,7 +137,7 @@ public class CurriculumController {
      * 删除
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除课程信息，与课程相关的信息都会被删除")
+    @ApiOperation(value = "删除课程信息")
     @OperationWatcher(operateDesc = "删除课程信息")
     public BaseResult delete(@RequestBody List<Integer> curriculumIds){
         curriculumService.deleteCurriculumAndRelated(curriculumIds);
