@@ -179,12 +179,15 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
 
         List<Integer> currIds = projectCurriculumService.list(Wrappers
                 .<ProjectCurriculum>lambdaQuery()
-                .eq(ProjectCurriculum::getProjectId, projectManagement.getId()))
+                .eq(ProjectCurriculum::getProjectId, projectManagement.getId()).and(q->
+                        q.eq(ProjectCurriculum::getDelFlag, CommonConstant.DEL_FLAG)
+                ))
                 .stream().map(ProjectCurriculum::getCurriculumId)
                 .collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(currIds)){
             List<Curriculum> curricula = (List<Curriculum>) curriculumService.listByIds(currIds);
             projectManagement.setCurriculumList(curricula);
+            projectManagement.setCourseIds(currIds);
         }
         return projectManagement;
     }
