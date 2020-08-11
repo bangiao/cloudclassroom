@@ -256,22 +256,20 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      */
     @Override
     public IPage<StudentRecordListVo> studentList(StudentStudyStudentListRequest query) {
-        //查询列表数据
-        Page<Student> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<Student> qw = Wrappers.lambdaQuery();
-        String queryStr = query.getQueryStr();
-        if (org.apache.commons.lang3.StringUtils.isNotEmpty(queryStr)) {
-            qw.and(Wrapper -> Wrapper.like(Student::getXm, queryStr).or()
-                    .like(Student::getXsbh, queryStr).or().like(Student::getBjmc, queryStr));
-        }
-        IPage<Student> studentIPage = studentService.page(page, qw);
-        IPage<StudentRecordListVo> studentRecordListVoIPage = StudentRecordListVo.convertToVoWithPage(studentIPage);
+        StudentStudyStudentListRequest studentStudyStudentListRequest = new StudentStudyStudentListRequest();
+        studentStudyStudentListRequest.setQueryStr(query.getQueryStr());
+        studentStudyStudentListRequest.setCurrentPage(query.getCurrentPage());
+        studentStudyStudentListRequest.setPageSize(query.getPageSize());
+        IPage studentPage = studentService.queryPageList(studentStudyStudentListRequest);
+//        学生数据
+
+        IPage<StudentRecordListVo> studentRecordListVoIPage = StudentRecordListVo.convertToVoWithPage(studentPage);
         List<Integer> list = studentRecordListVoIPage.getRecords().stream().map(StudentRecordListVo::getId).collect(Collectors.toList());
-        if (!Objects.isNull(list) || list.size() > 0) {
+        if (CollectionUtils.isNotEmpty(list)) {
             QueryWrapper<StduentClassSeeRecord> qs = Wrappers.query();
             qs.select("student_id", "sum(study_length) as sum ").eq("del_flag", CommonConstant.DEL_FLAG).in(list.size() > 0, "student_id", list).groupBy("student_id");
             List<Map<String, Object>> maps = listMaps(qs);
-            if (!com.dingxin.common.utils.CollectionUtils.isEmpty(maps)) {
+            if (CollectionUtils.isNotEmpty(maps)) {
                 for (StudentRecordListVo record : studentRecordListVoIPage.getRecords()) {
                     for (Map<String, Object> map : maps) {
                         if (Integer.parseInt(map.get("student_id").toString()) == record.getId()) {
