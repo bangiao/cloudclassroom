@@ -31,7 +31,8 @@ public class AdministratorStrategy extends CurriculumServiceImpl {
 
         Page<Curriculum> page = new Page<Curriculum>(query.getCurrentPage(), query.getPageSize());
         String queryStr = query.getQueryStr();
-        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery().and(q->q
+        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery().and(StringUtils.isNoneBlank(queryStr)
+                ,q->q
                 .like(
                         StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
