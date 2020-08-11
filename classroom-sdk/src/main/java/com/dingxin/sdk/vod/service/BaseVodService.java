@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseVodService {
 
-    @Autowired
+    @Autowired(required = false)
     private VodProperties vodProperties;
 
 
