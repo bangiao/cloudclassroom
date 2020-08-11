@@ -96,7 +96,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                 LambdaQueryWrapper<Video> videoQuery = Wrappers.<Video>lambdaQuery()
                         .eq(Video::getChapterId,child.getId())
                         .eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG)
-                        .select(Video::getId,Video::getVideoName,Video::getVideoDuration,Video::getVideoSize,Video::getDisableFlag);
+                        .select(Video::getId,Video::getVideoName,Video::getVideoDuration,Video::getVideoSize,Video::getDisableFlag,Video::getVideoAttachment);
                 //目前业务是只支持一节对应一个视频
                 Video videoPo = videoService.getOne(videoQuery);
                 VideoVo videoVo = VideoVo.convertToVo(videoPo);
