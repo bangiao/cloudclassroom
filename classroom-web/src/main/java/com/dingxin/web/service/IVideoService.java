@@ -80,4 +80,13 @@ public interface IVideoService extends IService<Video> {
     IPage queryPageList(VideoListRequest query);
 
     void audit(VideoAuditRequest videoAudit);
+
+    /**
+     *  禁用视频
+     */
+    void disableVideos(List<Integer> videoIds);
+    /**
+     *  启用视频
+     */
+    void enableVideos(List<Integer> videoIds);
 }

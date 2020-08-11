@@ -1,8 +1,19 @@
-package com.dingxin.pojo.request;
+package com.dingxin.pojo.vo;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.common.utils.DateUtils;
+import com.dingxin.pojo.po.Chapter;
+import com.dingxin.pojo.po.Curriculum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * author: cuteG <br>
@@ -11,18 +22,21 @@ import lombok.Data;
  */
 @Data
 @ApiModel("混和章节和课程请求信息")
-public class ChapterAndVideoInsertRequest {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChapterAndVideoInfo {
     /**
      * 章节描述
      */
     @ApiModelProperty(value = "章节描述",example = "LBWNB")
     private String chapterDesc;
-    /**
-     * 所属课程
-     */
-    @ApiModelProperty(value = "所属课程",example = "LBWNB")
-    private String curriculumId;
 //    /**
+////     * 所属课程
+////     */
+////    @ApiModelProperty(value = "所属课程",example = "LBWNB")
+////    private String curriculumId;
+//////    /**
 //     * 是否为根章节
 //     */
 //    @ApiModelProperty(value = "讲师",example = "LBWNB")
@@ -43,6 +57,9 @@ public class ChapterAndVideoInsertRequest {
     @ApiModelProperty(value = "章节序号",example = "LBWNB")
     private Integer chapterOrderNumber;
 
+    @ApiModelProperty(value = "子章节",example = "LBWNB")
+    private List<ChapterAndVideoInfo> childChapter;
+
     /**
      * 视频信息
      */
@@ -57,5 +74,21 @@ public class ChapterAndVideoInsertRequest {
             "\t\"videoName\": \"\",\n" +
             "\t\"videoSize\": \"5.4G\"\n" +
             "}")
-    private VideoInsertRequest videoInfo;
+    private VideoVo videoInfo;
+
+    public static ChapterAndVideoInfo convertToVo(Chapter chapterPo){
+        if (Objects.isNull(chapterPo))
+            return null;
+        return ChapterAndVideoInfo.builder()
+                .chapterDesc(chapterPo.getChapterDesc())
+                .chapterName(chapterPo.getChapterName())
+                .chapterOrderNumber(chapterPo.getChapterOrderNumber())
+                .parentId(chapterPo.getParentId())
+                .build();
+    }
+
+    public static IPage<ChapterAndVideoInfo> convertToVoWithPage(IPage<Chapter> chapterPo){
+
+        return chapterPo.convert(ChapterAndVideoInfo::convertToVo);
+    }
 }

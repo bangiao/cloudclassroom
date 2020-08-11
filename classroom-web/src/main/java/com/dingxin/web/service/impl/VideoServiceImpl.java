@@ -416,4 +416,38 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         //同时修改/更新对应课程的审核状态
         videoService.updateVideoRelatedCurriculumAuditFlag(videoAudit.getCurriculumId());
     }
+
+    @Override
+    public void disableVideos(List<Integer> videoIds) {
+        if(CollectionUtils.isEmpty(videoIds)){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Video> disableQuery = Wrappers.<Video>lambdaUpdate().
+                set(
+                        Video::getDisableFlag,
+                        CommonConstant.DISABLE_TRUE)
+                .in(
+                        Video::getId,
+                        videoIds);
+
+        update(disableQuery);
+    }
+
+    @Override
+    public void enableVideos(List<Integer> videoIds) {
+        if(CollectionUtils.isEmpty(videoIds)){
+
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Video> disableQuery = Wrappers.<Video>lambdaUpdate().
+                set(
+                        Video::getDisableFlag,
+                        CommonConstant.DISABLE_FALSE)
+                .in(
+                        Video::getId,
+                        videoIds);
+
+        update(disableQuery);
+    }
 }

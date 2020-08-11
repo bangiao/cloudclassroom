@@ -1,24 +1,21 @@
-package com.dingxin.pojo.po;
+package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 /**
- *  实体类
+ * author: cuteG <br>
+ * date: 2020/8/11 17:34 <br>
+ * description: todo <br>
  */
-@TableName("ccr_chapter")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Chapter extends Model<Chapter> {
-
-    private static final long serialVersionUID=1L;
-
+@ApiModel("章节视图")
+public class ChapterVo {
     /**
      * 章节表主键
      */
@@ -27,14 +24,6 @@ public class Chapter extends Model<Chapter> {
      * 章节描述
      */
     private String chapterDesc;
-    /**
-     * 所属课程
-     */
-    private Integer curriculumId;
-    /**
-     * 是否为根章节
-     */
-    private Integer rootChapterFlag;
     /**
      * 父章节
      */
@@ -51,12 +40,4 @@ public class Chapter extends Model<Chapter> {
      * 删除标志位
      */
     private Integer deleteFlag;
-
-
-
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
-
 }

@@ -96,4 +96,19 @@ public class VideoController {
 
         return BaseResult.success();
     }
+
+    @PostMapping("/disable")
+    @ApiOperation(value = "禁用视频[支持批量]")
+    public BaseResult disableVideos(@RequestBody List<Integer> videoIds){
+        videoService.disableVideos(videoIds);
+
+        return BaseResult.success();
+    }
+    @PostMapping("/enable")
+    @ApiOperation(value = "启用视频[支持批量]")
+    public BaseResult enableVideos(@RequestBody List<Integer> videoIds){
+        videoService.enableVideos(videoIds);
+
+        return BaseResult.success();
+    }
 }

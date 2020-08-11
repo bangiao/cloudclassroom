@@ -6,6 +6,7 @@ import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.vo.CurriculumDetailsVo;
 
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public interface ICurriculumService extends IService<Curriculum> {
     /**
      * 查询详细课程信息，不查询已经删除的信息
      */
-    Curriculum loadCurriculumDetails(IdRequest id);
+    CurriculumDetailsVo loadCurriculumDetails(IdRequest id);
 
     void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes);
 

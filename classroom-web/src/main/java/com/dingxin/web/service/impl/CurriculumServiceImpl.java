@@ -10,8 +10,14 @@ import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.ClassEvaluateInsertRequest;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.vo.ChapterAndVideoInfo;
+import com.dingxin.pojo.vo.CurriculumDetailsVo;
+import com.dingxin.web.service.IChapterService;
+import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import com.google.common.collect.Maps;
@@ -37,6 +43,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     private CurriculumMapper curriculumMapper;
     @Autowired
     private IVideoService videoService;
+    @Autowired
+    private IChapterService chapterService;
 
     @Override
     public List<Curriculum> like(Curriculum data) {
@@ -171,7 +179,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     }
 
     @Override
-    public Curriculum loadCurriculumDetails(IdRequest id) {
+    public CurriculumDetailsVo loadCurriculumDetails(IdRequest id) {
+        //查出当前课程信息
         LambdaQueryWrapper<Curriculum> deleteQuery = Wrappers.<Curriculum>lambdaQuery()
                 .ne(
                         Curriculum::getDeleteFlag,
@@ -184,10 +193,18 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         Curriculum::getCurriculumName,
                         Curriculum::getCurriculumType,
                         Curriculum::getCurriculumDesc,
-                        Curriculum::getVideoDuration,
-                        Curriculum::getWatchAmount);
+                        Curriculum::getClassTypeId,
+                        Curriculum::getTopicName,
+                        Curriculum::getTeacherName);
+        //查询出当前课程对应的章节及章节对应的视频信息
+        List<ChapterAndVideoInfo> chapterAndVideoInfos = chapterService.loadChapterAndVideoInfo(id.getId());
+        //课程信息
+        Curriculum curriculum = getOne(deleteQuery);
+        CurriculumDetailsVo curriculumDetailsVo = CurriculumDetailsVo.convertToVo(curriculum);
+        if (curriculumDetailsVo != null)
+            curriculumDetailsVo.setChildChapter(chapterAndVideoInfos);
 
-        return getOne(deleteQuery);
+        return curriculumDetailsVo;
     }
 
     @Override

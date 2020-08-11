@@ -1,5 +1,6 @@
 package com.dingxin.pojo.request;
 
+import com.dingxin.pojo.vo.ChapterAndVideoInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -49,5 +50,5 @@ public class CurriculumInsertRequest {
             "\t\"videoName\": \"\",\n" +
             "\t\"videoSize\": \"5.4G\"\n" +
             "}}]",dataType = "List")
-    private List<ChapterAndVideoInsertRequest> chapterAndVideoInfo;
+    private List<ChapterAndVideoInfo> chapterAndVideoInfo;
 }

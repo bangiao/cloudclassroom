@@ -12,6 +12,7 @@ import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
 import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.vo.CurriculumDetailsVo;
 import com.dingxin.pojo.vo.CurriculumListVo;
 import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.web.service.ICurriculumService;
@@ -98,10 +99,10 @@ public class CurriculumController {
     @PostMapping("/search")
     @ApiOperation(value = "获取课程详情信息")
     public BaseResult<CurriculumVo> search(@Validated @RequestBody IdRequest id){
-        Curriculum curriculumPo = curriculumService.loadCurriculumDetails(id);
-        CurriculumVo curriculumVo = CurriculumVo.convertToVo(curriculumPo);
 
-        return BaseResult.success(curriculumVo);
+        CurriculumDetailsVo curriculumDetailsVo = curriculumService.loadCurriculumDetails(id);
+
+        return BaseResult.success(curriculumDetailsVo);
     }
     /**
      * 单个查询
