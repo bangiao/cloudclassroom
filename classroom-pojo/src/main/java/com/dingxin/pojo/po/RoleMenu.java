@@ -42,4 +42,8 @@ public class RoleMenu extends Model<RoleMenu> {
         return this.id;
     }
 
+    public static RoleMenu insertValue(int var,int var2){
+        return RoleMenu.builder().roleId(var).menuId(var2).build();
+    }
+
 }

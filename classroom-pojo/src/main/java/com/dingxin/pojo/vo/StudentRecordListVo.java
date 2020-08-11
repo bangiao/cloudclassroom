@@ -1,13 +1,9 @@
 package com.dingxin.pojo.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
-import com.dingxin.pojo.po.StduentClassSeeRecord;
 import com.dingxin.pojo.po.Student;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,9 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,7 +26,7 @@ import java.util.Objects;
 @Api("返回学生信息")
 public class StudentRecordListVo extends Model<StudentRecordListVo> {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键 查看课程列表传这个Id过去")
     private Integer id;
@@ -70,17 +65,18 @@ public class StudentRecordListVo extends Model<StudentRecordListVo> {
     @ApiModelProperty(value = "班级")
     private String bjmc;
     @ApiModelProperty(value = "学习时长")
-    private String xxsc="0";
+    private String xxsc = "0";
 
 
-    public static StudentRecordListVo convent(Student source) {
+    public static StudentRecordListVo convent(Map source) {
         if (Objects.isNull(source)) {
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return StudentRecordListVo.builder().bjmc(source.getBjmc()).zymc(source.getZymc()).yxmc(source.getYxmc()).xh(source.getXh()).xm(source.getXm()).id(source.getId()).build();
+        return StudentRecordListVo.builder().bjmc(source.get("bjmc").toString()).zymc(source.get("zymc").toString()).yxmc(source.get("symc").toString())
+                .xh(source.get("xh").toString()).xm(source.get("xm").toString()).id(Integer.parseInt(source.get("xh").toString())).build();
     }
 
-    public static IPage<StudentRecordListVo> convertToVoWithPage(IPage<Student> record) {
+    public static IPage<StudentRecordListVo> convertToVoWithPage(IPage<Map> record) {
         return record.convert(StudentRecordListVo::convent);
     }
 

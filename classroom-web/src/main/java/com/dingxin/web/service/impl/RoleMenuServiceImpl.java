@@ -1,6 +1,7 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
@@ -67,10 +68,23 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
         qr.eq(RoleMenu::getRoleId, id.getId());
         List<Integer> collect = list(qr).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
         List<Menu> menus = menuService.list(qm);
+        ArrayList<Menu> baba = Lists.newArrayList();
         for (Menu menu : menus) {
             menu.setCheck(collect.contains(menu.getId()) ? Boolean.TRUE : Boolean.FALSE);
+            ArrayList<Menu> children = Lists.newArrayList();
+            for (Menu menu1 : menus) {
+                if (menu.getId()==menu1.getParentId()){
+                    children.add(menu1);
+                }
+            }
+            if (CollectionUtils.isNotEmpty(children)){
+                menu.setChildren(children);
+            }
+            if (menu.getParentId()==0){
+                baba.add(menu);
+            }
         }
-        return menus;
+        return baba;
     }
 
     /**
