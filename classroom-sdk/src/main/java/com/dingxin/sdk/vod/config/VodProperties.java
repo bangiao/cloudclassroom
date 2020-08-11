@@ -15,4 +15,8 @@ public class VodProperties {
 
     private String secretKey;
 
+    private String endpoint;
+
+    private String region;
+
 }

@@ -1,5 +1,7 @@
 sdk:
   vod:
     enable: true
-    secretId: xx
-    secretKey: xx
+    secret-id: AKIDc091WleNozqLmJ6tqWv3ycLn35rIjIHK
+    secret-key: vQfdMnyLm372avnPyJTL5xciV4PL0ovm
+    endpoint: vod.tencentcloudapi.com
+    region: ap-guangzhou
