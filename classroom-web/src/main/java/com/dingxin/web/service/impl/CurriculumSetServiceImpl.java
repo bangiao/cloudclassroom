@@ -1,12 +1,15 @@
 package com.dingxin.web.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CurriculumSetMapper;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.CurriculumIntermediate;
@@ -15,9 +18,15 @@ import com.dingxin.web.service.ICurriculumIntermediateService;
 import com.dingxin.web.service.ICurriculumSetService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -33,6 +42,12 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
 
     @Autowired
     private ICurriculumIntermediateService curriculumIntermediateService;
+
+    @Autowired
+    private TokenApiService tokenApiService;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public List<CurriculumSet> like(CurriculumSet data) {
@@ -125,4 +140,30 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
         return BaseResult.success().setMsg("修改课程表成功");
     }
 
+    @Override
+    public BaseResult<Page<CurriculumSet>> pageList(BaseQuery<CurriculumSet> query) {
+        String token = tokenApiService.getToken();
+        String url = "https://api.sustech.edu.cn/" +
+                "/api/studentStudyInfo/educational/courses/page?" +
+                "currentPage="+query.getCurrentPage()
+                +"&pageSize="+ query.getPageSize();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization","Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class);
+        JSONObject jsonObject = response.getBody();
+        Page page = new Page<>();
+        if (Objects.nonNull(jsonObject)&&Objects.nonNull(jsonObject.get("data"))){
+            LinkedHashMap<String,Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
+            List records = (List) data.get("records");
+            int total = Integer.parseInt((String)data.get("total"));
+            int size = Integer.parseInt((String)data.get("size"));
+            int current = Integer.parseInt((String)data.get("current"));
+            page.setCurrent(current);
+            page.setRecords(records);
+            page.setTotal(total);
+            page.setSize(size);
+        }
+        return BaseResult.success(page,"查询成功");
+    }
 }

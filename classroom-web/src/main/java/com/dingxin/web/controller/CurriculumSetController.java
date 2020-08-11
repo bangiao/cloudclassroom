@@ -34,9 +34,7 @@ public class CurriculumSetController {
     @ApiOperation(value = "获取列表")
     public BaseResult<Page<CurriculumSet>>list(@RequestBody BaseQuery<CurriculumSet> query){
         //查询列表数据
-        Page<CurriculumSet> page = new Page(query.getCurrentPage(),query.getPageSize());
-        IPage pageList = curriculumSetService.page(page,Wrappers.query(query.getData()));
-        return BaseResult.success(pageList);
+        return curriculumSetService.pageList(query);
     }
 
     /**

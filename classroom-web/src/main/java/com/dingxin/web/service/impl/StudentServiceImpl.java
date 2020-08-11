@@ -1,4 +1,5 @@
 package com.dingxin.web.service.impl;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -10,7 +11,14 @@ import com.dingxin.pojo.request.StudentStudyStudentListRequest;
 import com.dingxin.web.service.IStudentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +30,12 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Autowired
     private StudentMapper studentMapper;
+    @Autowired
+    private TokenApiService tokenApiService;
+    @Autowired
+    private RestTemplate restTemplate;
+    private static final Integer UNDERGRADUATE = 1;
+    private static final Integer POSTGRADUATE = 2;
 
 
     @Override
@@ -175,14 +189,53 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public IPage queryPageList(StudentStudyStudentListRequest query) {
-        //查询列表数据
-        Page<Student> page = new Page(query.getCurrentPage(),query.getPageSize());
-        LambdaQueryWrapper<Student> wrapper = Wrappers.lambdaQuery();
+
         String queryStr = query.getQueryStr();
-        if(StringUtils.isNotEmpty(queryStr)){
-            wrapper.and(Wrapper -> Wrapper.like(Student::getXm,queryStr));
+        String token = tokenApiService.getToken();
+        Integer type = query.getType();
+        // 默认本科生
+        String url = "https://api.sustech.edu.cn/api/" +
+                "studentStudyInfo/educational/student/undergraduate/page?" +
+                "currentPage="+query.getCurrentPage()
+                +"&pageSize="+ query.getPageSize();
+        // 研究生 url
+        if (Objects.nonNull(type)){
+            if (type.equals(POSTGRADUATE)){
+                url = "https://api.sustech.edu.cn" +
+                        "/api/studentStudyInfo/educational/student/postgraduate/page?" +
+                        "currentPage="+query.getCurrentPage()
+                        +"&pageSize="+ query.getPageSize();
+            }
         }
-        IPage pageList = this.page(page,wrapper);
-        return pageList;
+        if (StringUtils.isNotEmpty(queryStr)){
+            url = url+"&xm="+queryStr;
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization","Bearer " + token);
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class);
+        JSONObject jsonObject = response.getBody();
+        Page page = new Page<>();
+        if (Objects.nonNull(jsonObject)&&Objects.nonNull(jsonObject.get("data"))){
+            LinkedHashMap<String,Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
+            List records = (List) data.get("records");
+            int total = Integer.parseInt((String)data.get("total"));
+            int size = Integer.parseInt((String)data.get("size"));
+            int current = Integer.parseInt((String)data.get("current"));
+            page.setCurrent(current);
+            page.setRecords(records);
+            page.setTotal(total);
+            page.setSize(size);
+        }
+        return page;
+//        //查询列表数据
+//        Page<Student> page = new Page(query.getCurrentPage(),query.getPageSize());
+//        LambdaQueryWrapper<Student> wrapper = Wrappers.lambdaQuery();
+//        String queryStr = query.getQueryStr();
+//        if(StringUtils.isNotEmpty(queryStr)){
+//            wrapper.and(Wrapper -> Wrapper.like(Student::getXm,queryStr));
+//        }
+//        IPage pageList = this.page(page,wrapper);
+//        return pageList;
     }
 }

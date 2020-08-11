@@ -1,4 +1,6 @@
 package com.dingxin.web.service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.CurriculumSet;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,5 +16,7 @@ public interface ICurriculumSetService extends IService<CurriculumSet> {
     BaseResult saveCurriculumSet(CurriculumSet curriculumSet);
 
     BaseResult updateCurriculumSet(CurriculumSet curriculumSet);
+
+    BaseResult<Page<CurriculumSet>> pageList(BaseQuery<CurriculumSet> query);
 }
 

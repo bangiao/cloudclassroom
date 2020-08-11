@@ -11,6 +11,10 @@ spring:
       max-file-size: 10MB
       #上传多个文件最大值  默认是10MB
       max-request-size: 100MB
+api:
+  client:
+    id: C2V5KinfGvkr6re81Gg6UICs
+    secret: VVOH8DT3hnWw8bxnu2yxG7E9A2IEQnCV
 #knife4j:
 #  basic:
 #    enable: true #输入下面的用户名密码查看接口文档

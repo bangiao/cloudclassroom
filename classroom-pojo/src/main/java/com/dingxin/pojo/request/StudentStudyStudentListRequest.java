@@ -18,5 +18,8 @@ public class StudentStudyStudentListRequest extends BaseQuery4List {
     @ApiModelProperty(value = "模糊查询查询专用字段")
     private String queryStr;
 
+    @ApiModelProperty(value = "本科生-1，研究生-2")
+    private Integer type;
+
 
 }
