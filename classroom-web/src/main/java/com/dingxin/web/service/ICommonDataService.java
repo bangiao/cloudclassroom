@@ -4,7 +4,7 @@ package com.dingxin.web.service;
 import com.dingxin.pojo.basic.BaseResult;
 
 public interface ICommonDataService{
-    BaseResult photo(Integer id);
+    BaseResult photo(String id);
 
-    BaseResult courses(Integer id);
+    BaseResult courses(String id);
 }

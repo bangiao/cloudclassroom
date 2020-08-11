@@ -31,14 +31,14 @@ public class CommonDataServiceImpl implements ICommonDataService {
      * @return
      */
     @Override
-    public BaseResult photo(Integer id) {
+    public BaseResult photo(String id) {
         String token = tokenApiService.getToken();
-        String url = "https://api.sustech.edu.cn/api/" +
-                "/api/studentStudyInfo/educational/photograph/{" + id + "}";
+        String url = "https://api.sustech.edu.cn/" +
+                "/api/studentStudyInfo/educational/photograph/{id}";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class);
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class,id);
         JSONObject jsonObject = response.getBody();
         if (Objects.nonNull(jsonObject) && Objects.nonNull(jsonObject.get("data"))) {
             LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
@@ -48,14 +48,14 @@ public class CommonDataServiceImpl implements ICommonDataService {
     }
 
     @Override
-    public BaseResult courses(Integer id) {
+    public BaseResult courses(String id) {
         String token = tokenApiService.getToken();
-        String url = "https://api.sustech.edu.cn/api/" +
-                "/api/studentStudyInfo/educational/courses/student/{"+id+"}";
+        String url = "https://api.sustech.edu.cn/" +
+                "/api/studentStudyInfo/educational/courses/student/{id}";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class);
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class,id);
         JSONObject jsonObject = response.getBody();
         if (Objects.nonNull(jsonObject) && Objects.nonNull(jsonObject.get("data"))) {
             LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");

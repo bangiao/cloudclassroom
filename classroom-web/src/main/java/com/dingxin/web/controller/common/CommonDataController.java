@@ -8,6 +8,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.BannerManage;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.web.service.ICasDeptsService;
 import com.dingxin.web.service.ICommonDataService;
 import io.swagger.annotations.Api;
@@ -39,14 +40,14 @@ public class CommonDataController {
 
     @PostMapping("/photo")
     @ApiOperation(value = "获取学生或老师照片")
-    public BaseResult photo(@RequestBody IdRequest request){
-        return commonDataService.photo(request.getId());
+    public BaseResult photo(@RequestBody WidRequest request){
+        return commonDataService.photo(request.getWid());
     }
 
     @PostMapping("/courses")
     @ApiOperation(value = "获取学生课程表")
-    public BaseResult courses(@RequestBody IdRequest request){
-        return commonDataService.courses(request.getId());
+    public BaseResult courses(@RequestBody WidRequest request){
+        return commonDataService.courses(request.getWid());
     }
 
 
