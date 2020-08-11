@@ -4,7 +4,7 @@ spring:
   application:
     name: cloud-classroom
   profiles:
-    active: dev,sdk-dev
+    active: dev
   servlet:
     multipart:
       #上传一个文件最大值  默认是1MB
