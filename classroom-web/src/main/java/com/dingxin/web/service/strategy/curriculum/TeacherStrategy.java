@@ -42,7 +42,8 @@ public class TeacherStrategy extends CurriculumServiceImpl {
 
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery().and(q->q
+        LambdaQueryWrapper<Curriculum> curriculumQuery = Wrappers.<Curriculum>lambdaQuery()
+                .and(StringUtils.isNotBlank(queryStr),q->q
                 .like(
                         StringUtils.isNotBlank(queryStr),
                         Curriculum::getCurriculumName,
