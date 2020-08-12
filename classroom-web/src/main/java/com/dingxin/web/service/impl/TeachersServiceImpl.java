@@ -14,6 +14,7 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.ICasDeptsService;
 import com.dingxin.web.service.ITeachersService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,10 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -47,94 +46,29 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     public List<Teachers> like(Teachers data) {
         LambdaQueryWrapper<Teachers> query = Wrappers.<Teachers>lambdaQuery()
                 .like(
-                    Objects.nonNull(data.getJg0101id()),
-                    Teachers::getJg0101id,
-                    data.getJg0101id())
+                    Objects.nonNull(data.getZgh()),
+                    Teachers::getZgh,
+                    data.getZgh())
                 .like(
-                    Objects.nonNull(data.getJgh()),
-                    Teachers::getJgh,
-                    data.getJgh())
+                    Objects.nonNull(data.getCreateTime()),
+                    Teachers::getCreateTime,
+                    data.getCreateTime())
                 .like(
                     Objects.nonNull(data.getXm()),
                     Teachers::getXm,
                     data.getXm())
                 .like(
-                    Objects.nonNull(data.getXmpy()),
-                    Teachers::getXmpy,
-                    data.getXmpy())
+                    Objects.nonNull(data.getIntroduction()),
+                    Teachers::getIntroduction,
+                    data.getIntroduction())
                 .like(
-                    Objects.nonNull(data.getCym()),
-                    Teachers::getCym,
-                    data.getCym())
+                    Objects.nonNull(data.getEnable()),
+                    Teachers::getEnable,
+                    data.getEnable())
                 .like(
-                    Objects.nonNull(data.getXbm()),
-                    Teachers::getXbm,
-                    data.getXbm())
-                .like(
-                    Objects.nonNull(data.getCsrq()),
-                    Teachers::getCsrq,
-                    data.getCsrq())
-                .like(
-                    Objects.nonNull(data.getCsdm()),
-                    Teachers::getCsdm,
-                    data.getCsdm())
-                .like(
-                    Objects.nonNull(data.getJg()),
-                    Teachers::getJg,
-                    data.getJg())
-                .like(
-                    Objects.nonNull(data.getGjdqm()),
-                    Teachers::getGjdqm,
-                    data.getGjdqm())
-                .like(
-                    Objects.nonNull(data.getMzm()),
-                    Teachers::getMzm,
-                    data.getMzm())
-                .like(
-                    Objects.nonNull(data.getSfzjlxm()),
-                    Teachers::getSfzjlxm,
-                    data.getSfzjlxm())
-                .like(
-                    Objects.nonNull(data.getSfzjh()),
-                    Teachers::getSfzjh,
-                    data.getSfzjh())
-                .like(
-                    Objects.nonNull(data.getSfzjyxq()),
-                    Teachers::getSfzjyxq,
-                    data.getSfzjyxq())
-                .like(
-                    Objects.nonNull(data.getBzlbm()),
-                    Teachers::getBzlbm,
-                    data.getBzlbm())
-                .like(
-                    Objects.nonNull(data.getJzglbm()),
-                    Teachers::getJzglbm,
-                    data.getJzglbm())
-                .like(
-                    Objects.nonNull(data.getDqztm()),
-                    Teachers::getDqztm,
-                    data.getDqztm())
-                .like(
-                    Objects.nonNull(data.getWhcdm()),
-                    Teachers::getWhcdm,
-                    data.getWhcdm())
-                .like(
-                    Objects.nonNull(data.getCjgzny()),
-                    Teachers::getCjgzny,
-                    data.getCjgzny())
-                .like(
-                    Objects.nonNull(data.getLxrq()),
-                    Teachers::getLxrq,
-                    data.getLxrq())
-                .like(
-                    Objects.nonNull(data.getCjny()),
-                    Teachers::getCjny,
-                    data.getCjny())
-                .like(
-                    Objects.nonNull(data.getDwh()),
-                    Teachers::getDwh,
-                    data.getDwh())
-;
+                    Objects.nonNull(data.getModifyTime()),
+                    Teachers::getModifyTime,
+                    data.getModifyTime());
         return teachersMapper.selectList(query);
 
 
@@ -164,7 +98,29 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         Page page = new Page<>();
         if (Objects.nonNull(jsonObject)&&Objects.nonNull(jsonObject.get("data"))){
             LinkedHashMap<String,Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
-            List records = (List) data.get("records");
+            List<Map<String,String>> records = (List) data.get("records");
+            //将远程接口中数据存入中间表
+            ArrayList<Teachers> teacherList = Lists.newArrayList();
+            ArrayList<Object> szdwdmList = Lists.newArrayList();
+            for (Map<String,String> map:records) {
+                szdwdmList.add(map.get("szdwdm"));
+                Teachers teachers = new Teachers();
+                teachers.setZgh(map.get("zgh"));
+                teachers.setXm(map.get("xm"));
+                teachers.setModifyTime(LocalDateTime.now());
+                teacherList.add(teachers);
+            }
+            this.saveOrUpdateBatch(teacherList);
+            //用学员号查出学院名称重新放入map中
+            LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
+            deptQw.in(CasDepts::getZsjdwid,szdwdmList);
+            List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
+            Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
+            for (Map<String,String> map:records) {
+                if (collect.containsKey(map.get("szdwdm"))){
+                    map.put("szdwdm",collect.get(map.get("szdwdm")));
+                }
+            }
             int total = Integer.parseInt((String)data.get("total"));
             int size = Integer.parseInt((String)data.get("size"));
             int current = Integer.parseInt((String)data.get("current"));
@@ -201,7 +157,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
         qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
         IPage<Teachers> teachers = page(page, qw);
-        List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
+       /* List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
         LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
         deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
         List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
@@ -210,25 +166,25 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
             if (collect.containsKey(teacher.getDwh())){
                 teacher.setZsjmc(collect.get(teacher.getDwh()));
             }
-        }
+        }*/
         return teachers;
     }
 
     @Override
     public Teachers queryById(IdRequest idRequest) {
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.eq(Teachers::getJg0101id,idRequest.getId()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
+        qw.eq(Teachers::getZgh,idRequest.getId()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
         return getOne(qw);
     }
     /**
      * 获取所有讲师的下拉列表值
-     * @param query
+     * @param
      * @return
      */
     @Override
     public List<Map<String,Object>> queryAll() {
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.select(Teachers::getJg0101id,Teachers::getXm);
+        qw.select(Teachers::getZgh,Teachers::getXm);
         return listMaps(qw);
 
     }
