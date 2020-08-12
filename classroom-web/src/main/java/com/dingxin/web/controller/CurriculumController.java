@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 后台管理课程管理接口
@@ -63,7 +62,7 @@ public class CurriculumController {
      * 列表查询
      */
     @PostMapping("/list")
-    @ApiOperation(value = "获取所有课程列表")
+    @ApiOperation(value = "获取分页课程列表")
     public BaseResult<Page<CurriculumVo>>list(@RequestBody CurriculumFuzzyQuery4List query){
         //todo
 //        String userId = ShiroUtils.getUserId();
@@ -88,7 +87,7 @@ public class CurriculumController {
      */
     @PostMapping("/listall")
     @ApiOperation(value = "获取所有课程列表下拉")
-    public BaseResult<Page<CurriculumVo>>listall(TeacherIdRequest idRequest){
+    public BaseResult<List<CurriculumVo>>listall(TeacherIdRequest idRequest){
         List<Curriculum> list=curriculumService.listall(idRequest);
         return BaseResult.success(CurriculumListVo.convertToVoWithPage(list));
     }
