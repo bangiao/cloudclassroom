@@ -45,13 +45,13 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
                     Video::getVideoDuration,
                     data.getVideoDuration())
                 .like(
-                    Objects.nonNull(data.getVideoAttachment()),
-                    Video::getVideoAttachment,
-                    data.getVideoAttachment())
+                    Objects.nonNull(data.getVideoField()),
+                    Video::getVideoField,
+                    data.getVideoField())
                 .like(
-                    Objects.nonNull(data.getLiveVideo()),
-                    Video::getLiveVideo,
-                    data.getLiveVideo())
+                    Objects.nonNull(data.getLiveVideoField()),
+                    Video::getLiveVideoField,
+                    data.getLiveVideoField())
                 .like(
                     Objects.nonNull(data.getDisableFlag()),
                     Video::getDisableFlag,

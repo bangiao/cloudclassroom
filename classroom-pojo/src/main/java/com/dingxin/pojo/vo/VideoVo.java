@@ -38,12 +38,12 @@ public class VideoVo {
      * 视频附件
      */
     @ApiModelProperty("视频附件")
-    private String videoAttachment;
+    private String videoField;
     /**
      * 直播视频
      */
     @ApiModelProperty("直播视频")
-    private String liveVideo;
+    private String liveVideoField;
 //    /**
 //     * 讲师
 //     */
@@ -67,11 +67,11 @@ public class VideoVo {
             return null;
         return VideoVo.builder()
                 .id(videoPo.getId())
-                .liveVideo(videoPo.getLiveVideo())
+                .liveVideoField(videoPo.getLiveVideoField())
                 .disableFlag(videoPo.getDisableFlag())
                 .videoDuration(videoPo.getVideoDuration())
                 .videoName(videoPo.getVideoName())
-                .videoAttachment(videoPo.getVideoAttachment())
+                .videoField(videoPo.getVideoField())
                 .videoSize(videoPo.getVideoSize())
                 .build();
 

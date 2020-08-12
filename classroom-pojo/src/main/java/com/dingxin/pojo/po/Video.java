@@ -43,12 +43,12 @@ public class Video extends Model<Video> {
      * 视频附件
      */
     @ApiModelProperty("视频附件")
-    private String videoAttachment;
+    private String videoField;
     /**
      * 直播视频
      */
     @ApiModelProperty("直播视频")
-    private String liveVideo;
+    private String liveVideoField;
     /**
      * 直播视频id
      */
