@@ -98,29 +98,18 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         Page page = new Page<>();
         if (Objects.nonNull(jsonObject)&&Objects.nonNull(jsonObject.get("data"))){
             LinkedHashMap<String,Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
-            List<Map<String,String>> records = (List) data.get("records");
-            //将远程接口中数据存入中间表
-            ArrayList<Teachers> teacherList = Lists.newArrayList();
-            ArrayList<Object> szdwdmList = Lists.newArrayList();
-            for (Map<String,String> map:records) {
-                szdwdmList.add(map.get("szdwdm"));
-                Teachers teachers = new Teachers();
-                teachers.setZgh(map.get("zgh"));
-                teachers.setXm(map.get("xm"));
-                teachers.setModifyTime(LocalDateTime.now());
-                teacherList.add(teachers);
-            }
-            this.saveOrUpdateBatch(teacherList);
-            //用学员号查出学院名称重新放入map中
-            LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
-            deptQw.in(CasDepts::getZsjdwid,szdwdmList);
-            List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
-            Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
-            for (Map<String,String> map:records) {
-                if (collect.containsKey(map.get("szdwdm"))){
-                    map.put("szdwdm",collect.get(map.get("szdwdm")));
+            List<LinkedHashMap<String,String>> records = (List) data.get("records");
+            Map<String, String> deptMap = iCasDeptsService.list()
+                    .stream()
+                    .collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
+            records.stream().forEach(re->{
+                String szdwdm = re.get("szdwdm");
+                if (StringUtils.isNotEmpty(szdwdm)){
+                    if (deptMap.containsKey(szdwdm)){
+                        re.put("szdwmc",deptMap.get(szdwdm));
+                    }
                 }
-            }
+            });
             int total = Integer.parseInt((String)data.get("total"));
             int size = Integer.parseInt((String)data.get("size"));
             int current = Integer.parseInt((String)data.get("current"));
