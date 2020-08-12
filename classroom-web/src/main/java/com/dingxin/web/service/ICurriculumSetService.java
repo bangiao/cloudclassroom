@@ -4,6 +4,8 @@ import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.CurriculumSet;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.request.CurriculumSetListRequest;
+
 import java.util.List;
 
 /**
@@ -17,6 +19,6 @@ public interface ICurriculumSetService extends IService<CurriculumSet> {
 
     BaseResult updateCurriculumSet(CurriculumSet curriculumSet);
 
-    BaseResult<Page<CurriculumSet>> pageList(BaseQuery<CurriculumSet> query);
+    BaseResult<Page<CurriculumSet>> pageList(CurriculumSetListRequest query);
 }
 

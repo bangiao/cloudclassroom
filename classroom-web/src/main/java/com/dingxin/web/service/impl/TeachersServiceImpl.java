@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 /**
  *  服务接口实现类
  */
+@SuppressWarnings("Duplicates")
 @Service
 public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> implements ITeachersService {
 
@@ -153,7 +154,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
                 "currentPage="+query.getCurrentPage()
                 +"&pageSize="+ query.getPageSize();
         if (StringUtils.isNotEmpty(queryStr)){
-            url = url+"&xm="+queryStr;
+            url = url+"&searchParam="+queryStr;
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization","Bearer " + token);
