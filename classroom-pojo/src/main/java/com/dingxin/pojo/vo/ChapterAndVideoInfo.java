@@ -1,9 +1,8 @@
 package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.dingxin.common.utils.DateUtils;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.Chapter;
-import com.dingxin.pojo.po.Curriculum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,6 +54,11 @@ public class ChapterAndVideoInfo {
      */
     @ApiModelProperty(value = "章节序号",example = "LBWNB")
     private Integer chapterOrderNumber;
+    /**
+     * 所属课程
+     */
+    @ApiModelProperty(value = "所属课程",example = "1")
+    private Integer curriculumId;
 
     @ApiModelProperty(value = "子章节",example = "LBWNB")
     private List<ChapterAndVideoInfo> childChapter;
@@ -63,7 +66,7 @@ public class ChapterAndVideoInfo {
     /**
      * 视频信息
      */
-    @ApiModelProperty(value = "讲师",example = "{\n" +
+    @ApiModelProperty(value = "视频信息",example = "{\n" +
             "\t\"curriculumId\": 0,\n" +
             "\t\"disableFlag\": 0,\n" +
             "\t\"id\": 1,\n" +
@@ -84,6 +87,18 @@ public class ChapterAndVideoInfo {
                 .chapterName(chapterPo.getChapterName())
                 .chapterOrderNumber(chapterPo.getChapterOrderNumber())
                 .parentId(chapterPo.getParentId())
+                .curriculumId(chapterPo.getCurriculumId())
+                .build();
+    }
+    public static Chapter convertToPoWhileInsert(ChapterAndVideoInfo chapterDto){
+        if (Objects.isNull(chapterDto))
+            return null;
+        return Chapter.builder()
+                .chapterDesc(chapterDto.getChapterDesc())
+                .chapterName(chapterDto.getChapterName())
+                .chapterOrderNumber(chapterDto.getChapterOrderNumber())
+                .parentId(chapterDto.getParentId())
+                .deleteFlag(CommonConstant.DEL_FLAG)
                 .build();
     }
 

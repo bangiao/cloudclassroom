@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
+import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *  服务接口
@@ -61,4 +61,8 @@ public interface ICurriculumService extends IService<Curriculum> {
      * @return
      */
     List<Curriculum> searchByTeacher(IdRequest id);
+
+    void saveCurriculumInfo(CurriculumInsertRequest curriculumChapterAndVideoInfo);
+
+    void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode);
 }

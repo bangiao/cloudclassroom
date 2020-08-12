@@ -1,14 +1,15 @@
 package com.dingxin.web.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
-import com.dingxin.pojo.po.Chapter;
 import com.dingxin.dao.mapper.ChapterMapper;
+import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.vo.ChapterAndVideoInfo;
 import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IChapterService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,17 +48,11 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                     Chapter::getCurriculumId,
                     data.getCurriculumId())
                 .like(
-                    Objects.nonNull(data.getRootChapterFlag()),
-                    Chapter::getRootChapterFlag,
-                    data.getRootChapterFlag())
-                .like(
                     Objects.nonNull(data.getParentId()),
                     Chapter::getParentId,
-                    data.getParentId())
-;
+                    data.getParentId());
+
         return chapterMapper.selectList(query);
-
-
     }
 
     @SuppressWarnings("unchecked")

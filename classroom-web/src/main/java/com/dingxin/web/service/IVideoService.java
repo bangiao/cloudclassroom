@@ -1,6 +1,5 @@
 package com.dingxin.web.service;
 
-import com.baomidou.mybatisplus.core.conditions.interfaces.Func;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Video;
@@ -39,6 +38,16 @@ public interface IVideoService extends IService<Video> {
      * @param video
      */
     void saveVideoRelated(VideoInsertRequest video);
+    /**
+     * 保存视频
+     * @param video
+     */
+    void saveVideoRelated(Video video);
+    /**
+     * 修改视频
+     * @param video
+     */
+    void updateVideoRelated(Video video);
     /**
      * 更新视频对应课程的课程时长
      * @param curriculumId

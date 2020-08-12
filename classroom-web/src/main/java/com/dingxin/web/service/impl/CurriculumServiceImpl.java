@@ -9,28 +9,26 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.CurriculumMapper;
+import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.ClassEvaluateInsertRequest;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.ChapterAndVideoInfo;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
+import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IChapterService;
-import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
@@ -195,14 +193,15 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         Curriculum::getCurriculumDesc,
                         Curriculum::getClassTypeId,
                         Curriculum::getTopicName,
-                        Curriculum::getTeacherName);
+                        Curriculum::getTeacherName,
+                        Curriculum::getCurriculumImage);
         //查询出当前课程对应的章节及章节对应的视频信息
         List<ChapterAndVideoInfo> chapterAndVideoInfos = chapterService.loadChapterAndVideoInfo(id.getId());
         //课程信息
         Curriculum curriculum = getOne(deleteQuery);
         CurriculumDetailsVo curriculumDetailsVo = CurriculumDetailsVo.convertToVo(curriculum);
         if (curriculumDetailsVo != null)
-            curriculumDetailsVo.setChildChapter(chapterAndVideoInfos);
+            curriculumDetailsVo.setChapter(chapterAndVideoInfos);
 
         return curriculumDetailsVo;
     }
@@ -210,9 +209,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     @Override
     public void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes) {
         if (curriculumId ==null){
-            if(log.isWarnEnabled())
-                log.warn("更新当前课程课程总时长失败，传参为 videoDuration:{},curriculumId:{}",videoDuration,curriculumId);
-            return;
+            log.error("更新当前课程课程总时长失败，传参为 videoDuration:{},curriculumId:{}",videoDuration,curriculumId);
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         LambdaUpdateWrapper<Curriculum> updateCurriculumVideoDuration = Wrappers.<Curriculum>lambdaUpdate()
                 .set(
@@ -259,5 +257,85 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
 
 
         return list(deleteQuery);
+    }
+
+    /**
+     * 新增课程，包括新增课程信息，章节信息，和视频信息
+     * @param curriculumChapterAndVideoInfo
+     */
+    @Override
+    @Transactional
+    public void saveCurriculumInfo(CurriculumInsertRequest curriculumChapterAndVideoInfo) {
+        Curriculum curriculumInfo = Curriculum.builder()
+                .curriculumImage(curriculumChapterAndVideoInfo.getCurriculumImage())
+                .classTypeId(curriculumChapterAndVideoInfo.getClassTypeId())
+                .createTime(LocalDateTime.now())
+                .curriculumName(curriculumChapterAndVideoInfo.getCurriculumName())
+                .curriculumType(curriculumChapterAndVideoInfo.getCurriculumType())
+                .deleteFlag(CommonConstant.DEL_FLAG)
+                .topicName(curriculumChapterAndVideoInfo.getTopicName())
+                .topicId(curriculumChapterAndVideoInfo.getTopicId())
+                .auditFlag(CommonConstant.STATUS_NOAUDIT)
+                .disableFlag(CommonConstant.DISABLE_FALSE)
+                .teacherName(curriculumChapterAndVideoInfo.getTeacherName())
+                .teacherId(curriculumChapterAndVideoInfo.getTeacherId())
+                .watchAmount(CommonConstant.WATCH_AMOUNT_INITIAL_VALUE)
+                .build();
+
+        //1.保存课程基本信息
+         save(curriculumInfo);
+        //获取保存的课程的id
+        Integer curriculumId = curriculumInfo.getId();
+        //保存章节和对应视频信息
+        saveChapterAndVideo(curriculumChapterAndVideoInfo.getChapterAndVideoInfo(), curriculumId,true,null);
+    }
+
+    private void saveChapterAndVideo(List<ChapterAndVideoInfo> chapterAndVideoInfo, Integer curriculumId,boolean firstLayer,Integer parentChapterId) {
+        if (CollectionUtils.isEmpty(chapterAndVideoInfo)){
+            if (log.isWarnEnabled())
+                log.warn("保存的当前视频没有对应的章节及视频信息 课程id为 {}",curriculumId);
+            return;
+        }
+        //2.保存章节信息
+        for (ChapterAndVideoInfo perChapterAndVideoInfo : chapterAndVideoInfo) {
+            Chapter chapter = ChapterAndVideoInfo.convertToPoWhileInsert(perChapterAndVideoInfo);
+            VideoVo videoInfo = perChapterAndVideoInfo.getVideoInfo();
+            //保存章节
+            if (chapter!=null){
+                chapter.setCurriculumId(curriculumId);
+                if (!firstLayer && parentChapterId!=null)
+                    chapter.setParentId(parentChapterId);
+                chapterService.saveOrUpdate(chapter);
+                Video video = VideoVo.convertToPoWhileInsert(videoInfo);
+                //保存视频
+                if (video!=null){
+                    video.setChapterId(chapter.getId());
+                    video.setCurriculumId(curriculumId);
+                    videoService.saveVideoRelated(video);
+                }
+                List<ChapterAndVideoInfo> childChapter = perChapterAndVideoInfo.getChildChapter();
+                if (childChapter!=null){
+                    //如果还存在子章节递归保存
+                    saveChapterAndVideo(childChapter,curriculumId,false,chapter.getId());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode) {
+        if (curriculumId ==null || statusCode == null){
+            log.error("更新课程状态失败，所需id为空");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaUpdateWrapper<Curriculum> updateCurriculumAuditFlag = Wrappers.<Curriculum>lambdaUpdate()
+                .set(
+                        Curriculum::getAuditFlag,
+                        statusCode)
+                .in(
+                        Curriculum::getId,
+                        curriculumId);
+
+        update(updateCurriculumAuditFlag);
     }
 }
