@@ -1,6 +1,7 @@
 package com.dingxin.pojo.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.po.Video;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -73,6 +74,23 @@ public class VideoVo {
                 .videoName(videoPo.getVideoName())
                 .videoField(videoPo.getVideoField())
                 .videoSize(videoPo.getVideoSize())
+                .build();
+
+
+    }
+    public static Video convertToPoWhileInsert(VideoVo videoVo){
+        if (Objects.isNull(videoVo))
+            return null;
+        return Video.builder()
+                .id(videoVo.getId())
+                .liveVideoField(videoVo.getLiveVideoField())
+                .videoDuration(videoVo.getVideoDuration())
+                .videoName(videoVo.getVideoName())
+                .videoField(videoVo.getVideoField())
+                .videoSize(videoVo.getVideoSize())
+                .deleteFlag(CommonConstant.DEL_FLAG)
+                .disableFlag(CommonConstant.DISABLE_FALSE)
+                .auditFlag(CommonConstant.STATUS_NOAUDIT)
                 .build();
 
 

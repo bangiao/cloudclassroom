@@ -3,6 +3,7 @@ package com.dingxin.pojo.po;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Chapter extends Model<Chapter> {
 
     private static final long serialVersionUID=1L;
@@ -31,10 +33,6 @@ public class Chapter extends Model<Chapter> {
      * 所属课程
      */
     private Integer curriculumId;
-    /**
-     * 是否为根章节
-     */
-    private Integer rootChapterFlag;
     /**
      * 父章节
      */

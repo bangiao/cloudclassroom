@@ -24,6 +24,7 @@
                     <result column="delete_flag" property="deleteFlag" />
                     <result column="audit_flag" property="auditFlag" />
                     <result column="evaluate_status" property="evaluateStatus" />
+                    <result column="curriculum_image" property="curriculumImage" />
         </resultMap>
 
 </mapper>

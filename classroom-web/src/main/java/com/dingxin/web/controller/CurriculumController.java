@@ -119,10 +119,9 @@ public class CurriculumController {
     @PostMapping
     @ApiOperation(value = "新增课程信息")
     @OperationWatcher(operateDesc = "新增课程信息")
-    public BaseResult save(@RequestBody CurriculumInsertRequest curriculum){
-//        boolean retFlag= curriculumService.save(curriculum);
-//        return BaseResult.success(retFlag);
-        return null;
+    public BaseResult save(@Validated@RequestBody CurriculumInsertRequest curriculum){
+        curriculumService.saveCurriculumInfo(curriculum);
+        return BaseResult.success();
     }
 
     /**

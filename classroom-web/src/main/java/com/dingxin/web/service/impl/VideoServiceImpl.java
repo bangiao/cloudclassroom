@@ -14,11 +14,7 @@ import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.VideoAuditRequest;
-import com.dingxin.pojo.request.VideoInsertRequest;
-import com.dingxin.pojo.request.VideoListRequest;
-import com.dingxin.pojo.request.VideoUpdateRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -173,15 +169,18 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .build();
         //save to video
         save(videoWillSave);
+        //更新对应课程时长
+        updateCurriculumVideoDuration(video.getCurriculumId());
+        //更新对应课程的审核状态
+        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
 
     }
     //todo 需要改成异步的方法
     @Override
     public void updateCurriculumVideoDuration(Integer curriculumId){
         if (curriculumId!=null){
-            if (log.isWarnEnabled())
-                log.warn("更新当前视频时长失败，传参为 curriculumIds:{}",curriculumId);
-            return;
+            log.error("更新当前视频时长失败，传参为 curriculumIds:{}",curriculumId);
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         List<Video> videos = loadAllValidVideoForCurrentCurriculum(curriculumId);
         Long totalVideoDuration = 0L;
@@ -197,9 +196,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void updateCurrentVideoWatchAmount(IdRequest videoId) {
         if (Objects.isNull(videoId)){
-            if (log.isWarnEnabled())
-                log.warn("更新当前视频观看次数失败");
-            return;
+            log.error("updateCurrentVideoWatchAmount更新当前视频观看次数失败");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         LambdaQueryWrapper<Video> getByIdQuery = Wrappers.<Video>lambdaQuery()
                 .eq(
@@ -245,9 +243,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public List<Video> loadAllValidVideoForCurrentCurriculum(Integer curriculumId) {
         if (curriculumId == null){
-            if (log.isWarnEnabled())
-                log.warn("loadAllValidVideoForCurrentCurriculum 失败");
-            return null;
+            log.error("loadAllValidVideoForCurrentCurriculum 失败");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
                 .eq(
@@ -270,9 +267,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void updateCurriculumWatchAmount(Integer curriculumId) {
         if (curriculumId == null){
-            if (log.isWarnEnabled())
-                log.warn("updateCurriculumWatchAmount 失败");
-            return;
+            log.error("updateCurriculumWatchAmount 失败");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         //获取当前视频对应课程的所有视频
         List<Video> videos = loadAllValidVideoForCurrentCurriculum(curriculumId);
@@ -346,15 +342,16 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         //更新视频
         update(videoWillUpdate,updateCase);
         //编辑视频之后，对应课程的审核状态修改为未审核
-        updateVideoRelatedCurriculumAuditFlag(video.getCurriculumId());
+        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
+        //更新对应课程的时长
+        updateCurriculumVideoDuration(video.getCurriculumId());
     }
 
     @Override
     public void updateVideoRelatedCurriculumAuditFlag(Integer curriculumId) {
         if (curriculumId == null){
-            if (log.isWarnEnabled())
-                log.warn("loadAllValidVideoForCurrentCurriculum 失败");
-            return ;
+            log.error("updateVideoRelatedCurriculumAuditFlag 失败");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
         LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
                 .eq(
@@ -449,5 +446,19 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         videoIds);
 
         update(disableQuery);
+    }
+
+    @Override
+    public void saveVideoRelated(Video video) {
+        save(video);
+        //更新对应课程时长
+        updateCurriculumVideoDuration(video.getCurriculumId());
+        //更新对应课程的审核状态
+        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
+    }
+
+    @Override
+    public void updateVideoRelated(Video video) {
+
     }
 }
