@@ -27,9 +27,6 @@ import java.util.Objects;
 public class StudentRecordListVo extends Model<StudentRecordListVo> {
 
     private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "主键 查看课程列表传这个Id过去")
-    private Integer id;
     /**
      * 姓名
      */
@@ -39,7 +36,7 @@ public class StudentRecordListVo extends Model<StudentRecordListVo> {
     /**
      * 学号
      */
-    @ApiModelProperty(value = "学号	")
+    @ApiModelProperty(value = "学号	查看课程列表传这个Id过去")
     private String xh;
     /**
      * 院系名称
@@ -68,12 +65,15 @@ public class StudentRecordListVo extends Model<StudentRecordListVo> {
     private String xxsc = "0";
 
 
+
+
+
     public static StudentRecordListVo convent(Map source) {
         if (Objects.isNull(source)) {
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return StudentRecordListVo.builder().bjmc(source.get("bjmc").toString()).zymc(source.get("zymc").toString()).yxmc(source.get("symc").toString())
-                .xh(source.get("xh").toString()).xm(source.get("xm").toString()).id(Integer.parseInt(source.get("xh").toString())).build();
+        return StudentRecordListVo.builder().bjmc(source.get("bjmc").toString()).zymc(source.get("zymc").toString()).symc(source.get("symc").toString())
+                .xh(source.get("xh").toString()).xm(source.get("xm").toString()).yxmc(source.get("yxmc").toString()).build();
     }
 
     public static IPage<StudentRecordListVo> convertToVoWithPage(IPage<Map> record) {

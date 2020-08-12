@@ -34,7 +34,7 @@ public class StudentClassListVo extends Model<StudentClassListVo> {
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "主键 查看学习记录传这个Id过去 和classId 过去")
-    private Integer studentId;
+    private String studentId;
     /**
      * 课程id
      */
@@ -74,7 +74,7 @@ public class StudentClassListVo extends Model<StudentClassListVo> {
 
     public static StudentClassListVo convent(StduentClassSeeRecord record) {
         if (Objects.isNull(record)) {
-            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
+            return null;
         }
         return StudentClassListVo.builder().teacherName(record.getTeacherName()).classType(record.getClassName())
                 .className(record.getClassName()).studyLengthStr(record.getStudyLengthStr())

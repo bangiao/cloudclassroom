@@ -58,7 +58,7 @@ public class ClassCollectionInsertRequest {
      */
     @NotNull(message = "teacherId must not be null")
     @ApiModelProperty(value = "讲师Id")
-    private Integer teacherId;
+    private String teacherId;
     /**
      * 讲师姓名
      */

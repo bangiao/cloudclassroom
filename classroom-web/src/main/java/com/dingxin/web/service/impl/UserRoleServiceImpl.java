@@ -136,20 +136,19 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
      */
     @Override
     public List<TreeVo> depts() {
-  /*      String userId = ShiroUtils.getUserId();
+    /*    String userId = ShiroUtils.getUserId();
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
         qw.eq(UserRole::getCasUserId,"70000281");
         int count = count(qw);
 
         if (count==0){
             throw new BusinessException(ExceptionEnum.USER_NOT_CAN_BE_QUERY_USER);
-        }
+        }*/
         List<String> departmentCodes = ShiroUtils.getDepartmentCodes();
-*/
-        List<String> departmentCodes = Lists.newArrayList();
+      /*  List<String> departmentCodes = Lists.newArrayList();
         departmentCodes.add("010");
-        departmentCodes.add("020");
-        List<TreeVo> treeVoList =deptsService.queryTree(departmentCodes);
+        departmentCodes.add("020");*/
+        List<TreeVo> treeVoList =deptsService.queryTree(null);
 
 
         return treeVoList;
@@ -163,12 +162,12 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
 
     @Override
     public List<EmploysRoleVo> employs(IdRoleRequest id) {
-        List<CasEmploys>  employs=employsService.selectByDeptId(id.getId());
+        List<CasEmploys>  employs=employsService.selectByDeptId(id.getDeptIds(),id.getQueryStr());
         if (CollectionUtils.isEmpty(employs)||employs.size()==0){
             return null;
         }
         List<EmploysRoleVo> var = EmploysRoleVo.listConvent(employs);
-        @NotNull(message = "roleId must not be null") Integer roleId = id.getRoleId();
+        Integer roleId = id.getRoleId();
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
         qw.eq(UserRole::getRoleId,roleId);
         List<String> userids = list(qw).stream().map(e -> e.getCasUserId()).collect(Collectors.toList());

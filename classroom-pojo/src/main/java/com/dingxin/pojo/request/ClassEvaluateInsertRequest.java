@@ -53,7 +53,7 @@ public class ClassEvaluateInsertRequest {
      */
     @ApiModelProperty(value = "讲师id")
     @NotNull(message = "teacherId must not be null")
-    private Integer teacherId;
+    private String teacherId;
     /**
      * 讲师姓名
      */
@@ -80,7 +80,7 @@ public class ClassEvaluateInsertRequest {
         return ClassEvaluate.builder().classId(request.getClassId()).className(request.getClassName())
                 .classType(request.getClassType())
                 .classTypeStr(request.getClassTypeStr()).teacherId(request.getTeacherId()).teacherName(request.getTeacherName())
-                .studyLength(request.getStudyLength()).studentId(1)
+                .studyLength(request.getStudyLength()).studentId("1")
                 .studentName("杨大少").studentCode("0000").evaluateTime(LocalDateTime.now())
                 .evaluateContent(request.getEvaluateContent()).build();
     }

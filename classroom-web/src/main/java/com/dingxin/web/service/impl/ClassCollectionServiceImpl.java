@@ -123,7 +123,7 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
         String userId = ShiroUtils.getUserId();
         if (StringUtils.isEmpty(userId))
             throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
-        classCollection.setPersonId(Integer.parseInt(userId));
+        classCollection.setPersonId(userId);
         classCollection.setModifyTime(LocalDateTime.now());
         return saveOrUpdate(classCollection);
 

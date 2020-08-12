@@ -34,7 +34,7 @@ public class ClassCollection extends Model<ClassCollection> {
      * 用户id
      */
     @ApiModelProperty(value = "用户id")
-    private Integer personId;
+    private String personId;
     /**
      * 课程id
      */
@@ -59,7 +59,7 @@ public class ClassCollection extends Model<ClassCollection> {
      * 讲师Id
      */
     @ApiModelProperty(value = "讲师Id")
-    private Integer teacherId;
+    private String teacherId;
     /**
      * 讲师姓名
      */
