@@ -131,8 +131,7 @@ public class MyCasFilter extends CasFilter {
         try {
             httpresponse.setHeader("Content-Type", "application/json;charset=UTF-8");
             httpresponse.setCharacterEncoding("UTF-8");
-            BaseResult result = new BaseResult();
-            result.failed(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+            BaseResult result = BaseResult.failed(ExceptionEnum.PRIVILEGE_CAS_FAIL);
             response.getWriter().println(JSON.toJSON(result));
         } catch (IOException e) {
             e.printStackTrace();
