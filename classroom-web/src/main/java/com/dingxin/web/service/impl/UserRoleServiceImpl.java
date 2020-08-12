@@ -145,9 +145,7 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
             throw new BusinessException(ExceptionEnum.USER_NOT_CAN_BE_QUERY_USER);
         }*/
         List<String> departmentCodes = ShiroUtils.getDepartmentCodes();
-      /*  List<String> departmentCodes = Lists.newArrayList();
-        departmentCodes.add("010");
-        departmentCodes.add("020");*/
+
         List<TreeVo> treeVoList =deptsService.queryTree(null);
 
 

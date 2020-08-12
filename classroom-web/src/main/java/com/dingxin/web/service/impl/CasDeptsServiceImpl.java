@@ -122,22 +122,7 @@ public class CasDeptsServiceImpl extends ServiceImpl<CasDeptsMapper, CasDepts> i
             throw new BusinessException(ExceptionEnum.DATA_ZERO);
         }
         List<TreeVo> transformation = Lists.newArrayList();
-//        没有子节点
-/*
-        List<CasDepts> noChildrenList = list.stream().filter(e -> !e.getCasfjdw().equals("1")).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(noChildrenList)) {
-            transformation = transformation(noChildrenList);
-        }
 
-        //        获取有子节点的数组id
-        List<String> parentids = list.stream().filter(e -> e.getCasfjdw().equals("1")).map(e -> e.getZsjdwid()).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(parentids)&&parentids.size()>0) {
-            LambdaQueryWrapper<CasDepts> qws = Wrappers.lambdaQuery();
-            qws.in(CasDepts::getZsjdwid,parentids).or().in(CasDepts::getCasfjdw,parentids);
-            List<CasDepts> parDepts = list(qws);
-            List<TreeVo> treeVoList = queryTreeByDepts(parDepts);
-            transformation.addAll(treeVoList);
-        }*/
         List<CasDepts> collect = list.stream().filter(e -> e.getCasfjdw().equals("1")).collect(Collectors.toList());
 
         for (CasDepts casDepts : collect) {
