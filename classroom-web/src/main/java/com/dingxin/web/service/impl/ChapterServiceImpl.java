@@ -91,12 +91,12 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                     .select(Chapter::getId,Chapter::getChapterName,Chapter::getChapterDesc,Chapter::getChapterOrderNumber,Chapter::getParentId);
             List<Chapter> childrenChapter = list(childrenChapterQuery);
             List<ChapterAndVideoInfo> childChapter = perChapterAndVideoInfo.getChildChapter();
-            //获取子章节对应视频
+            //获取子章节对应视频或者是直播视频
             for (Chapter child : childrenChapter) {
                 LambdaQueryWrapper<Video> videoQuery = Wrappers.<Video>lambdaQuery()
                         .eq(Video::getChapterId,child.getId())
                         .eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG)
-                        .select(Video::getId,Video::getVideoName,Video::getVideoDuration,Video::getVideoSize,Video::getDisableFlag,Video::getVideoAttachment);
+                        .select(Video::getId,Video::getVideoName,Video::getVideoDuration,Video::getVideoSize,Video::getDisableFlag,Video::getVideoField,Video::getLiveVideoField);
                 //目前业务是只支持一节对应一个视频
                 Video videoPo = videoService.getOne(videoQuery);
                 VideoVo videoVo = VideoVo.convertToVo(videoPo);

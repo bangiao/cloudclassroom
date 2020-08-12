@@ -36,13 +36,13 @@ public class VideoInsertRequest {
     /**
      * 视频附件
      */
-    @ApiModelProperty("视频附件")
-    private String videoAttachment;
+    @ApiModelProperty("视频field信息")
+    private String videoField;
     /**
      * 直播视频
      */
-    @ApiModelProperty("直播视频")
-    private String liveVideo;
+    @ApiModelProperty("直播视频field信息")
+    private String liveVideoField;
     /**
      * 直播视频id
      */

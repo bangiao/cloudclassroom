@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.po.CurriculumSet;
+import com.dingxin.pojo.request.CurriculumSetListRequest;
 import com.dingxin.web.service.ICurriculumSetService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,9 +33,9 @@ public class CurriculumSetController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<CurriculumSet>>list(@RequestBody BaseQuery<CurriculumSet> query){
+    public BaseResult<Page<CurriculumSet>>list(@RequestBody CurriculumSetListRequest request){
         //查询列表数据
-        return curriculumSetService.pageList(query);
+        return curriculumSetService.pageList(request);
     }
 
     /**

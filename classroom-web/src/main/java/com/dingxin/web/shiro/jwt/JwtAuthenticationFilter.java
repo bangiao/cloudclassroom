@@ -1,6 +1,8 @@
 package com.dingxin.web.shiro.jwt;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.pojo.basic.BaseResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -52,16 +54,20 @@ public class JwtAuthenticationFilter extends AuthenticatingFilter {
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException ae, ServletRequest request,
                                      ServletResponse response) {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", HttpServletResponse.SC_UNAUTHORIZED);
-        jsonObject.put("msg","登录失败，无权访问");
-        jsonObject.put("timestamp", System.currentTimeMillis());
+
+        BaseResult failed = BaseResult.failed(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+
+
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("code", HttpServletResponse.SC_UNAUTHORIZED);
+//        jsonObject.put("msg","登录失败，无权访问");
+//        jsonObject.put("timestamp", System.currentTimeMillis());
         try {
             servletResponse.setCharacterEncoding("UTF-8");
             servletResponse.setContentType("application/json;charset=UTF-8");
             servletResponse.setHeader("Access-Control-Allow-Origin","*");
             ObjectMapper objectMapper = new ObjectMapper();
-            response.getWriter().write(objectMapper.writeValueAsString(jsonObject));
+            response.getWriter().write(objectMapper.writeValueAsString(failed));
         } catch (IOException e) {
         }
         return false;

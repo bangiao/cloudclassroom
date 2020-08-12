@@ -25,6 +25,7 @@ import java.util.Objects;
 /**
  * 学生信息表 服务接口实现类
  */
+@SuppressWarnings("Duplicates")
 @Service
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements IStudentService {
 
@@ -208,7 +209,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             }
         }
         if (StringUtils.isNotEmpty(queryStr)){
-            url = url+"&xm="+queryStr;
+            url = url+"&searchParam="+queryStr;
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization","Bearer " + token);

@@ -1,5 +1,6 @@
 package com.dingxin.web.shiro.cas;
 
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.TokenUtil;
 import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.web.service.ICasEmploysService;
@@ -14,6 +15,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.dingxin.common.enums.ExceptionEnum.PRIVILEGE_CAS_FAIL;
 
 /**
  * cas认证
@@ -90,7 +93,7 @@ public class MyCasRealm extends CasRealm {
         String generateToken = tokenUtil.generateToken(wid);
         CasEmploys employs = casEmploysService.getById(wid);
         if (employs == null){
-            return null;
+            throw new BusinessException(PRIVILEGE_CAS_FAIL);
         }
         employs.setToken(generateToken);
         return new SimpleAuthenticationInfo(employs,wid,wid);

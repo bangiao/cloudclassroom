@@ -25,18 +25,25 @@ public enum ExceptionEnum {
     VERIFY_EXCEL_ERROR("3002","EXCEL内容错误"),
     REQUIRED_PARAM_IS_NULL("3003","所需参数不能为空"),
     MULTIPARTFILE_TYPE_ERROR("3004","上传图片类型不正确"),
-    //4.业务流程异常
 
+
+    //4.业务流程异常
     DUPLICATE_DATA("4001","重复的数据"),
     COVENT_NULLPOINT("4002","转换源对象为空"),
     DATA_ZERO("4003","查询对象不存在"),
     BANNER_MSG("4004","启用banner图不能超过3个，请先禁用"),
 
 
-    VOD_UPLOAD_ERROR("4101","vod上传失败"),
 
-        //5.系统级
-    SYSTEM_ERROR("5001","系统内部异常"),
+    //5.rpc,
+    VOD_UPLOAD_ERROR("5001","vod上传失败"),
+    VOD_SEARCH_ERROR("5002","调用vod搜索视频失败"),
+    VOD_DELETE_ERROR("5003","调用vod删除视频失败"),
+
+
+
+    //6.系统级
+    SYSTEM_ERROR("6001","系统内部异常"),
 
 
     //unknown

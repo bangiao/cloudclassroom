@@ -62,9 +62,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                     Video::getVideoDuration,
                     data.getVideoDuration())
                 .like(
-                    Objects.nonNull(data.getVideoAttachment()),
-                    Video::getVideoAttachment,
-                    data.getVideoAttachment())
+                    Objects.nonNull(data.getVideoField()),
+                    Video::getVideoField,
+                    data.getVideoField())
                 .like(
                     Objects.nonNull(data.getLiveVideoId()),
                     Video::getLiveVideoId,
@@ -109,11 +109,11 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         CommonConstant.DEL_FLAG)
                 .select(
                         Video::getId,
-                        Video::getLiveVideo,
+                        Video::getLiveVideoField,
                         Video::getDisableFlag,
                         Video::getVideoDuration,
                         Video::getVideoName,
-                        Video::getVideoAttachment);
+                        Video::getVideoField);
         Page<Video> page = new Page(query.getCurrentPage(),query.getPageSize());
         IPage<Video> iPage = videoMapper.selectPage(page,queryWrapper);
         return iPage;
@@ -164,10 +164,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .deleteFlag(CommonConstant.DEL_FLAG)
                 .curriculumId(video.getCurriculumId())
                 .videoDuration(video.getVideoDuration())
-                .videoAttachment(video.getVideoAttachment())
+                .videoField(video.getVideoField())
                 .disableFlag(video.getDisableFlag())
                 .videoName(video.getVideoName())
-                .liveVideo(video.getLiveVideo())
+                .liveVideoField(video.getLiveVideoField())
                 .liveVideoId(video.getLiveVideoId())
                 .watchAmount(CommonConstant.WATCH_AMOUNT_INITIAL_VALUE)
                 .build();
@@ -321,8 +321,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         Video::getId,
                         Video::getVideoName,
                         Video::getVideoDuration,
-                        Video::getVideoAttachment,
-                        Video::getLiveVideo,
+                        Video::getVideoField,
+                        Video::getLiveVideoField,
                         Video::getDisableFlag,
                         Video::getVideoSize);
         return getOne(loadOneQuery);
@@ -335,10 +335,10 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                 .auditFlag(CommonConstant.STATUS_NOAUDIT)
                 .curriculumId(video.getCurriculumId())
                 .videoDuration(video.getVideoDuration())
-                .videoAttachment(video.getVideoAttachment())
+                .videoField(video.getVideoField())
                 .disableFlag(video.getDisableFlag())
                 .videoName(video.getVideoName())
-                .liveVideo(video.getLiveVideo())
+                .liveVideoField(video.getLiveVideoField())
                 .liveVideoId(video.getLiveVideoId())
                 .videoSize(video.getVideoSize())
                 .build();

@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- *  实体类
+ *  课程管理实体类
  */
 @TableName("ccr_curriculum")
 @Data

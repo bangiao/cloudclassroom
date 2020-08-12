@@ -7,9 +7,9 @@
                     <id column="id" property="id" />
                     <result column="video_name" property="videoName" />
                     <result column="video_duration" property="videoDuration" />
-                    <result column="video_attachment" property="videoAttachment" />
+                    <result column="video_field" property="videoField" />
                     <result column="live_video_id" property="liveVideoId" />
-                    <result column="live_video" property="liveVideo" />
+                    <result column="live_video_field" property="liveVideoField" />
                     <result column="teacher_id" property="teacherId" />
                     <result column="disable_flag" property="disableFlag" />
                     <result column="check_flag" property="checkFlag" />

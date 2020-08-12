@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 菜单管理 实体类
@@ -69,6 +70,9 @@ public class Menu extends Model<Menu> {
     @TableField(exist = false)
     @ApiModelProperty(value = "是否被选中")
     private Boolean check;
+    @TableField(exist = false)
+    @ApiModelProperty(value = "子节点")
+    private List<Menu> children;
 
     @Override
     protected Serializable pkVal() {

@@ -14,6 +14,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.CurriculumIntermediate;
 import com.dingxin.pojo.po.CurriculumSet;
+import com.dingxin.pojo.request.CurriculumSetListRequest;
 import com.dingxin.web.service.ICurriculumIntermediateService;
 import com.dingxin.web.service.ICurriculumSetService;
 import org.apache.commons.collections.CollectionUtils;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 /**
  * 服务接口实现类
  */
+@SuppressWarnings("Duplicates")
 @Service
 public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, CurriculumSet> implements ICurriculumSetService {
 
@@ -141,12 +143,18 @@ public class CurriculumSetServiceImpl extends ServiceImpl<CurriculumSetMapper, C
     }
 
     @Override
-    public BaseResult<Page<CurriculumSet>> pageList(BaseQuery<CurriculumSet> query) {
+    public BaseResult<Page<CurriculumSet>> pageList(CurriculumSetListRequest query) {
         String token = tokenApiService.getToken();
         String url = "https://api.sustech.edu.cn/" +
                 "/api/studentStudyInfo/educational/courses/page?" +
                 "currentPage="+query.getCurrentPage()
                 +"&pageSize="+ query.getPageSize();
+        String queryStr = query.getQueryStr();
+        if(StringUtils.isNotEmpty(queryStr)){
+            url = url+"&searchParam="+queryStr;
+        }
+
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization","Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);

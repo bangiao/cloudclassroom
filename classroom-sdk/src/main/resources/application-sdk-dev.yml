@@ -1,5 +1,0 @@
-sdk:
-  vod:
-    enable: true
-    secretId: xx
-    secretKey: xx

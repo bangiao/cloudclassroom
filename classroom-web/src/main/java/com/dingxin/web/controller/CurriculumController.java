@@ -97,8 +97,8 @@ public class CurriculumController {
      * 单个查询
      */
     @PostMapping("/search")
-    @ApiOperation(value = "获取课程详情信息")
-    public BaseResult<CurriculumVo> search(@Validated @RequestBody IdRequest id){
+    @ApiOperation(value = "获取课程详情信息",response = CurriculumDetailsVo.class)
+    public BaseResult<CurriculumDetailsVo> search(@Validated @RequestBody IdRequest id){
 
         CurriculumDetailsVo curriculumDetailsVo = curriculumService.loadCurriculumDetails(id);
 

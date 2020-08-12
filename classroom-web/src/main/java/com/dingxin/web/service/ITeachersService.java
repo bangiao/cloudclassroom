@@ -25,7 +25,7 @@ public interface ITeachersService extends IService<Teachers> {
 
     /**
      * 获取所有讲师的下拉列表值
-     * @param query
+     * @param
      * @return
      */
     List<Map<String,Object>> queryAll();
