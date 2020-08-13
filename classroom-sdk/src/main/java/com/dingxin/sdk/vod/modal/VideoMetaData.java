@@ -4,6 +4,10 @@ import com.tencentcloudapi.vod.v20180717.models.MediaInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -26,9 +30,9 @@ public class VideoMetaData {
     private String name;
 
     /**
-     * 时长
+     * 时长  时-分-秒
      */
-    private BigDecimal duration;
+    private String duration;
 
     /**
      * url
@@ -37,28 +41,69 @@ public class VideoMetaData {
     private String url;
 
     /**
-     * 大小
+     * 大小  GB-MB-KB
      */
-    private Long size;
+    private String size;
 
     /**
      * 创建时间
      */
     private String createTime;
 
+    private static final String UNKNOWN = "未知";
 
 
-    public static VideoMetaData of(MediaInfo info){
-        if(Objects.isNull(info)){
+    private static final BigDecimal SCALE = BigDecimal.valueOf(1024);
+
+
+
+    public static VideoMetaData of(MediaInfo info) {
+        if (Objects.isNull(info)) {
             return null;
         }
         VideoMetaData data = new VideoMetaData();
         data.setName(info.getBasicInfo().getName());
         data.setFileId(info.getFileId());
         data.setCreateTime(info.getBasicInfo().getCreateTime());
-        data.setDuration(BigDecimal.valueOf(info.getMetaData().getDuration()));
-        data.setSize(info.getMetaData().getSize());
+        Float duration = info.getMetaData().getDuration();
+        if (Objects.isNull(duration)) {
+            data.setDuration(UNKNOWN);
+        } else {
+            data.setDuration(LocalDateTime
+                    .ofInstant(Instant.ofEpochMilli(new Float((duration * 1000f)).intValue()),
+                            ZoneId.of("UTC"))
+                    .format(DateTimeFormatter.ofPattern("HH时mm分ss秒")));
+        }
+        Long size = info.getMetaData().getSize();
+        if(Objects.isNull(size)){
+            data.setSize(UNKNOWN);
+        }else{
+            data.setSize(formatSize(BigDecimal.valueOf(size),0));
+        }
         return data;
+    }
+
+
+    private static String formatSize(BigDecimal size, int i){
+        if(size.divide(SCALE).doubleValue()>1){
+            return formatSize(size.divide(SCALE),++i);
+        }else{
+            double doubleValue = size.setScale(2, BigDecimal.ROUND_UP).doubleValue();
+            switch (i){
+                case 0:
+                    return doubleValue+"b";
+                case 1:
+                    return doubleValue+"kb";
+                case 2:
+                    return doubleValue+"mb";
+                case 3:
+                    return doubleValue+"gb";
+                case 4:
+                    return doubleValue+"tb";
+                default:
+                    return UNKNOWN;
+            }
+        }
     }
 
 }

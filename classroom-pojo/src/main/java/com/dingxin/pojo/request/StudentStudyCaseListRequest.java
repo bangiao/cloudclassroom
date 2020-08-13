@@ -19,6 +19,6 @@ public class StudentStudyCaseListRequest extends BaseQuery4List {
      */
     @NotNull(message = "学生id不能为空")
     @ApiModelProperty(value = "学生id")
-    private Integer studentId;
+    private String studentId;
 
 }

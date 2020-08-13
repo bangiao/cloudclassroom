@@ -1,18 +1,23 @@
 package com.dingxin.web.service.impl;
+import com.alibaba.druid.pool.WrapperAdapter;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.dao.mapper.TeachersMapper;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.web.service.ICasDeptsService;
-import com.dingxin.web.service.ITeachersService;
+import com.dingxin.pojo.vo.TeacherVo;
+import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,12 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     private TokenApiService tokenApiService;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private ICommonDataService commonDataService;
+    @Autowired
+    private ICurriculumService curriculumService;
+    @Autowired
+    private IProjectManagementService projectManagementService;
     @Override
     public List<Teachers> like(Teachers data) {
         LambdaQueryWrapper<Teachers> query = Wrappers.<Teachers>lambdaQuery()
@@ -80,7 +91,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
      * @return
      */
     @Override
-    public IPage<Teachers> queryPage(CommQueryListRequest query) {
+    public IPage queryPage(CommQueryListRequest query) {
         String queryStr = query.getQueryStr();
         String token = tokenApiService.getToken();
         String url = "https://api.sustech.edu.cn/api/" +
@@ -119,51 +130,47 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
             page.setSize(size);
         }
         return page;
-//
-//
-//
-//
-//        Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
-//        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-//        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr());
-//        IPage<Teachers> teachers = page(page, qw);
-//        List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
-//        LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
-//        deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
-//        List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
-//        Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
-//        for (Teachers teacher: teachers.getRecords()) {
-//           if (collect.containsKey(teacher.getDwh())){
-//               teacher.setZsjmc(collect.get(teacher.getDwh()));
-//           }
-//        }
-//        return teachers;
     }
 
     @Override
     public IPage<Teachers> queryPCPage(CommQueryListRequest query) {
-        Page<Teachers> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.like(StringUtils.isNotEmpty(query.getQueryStr()), Teachers::getXm, query.getQueryStr()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
-        IPage<Teachers> teachers = page(page, qw);
-       /* List<String> dwhList = teachers.getRecords().stream().map(Teachers::getDwh).collect(Collectors.toList());
-        LambdaQueryWrapper<CasDepts> deptQw = Wrappers.lambdaQuery();
-        deptQw.in(dwhList.size() > 0,CasDepts::getZsjdwid,dwhList);
-        List<CasDepts> deptsList = iCasDeptsService.list(deptQw);
-        Map<String, String> collect = deptsList.stream().collect(Collectors.toMap(CasDepts::getZsjdwid, CasDepts::getZsjmc));
-        for (Teachers teacher: teachers.getRecords()) {
-            if (collect.containsKey(teacher.getDwh())){
-                teacher.setZsjmc(collect.get(teacher.getDwh()));
+        IPage teachersIPage = this.queryPage(query);
+        List<LinkedHashMap<String,Object>> records = teachersIPage.getRecords();
+        List<Object> zghList = records.stream().map(p->p.get("zgh")).collect(Collectors.toList());
+        LambdaUpdateWrapper<Teachers> qw = Wrappers.<Teachers>lambdaUpdate()
+                .in(Teachers::getZgh, zghList);
+        List<Teachers> teachers = this.teachersMapper.selectList(qw);
+        Map<String, Integer> teacherMap = teachers.stream().collect(Collectors.toMap(Teachers::getZgh, Teachers::getEnable));
+        records.stream().forEach(s->{
+            if (teacherMap.containsKey(s.get("zgh"))){
+                s.put("enable",teacherMap.get(s.get("zgh")));
+            }else {
+                s.put("enanle",0);
             }
-        }*/
-        return teachers;
+        });
+
+        return teachersIPage;
     }
 
     @Override
-    public Teachers queryById(IdRequest idRequest) {
+    public TeacherVo queryById(IdRequest idRequest) {
+        TeacherVo teacherVo = new TeacherVo();
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.eq(Teachers::getZgh,idRequest.getId()).eq(Teachers::getEnable,CommonConstant.DISABLE_FALSE);
-        return getOne(qw);
+        qw.eq(Teachers::getZgh,idRequest.getId());
+        Teachers getOne = getOne(qw);
+        BaseResult photo = commonDataService.photo(idRequest.getId().toString());
+        teacherVo.setZgh(getOne.getZgh());
+        teacherVo.setIntroduction(getOne.getIntroduction());
+        teacherVo.setUrl(photo.getData().toString());
+        //查出对应的课程列表
+        LambdaQueryWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaQuery()
+                .eq(Curriculum::getTeacherId, idRequest.getId());
+        teacherVo.setCurriculumList(curriculumService.list(curriculumQw));
+        //查出对应的专题列表
+        LambdaQueryWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaQuery()
+                .eq(ProjectManagement::getLecturerId, idRequest.getId());
+        teacherVo.setProjectManagementList(projectManagementService.list(projectQw));
+        return teacherVo;
     }
     /**
      * 获取所有讲师的下拉列表值
@@ -177,5 +184,47 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         return listMaps(qw);
 
     }
+
+    @Override
+    public BaseResult updateIntroduction(Teachers teachers) {
+        teachers.setModifyTime(LocalDateTime.now());
+        this.saveOrUpdate(teachers);
+        return BaseResult.success().setMsg("编辑讲师个人信息成功");
+    }
+
+    @Override
+    public BaseResult disEnable(Teachers teachers) {
+        teachers.setModifyTime(LocalDateTime.now());
+        this.saveOrUpdate(teachers);
+        //禁用讲师相关课程
+        LambdaUpdateWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaUpdate()
+                .set(Curriculum::getDisableFlag, CommonConstant.DISABLE_TRUE)
+                .eq(Curriculum::getTeacherId, teachers.getZgh());
+        curriculumService.update(curriculumQw);
+        //禁用讲师相关专题
+        LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+                .set(ProjectManagement::getEnable, CommonConstant.DISABLE_TRUE)
+                .eq(ProjectManagement::getLecturerId, teachers.getZgh());
+        projectManagementService.update(projectQw);
+        return BaseResult.success().setMsg("禁用讲师成功");
+    }
+
+    @Override
+    public BaseResult enable(Teachers teachers) {
+        teachers.setModifyTime(LocalDateTime.now());
+        this.saveOrUpdate(teachers);
+        //启用讲师相关课程
+        LambdaUpdateWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaUpdate()
+                .set(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                .eq(Curriculum::getTeacherId, teachers.getZgh());
+        curriculumService.update(curriculumQw);
+        //启用讲师相关专题
+        LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+                .set(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE)
+                .eq(ProjectManagement::getLecturerId, teachers.getZgh());
+        projectManagementService.update(projectQw);
+        return BaseResult.success().setMsg("启用讲师成功");
+    }
+
 
 }

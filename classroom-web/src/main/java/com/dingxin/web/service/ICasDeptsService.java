@@ -27,7 +27,7 @@ public interface ICasDeptsService extends IService<CasDepts> {
      * @param depts 部门集合
      * @return
      */
-    List<TreeVo> queryTreeByDepts(List<CasDepts> depts);
+    TreeVo queryTreeByDepts(TreeVo cs,List<CasDepts> depts);
 
     /**
      * 将CasDepts 转换成treevo
@@ -35,5 +35,12 @@ public interface ICasDeptsService extends IService<CasDepts> {
      * @return
      */
     List<TreeVo> transformation(List<CasDepts> depts);
+
+    /**
+     * 将CasDepts 转换成treevo
+     * @param depts
+     * @return
+     */
+    TreeVo transformationOne(CasDepts depts);
 
 }

@@ -59,7 +59,7 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      */
     @ApiModelProperty(value = "讲师id")
     @NotNull(message = "teacherId must not be null")
-    private Integer teacherId;
+    private String teacherId;
     /**
      * 讲师姓名
      */
@@ -76,7 +76,7 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      */
     @ApiModelProperty(value = "学生id")
     @NotNull(message = "studentId must not be null")
-    private Integer studentId;
+    private String studentId;
     /**
      * 学生姓名
      */

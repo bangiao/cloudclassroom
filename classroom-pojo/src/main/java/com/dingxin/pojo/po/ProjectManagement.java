@@ -61,7 +61,7 @@ public class ProjectManagement extends Model<ProjectManagement> {
      * 观看次数
      */
     @ApiModelProperty(value = "观看次数")
-    private Integer watchNum;
+    private Long watchNum;
     /**
      * 是否禁用 0：启用 -1：禁用
      */

@@ -1,5 +1,7 @@
 package com.dingxin.web.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.dao.mapper.CasEmploysMapper;
@@ -68,13 +70,33 @@ public class CasEmploysServiceImpl extends ServiceImpl<CasEmploysMapper, CasEmpl
 
     /**
      * 根据部门id查询下面所有人员信息
-     * @param id 部门id
+     * @param ids 部门id
      * @return
      */
     @Override
-    public List<CasEmploys> selectByDeptId(Integer id) {
+    public List<CasEmploys> selectByDeptId(List<Integer> ids,String queryStr) {
         LambdaQueryWrapper<CasEmploys> qw = Wrappers.lambdaQuery();
-        qw.like(CasEmploys::getDepts,id).eq(CasEmploys::getDisable, CommonConstant.DEL_FLAG);
+        qw.eq(CasEmploys::getDisable, CommonConstant.DEL_FLAG);
+
+        if (CollectionUtils.isNotEmpty(ids)){
+            LambdaQueryWrapper<CasEmploys> qe = Wrappers.lambdaQuery();
+            for (int i = 0; i < ids.size(); i++) {
+                Integer integer = ids.get(i);
+                if(i==0){
+                    qe.like(CasEmploys::getDepts,integer);
+                }else {
+                    qe.or().like(CasEmploys::getDepts,integer);
+                }
+
+            }
+            qw.and(Wrappers->qe);
+
+        }
+
+        if (StringUtils.isNotEmpty(queryStr)){
+            qw.and(Wrappers->Wrappers.like(CasEmploys::getName,queryStr).or().like(CasEmploys::getSid,queryStr)
+            );
+        }
         return list(qw);
     }
 

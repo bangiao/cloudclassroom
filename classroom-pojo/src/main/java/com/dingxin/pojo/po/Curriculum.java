@@ -1,14 +1,13 @@
 package com.dingxin.pojo.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import lombok.*;
-import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Curriculum extends Model<Curriculum> {
 
     private static final long serialVersionUID=1L;
@@ -103,6 +103,18 @@ public class Curriculum extends Model<Curriculum> {
      * 课程评价审核状态 (-1 未通过，0未审核，1审核通过)
      */
     private Integer evaluateStatus;
+    /**
+     * 课程图片
+     */
+    private String curriculumImage;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+    /**
+     * 最近一次修改时间
+     */
+    private LocalDateTime updateTime;
 
 
     /**

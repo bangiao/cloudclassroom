@@ -25,10 +25,18 @@ public class ProjectCurriculum extends Model<ProjectCurriculum> {
     /**
      * id
      */
+    @ApiModelProperty(value = "专题id")
     private Integer id;
+    @ApiModelProperty(value = "专题id")
     private Integer projectId;
+    @ApiModelProperty(value = "课程id")
     private Integer curriculumId;
-    private Boolean delFlag;
+    @ApiModelProperty(value = "是否删除")
+    private Integer delFlag;
+    @ApiModelProperty(value = "课程观看次数")
+    private Long watchAmount;
+    @ApiModelProperty(value = "是否禁用")
+    private Integer enable;
     /**
      * 创建时间
      */

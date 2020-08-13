@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *  服务接口实现类
@@ -115,26 +116,19 @@ public class CasDeptsServiceImpl extends ServiceImpl<CasDeptsMapper, CasDepts> i
 
         LambdaQueryWrapper<CasDepts> qw = Wrappers.lambdaQuery();
         qw.in(CollectionUtils.isNotEmpty(departmentCodes)&&departmentCodes.size()>0,CasDepts::getZsjdwid,departmentCodes);
+        qw.isNotNull(CasDepts::getCasfjdw);
         List<CasDepts> list = list(qw);
         if (CollectionUtils.isEmpty(list)||list.size()==0){
             throw new BusinessException(ExceptionEnum.DATA_ZERO);
         }
         List<TreeVo> transformation = Lists.newArrayList();
-//        没有子节点
 
-        List<CasDepts> noChildrenList = list.stream().filter(e -> !e.getCasfjdw().equals("1")).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(noChildrenList)) {
-            transformation = transformation(noChildrenList);
-        }
+        List<CasDepts> collect = list.stream().filter(e -> e.getCasfjdw().equals("1")).collect(Collectors.toList());
 
-        //        获取有子节点的数组id
-        List<String> parentids = list.stream().filter(e -> e.getCasfjdw().equals("1")).map(e -> e.getZsjdwid()).collect(Collectors.toList());
-        if (CollectionUtils.isNotEmpty(parentids)&&parentids.size()>0) {
-            LambdaQueryWrapper<CasDepts> qws = Wrappers.lambdaQuery();
-            qws.in(CasDepts::getZsjdwid,parentids).or().in(CasDepts::getCasfjdw,parentids);
-            List<CasDepts> parDepts = list(qws);
-            List<TreeVo> treeVoList = queryTreeByDepts(parDepts);
-            transformation.addAll(treeVoList);
+        for (CasDepts casDepts : collect) {
+            TreeVo treeVo1 = transformationOne(casDepts);
+            queryTreeByDepts(treeVo1, list);
+            transformation.add(treeVo1);
         }
 
         return transformation;
@@ -146,24 +140,19 @@ public class CasDeptsServiceImpl extends ServiceImpl<CasDeptsMapper, CasDepts> i
      * @return
      */
     @Override
-    public List<TreeVo> queryTreeByDepts(List<CasDepts> depts) {
+    public TreeVo queryTreeByDepts(TreeVo cs,List<CasDepts> depts) {
         if (CollectionUtils.isEmpty(depts)||depts.size()==0){
             throw  new NullPointerException("CasDepts 集合为空,转换tree失败");
         }
-        List<CasDepts> par = depts.stream().filter(e -> e.getCasfjdw().equals("1")).collect(Collectors.toList());
-        List<TreeVo> partree = transformation(par);
-        for (TreeVo treeVo : partree) {
-            ArrayList<CasDepts> var = Lists.newArrayList();
-            for (CasDepts dept : depts) {
-                if (dept.getCasfjdw().equals(treeVo.getId())){
-                    var.add(dept);
-                }
+        List<CasDepts> par = depts.stream().filter(e -> e.getCasfjdw().equals(cs.getId())).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(par)) {
+            List<TreeVo> transformation = transformation(par);
+            cs.setChildren(transformation);
+            for (TreeVo treeVo : transformation) {
+                queryTreeByDepts(treeVo, depts);
             }
-            List<TreeVo> var1 = transformation(var);
-            treeVo.setChildren(var1);
         }
-
-        return partree;
+        return cs;
     }
 
 
@@ -183,6 +172,17 @@ public class CasDeptsServiceImpl extends ServiceImpl<CasDeptsMapper, CasDepts> i
             tree.add(build);
         }
         return tree;
+    }
+
+    /**
+     * 将CasDepts 转换成treevo
+     * @param dept
+     * @return
+     */
+    @Override
+    public TreeVo transformationOne(CasDepts dept) {
+        return TreeVo.builder().id(dept.getZsjdwid()).label(dept.getZsjmc()).build();
+
     }
 
 }

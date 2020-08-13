@@ -264,7 +264,7 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
 //        学生数据
 
         IPage<StudentRecordListVo> studentRecordListVoIPage = StudentRecordListVo.convertToVoWithPage(studentPage);
-        List<Integer> list = studentRecordListVoIPage.getRecords().stream().map(StudentRecordListVo::getId).collect(Collectors.toList());
+        List<String> list = studentRecordListVoIPage.getRecords().stream().map(StudentRecordListVo::getXh).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(list)) {
             QueryWrapper<StduentClassSeeRecord> qs = Wrappers.query();
             qs.select("student_id", "sum(study_length) as sum ").eq("del_flag", CommonConstant.DEL_FLAG).in(list.size() > 0, "student_id", list).groupBy("student_id");
@@ -272,7 +272,7 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
             if (CollectionUtils.isNotEmpty(maps)) {
                 for (StudentRecordListVo record : studentRecordListVoIPage.getRecords()) {
                     for (Map<String, Object> map : maps) {
-                        if (Integer.parseInt(map.get("student_id").toString()) == record.getId()) {
+                        if (map.get("student_id").toString() == record.getXh()) {
                             record.setXxsc((DateUtils.formatDateTimeStr(Long.parseLong(map.get("sum").toString()))));
                         }
                     }

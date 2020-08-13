@@ -7,7 +7,6 @@
                     <id column="id" property="id" />
                     <result column="chapter_desc" property="chapterDesc" />
                     <result column="curriculum_id" property="curriculumId" />
-                    <result column="root_chapter_flag" property="rootChapterFlag" />
                     <result column="parent_id" property="parentId" />
                     <result column="chapter_name" property="chapterName" />
                     <result column="chapter_order_number" property="chapterOrderNumber" />

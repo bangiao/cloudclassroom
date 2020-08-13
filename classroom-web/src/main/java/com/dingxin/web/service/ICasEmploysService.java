@@ -15,8 +15,8 @@ public interface ICasEmploysService extends IService<CasEmploys> {
 
     /**
      * 根据部门id查询下面所有人员信息
-     * @param id 部门id
+     * @param ids 部门id
      * @return
      */
-    List<CasEmploys> selectByDeptId(Integer id);
+    List<CasEmploys> selectByDeptId(List<Integer> ids,String queryStr);
 }

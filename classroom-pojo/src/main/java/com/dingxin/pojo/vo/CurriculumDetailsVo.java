@@ -64,7 +64,7 @@ public class CurriculumDetailsVo {
      * 章节信息
      */
     @ApiModelProperty(value = "章节信息",example = "xxxx",dataType = "List")
-    private List<ChapterAndVideoInfo> childChapter = new ArrayList<>();
+    private List<ChapterAndVideoInfo> chapter = new ArrayList<>();
 
     public static CurriculumDetailsVo convertToVo(Curriculum curriculumPo){
         if (Objects.isNull(curriculumPo))

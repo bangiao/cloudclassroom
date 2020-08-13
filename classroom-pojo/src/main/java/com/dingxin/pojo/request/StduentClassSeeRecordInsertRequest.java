@@ -31,7 +31,7 @@ public class StduentClassSeeRecordInsertRequest {
      */
     @NotNull(message = "studentId must not be null")
     @ApiModelProperty(value = "学生id")
-    private Integer studentId;
+    private String studentId;
     /**
      * 学生姓名
      */
@@ -67,7 +67,7 @@ public class StduentClassSeeRecordInsertRequest {
      */
     @NotNull(message = "teacherId must not be null")
     @ApiModelProperty(value = "教师ID")
-    private Integer teacherId;
+    private String teacherId;
     /**
      * 教师姓名
      */
