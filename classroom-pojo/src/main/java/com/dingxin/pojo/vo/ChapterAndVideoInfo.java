@@ -29,20 +29,10 @@ public class ChapterAndVideoInfo {
      */
     @ApiModelProperty(value = "章节描述",example = "LBWNB")
     private String chapterDesc;
-//    /**
-////     * 所属课程
-////     */
-////    @ApiModelProperty(value = "所属课程",example = "LBWNB")
-////    private String curriculumId;
-//////    /**
-//     * 是否为根章节
-//     */
-//    @ApiModelProperty(value = "讲师",example = "LBWNB")
-//    private Integer rootChapterFlag;
     /**
      * 父章节
      */
-    @ApiModelProperty(value = "父章节",example = "LBWNB")
+    @ApiModelProperty(value = "父章节",example = "1")
     private Integer parentId;
     /**
      * 章节名称
@@ -52,7 +42,7 @@ public class ChapterAndVideoInfo {
     /**
      * 章节序号
      */
-    @ApiModelProperty(value = "章节序号",example = "LBWNB")
+    @ApiModelProperty(value = "章节序号",example = "1")
     private Integer chapterOrderNumber;
     /**
      * 所属课程

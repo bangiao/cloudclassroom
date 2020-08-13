@@ -3,10 +3,7 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
-import com.dingxin.pojo.request.CurriculumInsertRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
 
 import java.util.List;
@@ -17,12 +14,10 @@ import java.util.List;
 public interface ICurriculumService extends IService<Curriculum> {
 
     List<Curriculum> like(Curriculum data);
-
     /**
      * 根据不同登录身份，获取课程列表
      */
     IPage<Curriculum> getPage(CurriculumFuzzyQuery4List query);
-
     /**
      *  禁用课程
      */
@@ -31,38 +26,50 @@ public interface ICurriculumService extends IService<Curriculum> {
      *  启用课程
      */
     void enableCurriculum(List<Integer> curriculumIds);
-
     /**
      * 删除课程
      */
     void deleteCurriculum(List<Integer> curriculumIds);
-
     /**
-     * 删除课程及相关视频
+     * 删除课程及相关视频及相关章节
      */
     void deleteCurriculumAndRelated(List<Integer> curriculumIds);
-
     /**
      * 查询详细课程信息，不查询已经删除的信息
      */
     CurriculumDetailsVo loadCurriculumDetails(IdRequest id);
-
+    /**
+     * 更新课程的观看时长或观看次数
+     * @param videoDuration
+     * @param curriculumId
+     * @param watchTimes
+     */
     void updateCurrentCurriculumVideoDurationOrWatchAmount(Long videoDuration,Integer curriculumId,Long watchTimes);
-
     /**
      * 课程列表全部数据
      * @return
      */
     List<Curriculum> listall(TeacherIdRequest idRequest);
-
     /**
      * 根据讲师查询课程
      * @param id
      * @return
      */
     List<Curriculum> searchByTeacher(IdRequest id);
-
+    /**
+     * 保存课程信息及对应的章节及视频信息
+     * @param curriculumChapterAndVideoInfo
+     */
     void saveCurriculumInfo(CurriculumInsertRequest curriculumChapterAndVideoInfo);
-
+    /**
+     * 修改课程数据，和对应章节视频信息
+     * @param curriculumUpdateRequest
+     */
+    void updateCurriculumInfo(CurriculumUpdateRequest curriculumUpdateRequest);
+    /**
+     * 修改课程的审核状态
+     * @param curriculumId
+     * @param statusCode
+     */
     void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode);
 }
