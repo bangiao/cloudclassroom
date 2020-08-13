@@ -121,8 +121,19 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 .or().like(
                         ProjectManagement::getLecturerName,
                         query.getQueryStr()));
+        IPage<ProjectManagement> managementIPage = this.baseMapper.selectPage(page, projectQw);
+        //查询视频观看次数
+        List<ProjectManagement> records = managementIPage.getRecords();
+        if (CollectionUtils.isNotEmpty(records)){
+            List<Integer> projectIdList = records.stream().map(ProjectManagement::getId).collect(Collectors.toList());
+            //查询出所有的中间课程数据
+            LambdaQueryWrapper<ProjectCurriculum> projectCurriculumQw = Wrappers.<ProjectCurriculum>lambdaQuery()
+                    .eq(projectIdList.size() > 0, ProjectCurriculum::getProjectId, projectIdList);
+            List<ProjectCurriculum> projectCurriculumList = projectCurriculumService.list(projectCurriculumQw);
 
-        return this.baseMapper.selectPage(page, projectQw);
+        }
+
+        return managementIPage;
     }
 
     /**
@@ -145,10 +156,7 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                         CommonConstant.DEL_FLAG)
                 .eq(
                         ProjectManagement::getEnable,
-                        CommonConstant.DISABLE_FALSE)
-                .eq(
-                        ProjectManagement::getAuditStatus,
-                        CommonConstant.STATUS_AUDIT));
+                        CommonConstant.DISABLE_FALSE));
         return pageList;
     }
 
@@ -256,7 +264,6 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     public BaseResult insertOne(ProjectManagement projectManagement) {
         LocalDateTime now = LocalDateTime.now();
         projectManagement.setModifyTime(now);
-        projectManagement.setWatchNum(0);
         projectManagement.setLecturerName(teachersService.getById(projectManagement.getLecturerId()).getXm());
         String majorId = projectManagement.getMajorId();
         String deptId = projectManagement.getDeptId();

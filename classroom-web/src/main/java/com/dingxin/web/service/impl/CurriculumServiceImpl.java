@@ -1,5 +1,6 @@
 package com.dingxin.web.service.impl;
 
+import com.alibaba.druid.pool.WrapperAdapter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,6 +12,7 @@ import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.po.ProjectCurriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.IdRequest;
@@ -20,6 +22,7 @@ import com.dingxin.pojo.vo.CurriculumDetailsVo;
 import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IChapterService;
 import com.dingxin.web.service.ICurriculumService;
+import com.dingxin.web.service.IProjectCurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     private IVideoService videoService;
     @Autowired
     private IChapterService chapterService;
+    @Autowired
+    private IProjectCurriculumService projectCurriculumService;
 
     @Override
     public List<Curriculum> like(Curriculum data) {
@@ -130,6 +135,11 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         curriculumIds);
 
         update(disableQuery);
+        //将禁用课程更新至专题中间表  Author by nieya
+        LambdaUpdateWrapper<ProjectCurriculum> projectQw = Wrappers.<ProjectCurriculum>lambdaUpdate()
+                .set(ProjectCurriculum::getEnable, CommonConstant.DISABLE_TRUE)
+                .in(ProjectCurriculum::getCurriculumId, curriculumIds);
+        projectCurriculumService.update(projectQw);
     }
 
     @Override
@@ -226,6 +236,16 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         curriculumId);
 
         update(updateCurriculumVideoDuration);
+        //将次数更新到专题中间表中  Author by nieya
+        LambdaUpdateWrapper<ProjectCurriculum> projectQw = Wrappers.<ProjectCurriculum>lambdaUpdate()
+                .set(
+                        !(watchTimes == null || watchTimes < 0),
+                        ProjectCurriculum::getWatchAmount,
+                        watchTimes)
+                .in(
+                        ProjectCurriculum::getId,
+                        curriculumId);
+        projectCurriculumService.update(projectQw);
     }
 
     /**

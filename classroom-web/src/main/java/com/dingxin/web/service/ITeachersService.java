@@ -18,7 +18,7 @@ public interface ITeachersService extends IService<Teachers> {
 
     List<Teachers> like(Teachers data);
 
-    IPage<Teachers> queryPage(CommQueryListRequest query);
+    IPage queryPage(CommQueryListRequest query);
 
     IPage<Teachers> queryPCPage(CommQueryListRequest query);
 

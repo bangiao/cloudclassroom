@@ -49,9 +49,9 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     private RestTemplate restTemplate;
     @Autowired
     private ICommonDataService commonDataService;
-
+    @Autowired
     private ICurriculumService curriculumService;
-
+    @Autowired
     private IProjectManagementService projectManagementService;
     @Override
     public List<Teachers> like(Teachers data) {
@@ -91,7 +91,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
      * @return
      */
     @Override
-    public IPage<Teachers> queryPage(CommQueryListRequest query) {
+    public IPage queryPage(CommQueryListRequest query) {
         String queryStr = query.getQueryStr();
         String token = tokenApiService.getToken();
         String url = "https://api.sustech.edu.cn/api/" +
@@ -134,16 +134,18 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
 
     @Override
     public IPage<Teachers> queryPCPage(CommQueryListRequest query) {
-        IPage<Teachers> teachersIPage = this.queryPage(query);
-        List<Teachers> records = teachersIPage.getRecords();
-        List<String> zghList = records.stream().map(Teachers::getZgh).collect(Collectors.toList());
+        IPage teachersIPage = this.queryPage(query);
+        List<LinkedHashMap<String,Object>> records = teachersIPage.getRecords();
+        List<Object> zghList = records.stream().map(p->p.get("zgh")).collect(Collectors.toList());
         LambdaUpdateWrapper<Teachers> qw = Wrappers.<Teachers>lambdaUpdate()
                 .in(Teachers::getZgh, zghList);
         List<Teachers> teachers = this.teachersMapper.selectList(qw);
-        Map<String, Boolean> teacherMap = teachers.stream().collect(Collectors.toMap(Teachers::getZgh, Teachers::getEnable));
+        Map<String, Integer> teacherMap = teachers.stream().collect(Collectors.toMap(Teachers::getZgh, Teachers::getEnable));
         records.stream().forEach(s->{
-            if (teacherMap.containsKey(s.getZgh())){
-                s.setEnable(teacherMap.get(s.getZgh()));
+            if (teacherMap.containsKey(s.get("zgh"))){
+                s.put("enable",teacherMap.get(s.get("zgh")));
+            }else {
+                s.put("enanle",0);
             }
         });
 
@@ -163,7 +165,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         //查出对应的课程列表
         LambdaQueryWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaQuery()
                 .eq(Curriculum::getTeacherId, idRequest.getId());
-        teacherVo.setCurriculumList(curriculumService.list());
+        teacherVo.setCurriculumList(curriculumService.list(curriculumQw));
         //查出对应的专题列表
         LambdaQueryWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaQuery()
                 .eq(ProjectManagement::getLecturerId, idRequest.getId());

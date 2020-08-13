@@ -30,7 +30,7 @@ public class Teachers extends Model<Teachers> {
      * 是否禁用 0：启用 -1：禁用
      */
     @ApiModelProperty(value = "是否禁用 0：启用 -1：禁用")
-    private Boolean enable;
+    private Integer enable;
     /**
      * 个人介绍
      */

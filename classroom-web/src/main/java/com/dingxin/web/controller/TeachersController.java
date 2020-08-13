@@ -37,7 +37,7 @@ public class TeachersController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取列表")
-    public BaseResult<Page<Teachers>> list(@RequestBody CommQueryListRequest query) {
+    public BaseResult<Page> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         return BaseResult.success(teachersService.queryPage(query));
     }
