@@ -81,6 +81,6 @@ public class CurriculumUpdateRequest {
     /**
      * 将要被新增的章节及视频信息
      */
-    @ApiModelProperty(value = "[本条数据可以为空]说明:将要被新增的章节及视频信息. 1.如果是只新增子章节，请带上他的父章节id,如果是新增父章节及子章节，此时父章节id为空",example = "难得写",dataType = "List")
+    @ApiModelProperty(value = "[本条数据可以为空]说明:将要被新增的章节及视频信息. 新增子章节，请带上他的父章节信息",example = "难得写",dataType = "List")
     private List<ChapterAndVideoInfo> chapterAndVideoWillBeSaved;
 }
