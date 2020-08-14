@@ -97,4 +97,12 @@ public interface IVideoService extends IService<Video> {
      * 根据章节信息删除视频
      */
     void deleteVideoByChapterId(List<Integer> chapterIds,Integer curriculumId);
+    /**
+     * 根据章节获取视频
+     */
+    Video loadByChapterId(IdRequest chapterId);
+    /**
+     * 新增直播视频到视频表及关联的章节
+     */
+    void addLiveVideoInfo(LiveVideoInsertRequest videoInfo);
 }

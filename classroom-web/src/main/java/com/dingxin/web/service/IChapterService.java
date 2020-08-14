@@ -34,5 +34,10 @@ public interface IChapterService extends IService<Chapter> {
      * 根据课程id获取章节及子章节信息
      */
     List<ChapterSelectVo> loadChapterAndChildren(IdRequest curriculumId);
+    /**
+     * 根据课程获取所有没有添加视频的章节列表下拉(用于直播视频管理获取章节下拉，直播视频不能选择修改课程章节挂靠的是视频或者直播视频)
+     */
+    List<ChapterSelectVo> loadNoVideoChapterAndChildren(IdRequest curriculumId);
+
 
 }

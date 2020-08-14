@@ -12,10 +12,15 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
-import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.LiveVideoInsertRequest;
+import com.dingxin.pojo.request.VideoAuditRequest;
+import com.dingxin.pojo.request.VideoInsertRequest;
+import com.dingxin.pojo.request.VideoListRequest;
+import com.dingxin.pojo.request.VideoUpdateRequest;
+import com.dingxin.web.service.IChapterService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +47,8 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
     @Autowired
     private IVideoService videoService;
+    @Autowired
+    private IChapterService chapterService;
 
 
     @Override
@@ -478,5 +486,50 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         updateCurriculumVideoDuration(curriculumId);
         //更新课程对应观看次数
         updateCurriculumWatchAmount(curriculumId);
+    }
+
+    @Override
+    public Video loadByChapterId(IdRequest chapterId) {
+        LambdaQueryWrapper<Video> loadVideoInfoByChapterId = Wrappers.<Video>lambdaQuery()
+                .eq(Video::getChapterId, chapterId.getId())
+                .eq(Video::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .select(
+                        Video::getId,
+                        Video::getVideoDuration,
+                        Video::getVideoSize,
+                        Video::getVideoName,
+                        Video::getVideoField,
+                        Video::getDisableFlag,
+                        Video::getLiveVideoField);
+
+        return getOne(loadVideoInfoByChapterId);
+    }
+
+    @Override
+    public void addLiveVideoInfo(LiveVideoInsertRequest videoInfo) {
+        Integer chapterId = videoInfo.getChapterId();
+       // 如果当前章节为父章节，不能添加视频
+        List<Integer> children = chapterService.loadChildrenIdByParentIds(Collections.singletonList(chapterId));
+        if(CollectionUtils.isNotEmpty(children)){
+            throw new BusinessException(ExceptionEnum.PARENT_CHAPTER_CANNOT_ADD_VIDEO);
+        }
+        Video video = Video.builder()
+                .auditFlag(CommonConstant.STATUS_NOAUDIT)
+                .disableFlag(CommonConstant.DISABLE_FALSE)
+                .deleteFlag(CommonConstant.DEL_FLAG)
+                .watchAmount(CommonConstant.WATCH_AMOUNT_INITIAL_VALUE)
+                .liveVideoField(videoInfo.getLiveVideoField())
+                .chapterId(videoInfo.getChapterId())
+                .videoDuration(videoInfo.getVideoDuration())
+                .videoName(videoInfo.getVideoName())
+                .curriculumId(videoInfo.getCurriculumId())
+                .videoSize(videoInfo.getVideoSize())
+                .build();
+
+        save(video);
+        //更新对应课程时长
+        updateCurriculumVideoDuration(video.getCurriculumId());
+        //更新对应课程的审核状态
+        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
     }
 }

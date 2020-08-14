@@ -171,6 +171,20 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
             log.error("查询课程对应章节和子章节信息失败，当前课程id为空");
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
+        List<Chapter> parentChapters = loadValidParentChapters(curriculumId);
+        if (CollectionUtils.isEmpty(parentChapters)){
+            return Collections.emptyList();
+        }
+        return parentChapters.stream().map(parent->{
+            ChapterSelectVo parentChapter = ChapterSelectVo.convertToVo(parent);
+            // 查询出对应的子章节及信息
+            List<Chapter> childChapters = loadChildChapterInfo(curriculumId, parent.getId());
+            parentChapter.setChildrenChapter(ChildChapterVo.convertToVos(childChapters));
+            return parentChapter;
+        }).collect(Collectors.toList());
+    }
+    @SuppressWarnings("unchecked")
+    private List<Chapter> loadValidParentChapters(IdRequest curriculumId) {
         // 获取所有有效父章节
         LambdaQueryWrapper<Chapter> loadParentChapterQuery = Wrappers.<Chapter>lambdaQuery()
                 .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
@@ -182,17 +196,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                         Chapter::getChapterName,
                         Chapter::getChapterOrderNumber);
 
-        List<Chapter> parentChapters = list(loadParentChapterQuery);
-        if (CollectionUtils.isEmpty(parentChapters)){
-            return Collections.emptyList();
-        }
-        return parentChapters.stream().map(parent->{
-            ChapterSelectVo parentChapter = ChapterSelectVo.convertToVo(parent);
-            // 查询出对应的子章节及信息
-            List<Chapter> childChapters = loadChildChapterInfo(curriculumId, parent.getId());
-            parentChapter.setChildrenChapter(ChildChapterVo.convertToVos(childChapters));
-            return parentChapter;
-        }).collect(Collectors.toList());
+        return list(loadParentChapterQuery);
     }
 
     @SuppressWarnings("unchecked")
@@ -211,5 +215,40 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                         Chapter::getChapterName,
                         Chapter::getChapterOrderNumber);
         return list(loadChildrenChapterQuery);
+    }
+
+    @Override
+    public List<ChapterSelectVo> loadNoVideoChapterAndChildren(IdRequest curriculumId) {
+        // 根据课程id获取有效的父章节
+        List<Chapter> validParentChapters = loadValidParentChapters(curriculumId);
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    //todo 这个方法暂时不需要，但是请不要删除，业务扩展的时候有用
+    private List<Chapter> loadNoVideoChildChapterInfo(IdRequest curriculumId, Integer parentId) {
+        if (parentId==null){
+            return Collections.emptyList();
+        }
+        return Collections.emptyList();
+        // 获取所有没有添加视频field和直播视频live_video_field的视频，可以理解为没有关联视频和直播视频的视频表数据
+//        LambdaQueryWrapper<Video> withoutVideoInfoVideo = Wrappers.<Video>lambdaQuery()
+//                .eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG)
+//                .eq(Video::getCurriculumId,curriculumId)
+//                .isNull(Video::getVideoField)
+//                .isNull(Video::getLiveVideoField)
+//                .select(Video::getChapterId);
+//        List<Video> emptyVideos = videoService.list(withoutVideoInfoVideo);
+//        LambdaQueryWrapper<Chapter> loadChildrenChapterQuery = Wrappers.<Chapter>lambdaQuery()
+//                .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
+//                .eq(Chapter::getCurriculumId, curriculumId.getId())
+//                .eq(Chapter::getParentId,parentId)
+//                .orderBy(true,true,Chapter::getChapterOrderNumber)
+//                .select(
+//                        Chapter::getId,
+//                        Chapter::getChapterDesc,
+//                        Chapter::getChapterName,
+//                        Chapter::getChapterOrderNumber);
+//        return list(loadChildrenChapterQuery);
     }
 }

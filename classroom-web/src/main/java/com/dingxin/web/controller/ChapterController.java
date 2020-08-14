@@ -1,6 +1,7 @@
 package com.dingxin.web.controller;
 
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ChapterSelectVo;
@@ -34,9 +35,23 @@ public class ChapterController {
      * 列表查询
      */
     @PostMapping("/list/select")
-    @ApiOperation(value = "获取所有课程列表下拉")
+    @ApiOperation(value = "根据课程获取所有章节列表下拉")
     public BaseResult<List<ChapterSelectVo>> chapterSelectList(@RequestBody@Validated IdRequest id){
 
         return BaseResult.success(chapterService.loadChapterAndChildren(id));
     }
+
+    /**
+     * 列表查询
+     */
+    //Todo 未启用，不要删除
+    @PostMapping("/list/noVideo")
+    @ApiOperation(value = "根据课程获取所有没有添加视频的章节列表下拉")
+    public BaseResult<List<ChapterSelectVo>> chapterSelectNoVideoList(@RequestBody@Validated IdRequest id){
+
+        return BaseResult.failed(ExceptionEnum.CURRENT_NOT_SUPPORT);
+//        return BaseResult.success(chapterService.loadNoVideoChapterAndChildren(id));
+    }
+
+
 }

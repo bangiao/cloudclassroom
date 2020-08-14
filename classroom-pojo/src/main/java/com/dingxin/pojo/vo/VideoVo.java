@@ -38,18 +38,13 @@ public class VideoVo {
     /**
      * 视频附件
      */
-    @ApiModelProperty("视频附件")
+    @ApiModelProperty("视频field")
     private String videoField;
     /**
      * 直播视频
      */
-    @ApiModelProperty("直播视频")
+    @ApiModelProperty("直播视频Field")
     private String liveVideoField;
-//    /**
-//     * 讲师
-//     */
-//    @ApiModelProperty("讲师")
-//    private String teacherName;
 
     /**
      * 是否有效(禁用之后为无效)
@@ -57,7 +52,7 @@ public class VideoVo {
     @ApiModelProperty("是否有效(禁用之后为无效)")
     private Integer disableFlag;
     /**
-     * 是否有效(禁用之后为无效)
+     * 视频大小
      */
     @ApiModelProperty(value = "视频大小",example = "5.4G")
     private String videoSize;

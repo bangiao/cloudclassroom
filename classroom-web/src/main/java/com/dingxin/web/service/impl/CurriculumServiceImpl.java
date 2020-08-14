@@ -339,8 +339,13 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                     chapter.setParentId(parentChapterId);
                 chapterService.saveOrUpdate(chapter);
                 Video video = VideoVo.convertToPoWhileInsert(videoInfo);
+
                 //保存视频
                 if (video!=null){
+                    //一个章节下只能选择挂一个视频或直播视频，不能同时拥有多个视频
+                    if(video.getVideoField()!=null && video.getLiveVideoField()!=null){
+                      throw new BusinessException(ExceptionEnum.CHAPTER_CAN_ONLY_WITH_ONE_VIDEO_INFO);
+                    }
                     video.setChapterId(chapter.getId());
                     video.setCurriculumId(curriculumId);
                     videoService.saveOrUpdate(video);

@@ -8,6 +8,7 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoDeleteRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoUpdateRequest;
+import com.dingxin.pojo.vo.ChapterSelectVo;
 import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.sdk.vod.service.VodControlService;
 import com.dingxin.sdk.vod.service.VodSearchService;
@@ -111,5 +112,12 @@ public class VideoController {
         videoService.enableVideos(videoIds);
 
         return BaseResult.success();
+    }
+
+    @PostMapping("/load/byChapter")
+    @ApiOperation(value = "根据章节获取视频")
+    public BaseResult<List<ChapterSelectVo>> chapterSelectNoVideoList(@RequestBody@Validated IdRequest id){
+        Video video = videoService.loadByChapterId(id);
+        return BaseResult.success(VideoVo.convertToVo(video));
     }
 }

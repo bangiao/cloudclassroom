@@ -32,6 +32,8 @@ public enum ExceptionEnum {
     COVENT_NULLPOINT("4002","转换源对象为空"),
     DATA_ZERO("4003","查询对象不存在"),
     BANNER_MSG("4004","启用banner图不能超过3个，请先禁用"),
+    CHAPTER_CAN_ONLY_WITH_ONE_VIDEO_INFO("4005","个章节下只能选择挂一个视频或直播视频，不能同时拥有多个视频"),
+    PARENT_CHAPTER_CANNOT_ADD_VIDEO("4006","当前为父章节，不能添加视频，视频应该在当前章节的子章节"),
 
 
 
@@ -44,6 +46,7 @@ public enum ExceptionEnum {
 
     //6.系统级
     SYSTEM_ERROR("6001","系统内部异常"),
+    CURRENT_NOT_SUPPORT("6002","当前方法暂时不开放，敬请谅解"),
 
 
     //unknown
