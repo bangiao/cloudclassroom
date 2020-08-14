@@ -116,7 +116,7 @@ public class VideoController {
 
     @PostMapping("/load/byChapter")
     @ApiOperation(value = "根据章节获取视频")
-    public BaseResult<List<ChapterSelectVo>> chapterSelectNoVideoList(@RequestBody@Validated IdRequest id){
+    public BaseResult<ChapterSelectVo> loadVideoByChapterId(@RequestBody@Validated IdRequest id){
         Video video = videoService.loadByChapterId(id);
         return BaseResult.success(VideoVo.convertToVo(video));
     }
