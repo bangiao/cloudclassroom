@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 课程评价表
@@ -53,7 +54,11 @@ public class ClassEvaluateController {
     @ApiOperation(value = "获取课程评价表详情信息")
     public BaseResult<ClassEvaluateVo> info(@RequestBody IdRequest id) {
         ClassEvaluate classEvaluate = classEvaluateService.getByIdSelf(id);
-        return BaseResult.success(ClassEvaluateVo.convertToVo(classEvaluate));
+        ClassEvaluateVo classEvaluateVo=null;
+        if (!Objects.isNull(classEvaluate)){
+            classEvaluateVo = ClassEvaluateVo.convertToVo(classEvaluate);
+        }
+        return BaseResult.success(classEvaluateVo);
     }
 
     /**

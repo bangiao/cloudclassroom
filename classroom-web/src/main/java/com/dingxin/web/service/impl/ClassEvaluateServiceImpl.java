@@ -148,17 +148,19 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
                 ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
         if (StringUtils.isNotBlank(query.getQueryStr())) {
-            qw.like(ClassEvaluate::getStudentName, query.getQueryStr())
+            qw.and(Wrappers->Wrappers.like(ClassEvaluate::getStudentName, query.getQueryStr())
                     .or()
                     .like(ClassEvaluate::getStudentCode, query.getQueryStr())
                     .or()
-                    .like(ClassEvaluate::getClassName, query.getQueryStr());
+                    .like(ClassEvaluate::getClassName, query.getQueryStr()));
         }
 //        伪代码
-        int type = 1;
         RoleEnum userType = ShiroUtils.getUserType();
-        if (Objects.isNull(userType))
+        if (Objects.isNull(userType)) {
+            log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
+
         //        管理员
         if (userType.getCode()==CommonConstant.NORMAL_USER){
             qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
@@ -274,6 +276,7 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
 
     //保存的时候同时更新对应课程的课程评价状态
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveEvaluation(ClassEvaluate classEvaluate) {
         save(classEvaluate);
         updateCurriculumRelatedEvaluateStatus(classEvaluate.getClassId());

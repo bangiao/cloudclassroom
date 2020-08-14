@@ -17,6 +17,7 @@ import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IClassCollectionService;
 import com.dingxin.web.shiro.ShiroUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,13 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * 课程收藏表 服务接口实现类
  */
 @Service
+@Slf4j
 public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMapper, ClassCollection> implements IClassCollectionService {
 
     @Autowired
@@ -97,16 +100,17 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
     public IPage queryList(CommQueryListRequest query) {
         String userId = ShiroUtils.getUserId();
         if (StringUtils.isEmpty(userId)){
-            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+            log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
         LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
         qw.eq(ClassCollection::getPersonId,userId);
         qw.eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
         if ( StringUtils.isNotEmpty(query.getQueryStr())) {
-            qw.like(ClassCollection::getClassName, query.getQueryStr())
+            qw.and(Wrappers->Wrappers.like(ClassCollection::getClassName, query.getQueryStr())
                     .or().like(ClassCollection::getTeacherName, query.getQueryStr())
                     .or().like(ClassCollection::getClassTypeStr, query.getQueryStr())
-                    .orderByDesc(ClassCollection::getCreateTime);
+                    .orderByDesc(ClassCollection::getCreateTime));
         }
         Page<ClassCollection> page = new Page(query.getCurrentPage(), query.getPageSize());
         return page(page, qw);
@@ -121,10 +125,19 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
     @Override
     public boolean insert(ClassCollection classCollection) {
         String userId = ShiroUtils.getUserId();
-        if (StringUtils.isEmpty(userId))
-            throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        if (StringUtils.isEmpty(userId)) {
+            log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
         classCollection.setPersonId(userId);
         classCollection.setModifyTime(LocalDateTime.now());
+        LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
+        qw.eq(ClassCollection::getDelFlag,CommonConstant.DEL_FLAG)
+                .eq(ClassCollection::getPersonId,userId)
+                .eq(ClassCollection::getClassId,classCollection.getClassId())
+                .select(ClassCollection::getId);
+        ClassCollection one = getOne(qw);
+        classCollection.setId(Objects.isNull(one)?null:one.getId());
         return saveOrUpdate(classCollection);
 
     }
