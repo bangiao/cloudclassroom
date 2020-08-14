@@ -160,8 +160,14 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         qw.eq(Teachers::getZgh,idRequest.getWid());
         Teachers getOne = getOne(qw);
         BaseResult photo = commonDataService.photo(idRequest.getWid().toString());
-        teacherVo.setZgh(getOne.getZgh());
-        teacherVo.setIntroduction(getOne.getIntroduction());
+
+        if (Objects.isNull(getOne)){
+            teacherVo.setZgh(idRequest.getWid());
+            teacherVo.setIntroduction(null);
+        }else {
+            teacherVo.setZgh(getOne.getZgh());
+            teacherVo.setIntroduction(getOne.getIntroduction());
+        }
         teacherVo.setUrl(photo.getData().toString());
         //查出对应的课程列表
         LambdaQueryWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaQuery()
