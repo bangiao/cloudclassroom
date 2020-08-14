@@ -10,6 +10,8 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.AuditStatusEnum;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.Chapter;
+import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.CurriculumAuditListRequest;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 
@@ -55,6 +59,25 @@ public class VideoAuditController {
         IPage pageList = videoAuditService.queryPageList(query);
         return BaseResult.success(pageList);
     }
+
+    /**
+     * 根据课程ID获取章节列表
+     * @param query
+     * @return
+     */
+    @PostMapping("/searchchapterbycurrid")
+    @ApiOperation(value = "根据课程ID获取章节列表")
+    public BaseResult<List<Chapter>>searchchapterbycurrid(@RequestBody CurriculumAuditListRequest query){
+        return videoAuditService.searchchapterbycurrid(query);
+    }
+
+    @PostMapping("/searchevaluatebycurrid")
+    @ApiOperation(value = "根据课程ID获取评论")
+    public BaseResult<Page<ClassEvaluate>>searchevaluatebycurrid(@RequestBody CurriculumAuditListRequest query){
+        return videoAuditService.searchevaluatebycurrid(query);
+    }
+
+
 
     /**
      * 视频审核列表查询
