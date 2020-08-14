@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.BannerManage;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 首页banner
  */
 @ManTag
+@UserTag
 @RestController
 @RequestMapping("/bannerManage")
 @Api(tags = {"首页banner"})
@@ -42,6 +44,16 @@ public class BannerManageController {
         return BaseResult.success(pageList);
     }
 
+    /**
+     * 列表查询
+     */
+    @PostMapping("/PClist")
+    @ApiOperation(value = "获取PC列表")
+    public BaseResult<Page<BannerManage>>PClist(@RequestBody BaseQuery<BannerManage> query){
+        //查询列表数据
+        IPage pageList = bannerManageService.queryPCPageList(query);
+        return BaseResult.success(pageList);
+    }
     /**
      * 单个查询
      */

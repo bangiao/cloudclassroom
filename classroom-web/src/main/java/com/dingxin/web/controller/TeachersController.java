@@ -2,10 +2,12 @@ package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.TeacherVo;
 import com.dingxin.web.service.ITeachersService;
 import io.swagger.annotations.Api;
@@ -23,6 +25,7 @@ import java.util.Map;
  *
  */
 @ManTag
+@UserTag
 @RestController
 @RequestMapping("/teachers")
 @Api(tags = "讲师管理接口")
@@ -64,7 +67,7 @@ public class TeachersController {
      */
     @PostMapping("/searchById")
     @ApiOperation(value = "获取讲师详情信息")
-    public BaseResult<TeacherVo> search(@RequestBody IdRequest idRequest) {
+    public BaseResult<TeacherVo> search(@RequestBody WidRequest idRequest) {
         return BaseResult.success(teachersService.queryById(idRequest),"获取讲师详情成功");
     }
     /**

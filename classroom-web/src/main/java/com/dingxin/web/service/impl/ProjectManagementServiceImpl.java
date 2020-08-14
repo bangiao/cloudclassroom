@@ -12,6 +12,8 @@ import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.HotListVo;
+import com.dingxin.pojo.vo.ProjectCurrilumVo;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.*;
@@ -359,6 +361,17 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 idRequest.getWid());
         List<ProjectManagement> list = this.list(wrapper);
         return list;
+    }
+
+    /**
+     * 增加专题观看次数
+     * @param idRequest
+     * @return
+     */
+    @Override
+    public BaseResult watchAmout(IdRequest idRequest) {
+        this.projectManagementMapper.watchAmout(idRequest.getId());
+        return BaseResult.success().setMsg("增加专题次数成功");
     }
 
 

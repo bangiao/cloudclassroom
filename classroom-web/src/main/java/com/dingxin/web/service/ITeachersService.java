@@ -6,6 +6,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.TeacherVo;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface ITeachersService extends IService<Teachers> {
 
     IPage<Teachers> queryPCPage(CommQueryListRequest query);
 
-    TeacherVo queryById(IdRequest idRequest);
+    TeacherVo queryById(WidRequest idRequest);
 
     /**
      * 获取所有讲师的下拉列表值

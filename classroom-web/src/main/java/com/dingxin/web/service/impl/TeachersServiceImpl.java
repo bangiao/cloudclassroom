@@ -16,6 +16,7 @@ import com.dingxin.dao.mapper.TeachersMapper;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.TeacherVo;
 import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -153,22 +154,22 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     }
 
     @Override
-    public TeacherVo queryById(IdRequest idRequest) {
+    public TeacherVo queryById(WidRequest idRequest) {
         TeacherVo teacherVo = new TeacherVo();
         LambdaQueryWrapper<Teachers> qw = Wrappers.lambdaQuery();
-        qw.eq(Teachers::getZgh,idRequest.getId());
+        qw.eq(Teachers::getZgh,idRequest.getWid());
         Teachers getOne = getOne(qw);
-        BaseResult photo = commonDataService.photo(idRequest.getId().toString());
+        BaseResult photo = commonDataService.photo(idRequest.getWid().toString());
         teacherVo.setZgh(getOne.getZgh());
         teacherVo.setIntroduction(getOne.getIntroduction());
         teacherVo.setUrl(photo.getData().toString());
         //查出对应的课程列表
         LambdaQueryWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaQuery()
-                .eq(Curriculum::getTeacherId, idRequest.getId());
+                .eq(Curriculum::getTeacherId, idRequest.getWid());
         teacherVo.setCurriculumList(curriculumService.list(curriculumQw));
         //查出对应的专题列表
         LambdaQueryWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaQuery()
-                .eq(ProjectManagement::getLecturerId, idRequest.getId());
+                .eq(ProjectManagement::getLecturerId, idRequest.getWid());
         teacherVo.setProjectManagementList(projectManagementService.list(projectQw));
         return teacherVo;
     }
@@ -214,10 +215,10 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         teachers.setModifyTime(LocalDateTime.now());
         this.saveOrUpdate(teachers);
         //启用讲师相关课程
-        LambdaUpdateWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaUpdate()
+        /*LambdaUpdateWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaUpdate()
                 .set(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .eq(Curriculum::getTeacherId, teachers.getZgh());
-        curriculumService.update(curriculumQw);
+        curriculumService.update(curriculumQw);*/
         //启用讲师相关专题
         LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
                 .set(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE)

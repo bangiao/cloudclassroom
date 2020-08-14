@@ -56,5 +56,34 @@ public interface CommonConstant {
 	 * 管理员
 	 */
 	Integer ADMINISTRATOR=7;
+	/**
+	 * 热门返回数量
+	 */
+	Integer HOTSIZE=4;
+	/**
+	 * 热门专题
+	 */
+	String HOTPROJECT="热门专题";
 
+	/**
+	 * 热门课程
+	 */
+	String HOTCURRICULUM="热门课程";
+
+	/**
+	 * 最新课程
+	 */
+	String LATESTCURRICULUM="最新课程";
+	/**
+	 * 热门专题类型
+	 */
+	Integer HOTPROJECTTYPE=0;
+	/**
+	 * 热门课程类型
+	 */
+	Integer HOTCURRICULUMTYPE=1;
+	/**
+	 *最近课程类型
+	 */
+	Integer LATESTCURRICULUMTYPE=2;
 }

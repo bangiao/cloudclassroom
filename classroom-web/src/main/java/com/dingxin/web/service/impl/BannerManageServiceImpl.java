@@ -162,4 +162,15 @@ public class BannerManageServiceImpl extends ServiceImpl<BannerManageMapper, Ban
             return this.saveOrUpdate(bannerManage);
         }
     }
+
+    @Override
+    public IPage queryPCPageList(BaseQuery<BannerManage> query) {
+        Page<BannerManage> page = new Page(query.getCurrentPage(),query.getPageSize());
+        LambdaQueryWrapper<BannerManage> qw = Wrappers.lambdaQuery();
+        qw.eq(BannerManage::getDelFlag, CommonConstant.DEL_FLAG)
+                .eq(BannerManage::getDisable,CommonConstant.DISABLE_FALSE)
+                .orderByAsc(BannerManage::getDisable);
+        IPage pageList = this.page(page,qw);
+        return pageList;
+    }
 }

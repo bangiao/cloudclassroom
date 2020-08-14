@@ -24,4 +24,7 @@ public interface IBannerManageService extends IService<BannerManage> {
     boolean saveBannerManage(BannerManage bannerManage);
 
     boolean updateBannerManage(BannerManage bannerManage);
+
+    IPage queryPCPageList(BaseQuery<BannerManage> query);
 }
+

@@ -107,6 +107,9 @@ public class ProjectManagement extends Model<ProjectManagement> {
     @ApiModelProperty("部门名称")
     private String deptName;
 
+    @ApiModelProperty("专题观看次数")
+    private String projectWatchNum;
+
 
     @TableField(exist = false)
     private List<Integer> courseIds;

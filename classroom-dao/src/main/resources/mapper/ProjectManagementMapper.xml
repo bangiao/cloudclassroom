@@ -20,6 +20,7 @@
                     <result column="major_id" property="majorId" />
                     <result column="dept_name" property="deptName" />
                     <result column="major_name" property="majorName" />
+                    <result column="project_watch_num" property="projectWatchNum" />
         </resultMap>
 
 </mapper>
