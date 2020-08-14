@@ -102,12 +102,22 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
      */
     @Override
     public IPage queryPageList(CurriculumAuditListRequest query) {
-        Page<Curriculum> page = new Page(query.getCurrentPage(),query.getPageSize());
+        Page<Curriculum> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<Curriculum> wrapper = Wrappers.lambdaQuery();
-        wrapper.like(Curriculum::getCurriculumName,query.getCurriculumName());
-        wrapper.eq(Curriculum::getAuditFlag,query.getAuditFlag())
-                .or(Wrappers -> Wrappers.eq(Curriculum::getEvaluateStatus,query.getAuditFlag()));
-        IPage<Curriculum> iPage = curriculumService.page(page);
+        wrapper.like(
+                        Objects.nonNull(query.getCurriculumName()),
+                        Curriculum::getCurriculumName,
+                        query.getCurriculumName())
+                .eq(
+                        Objects.nonNull(query.getAuditFlag()),
+                        Curriculum::getAuditFlag,
+                        query.getAuditFlag())
+                .or()
+                .eq(
+                        Objects.nonNull(query.getAuditFlag()),
+                        Curriculum::getEvaluateStatus,
+                        query.getAuditFlag());
+        IPage<Curriculum> iPage = curriculumService.page(page, wrapper);
         return iPage;
     }
 

@@ -51,7 +51,7 @@ public class ClassTypeController {
      */
     @PostMapping("/listDic")
     @ApiOperation(value = "获取课程类型列表,用于类型选择")
-    public BaseResult<Page<ClassType>> listDic() {
+    public BaseResult<List<ClassType>> listDic() {
         List<Map<String, Object>> maps = classTypeService.listMapself();
         return BaseResult.success(maps);
     }

@@ -266,7 +266,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     public List<Curriculum> listall(TeacherIdRequest idRequest) {
         LambdaQueryWrapper<Curriculum> qw = Wrappers.lambdaQuery();
         qw.select(Curriculum::getId,Curriculum::getCurriculumName)
-        .eq(Curriculum::getTeacherId,idRequest.getJg0101id())
+        .eq(Objects.nonNull(idRequest.getJg0101id()),Curriculum::getTeacherId,idRequest.getJg0101id())
         .eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG);
         //List<Map<String, Object>> maps = listMaps(qw);
         List<Curriculum> list = this.list(qw);
