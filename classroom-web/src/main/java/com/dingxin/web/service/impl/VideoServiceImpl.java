@@ -12,6 +12,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.CollectionUtils;
 import com.dingxin.dao.mapper.VideoMapper;
+import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.*;
@@ -448,17 +449,34 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         update(disableQuery);
     }
 
-    @Override
-    public void saveVideoRelated(Video video) {
-        save(video);
-        //更新对应课程时长
-        updateCurriculumVideoDuration(video.getCurriculumId());
-        //更新对应课程的审核状态
-        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
-    }
+//    @Override
+//    public void updateVideoRelatedCurriculumInfo(Video video) {
+//
+//        //更新对应课程时长
+//        updateCurriculumVideoDuration(video.getCurriculumId());
+//        //更新对应课程的审核状态
+//        curriculumService.updateCurriculumAuditFlag(video.getCurriculumId(),CommonConstant.STATUS_NOAUDIT);
+//    }
+
 
     @Override
-    public void updateVideoRelated(Video video) {
+    public void deleteVideoByChapterId(List<Integer> chapterIds,Integer curriculumId) {
+        if (CollectionUtils.isEmpty(chapterIds)){
+            if (log.isInfoEnabled())
+                log.info("当前没有要被删除的视频信息 ===deleteVideoByChapterId===");
+            return;
+        }
+        if (curriculumId == null){
+            return;
+        }
+        LambdaUpdateWrapper<Video> updateWrapper = Wrappers.<Video>lambdaUpdate()
+                .set(Video::getDeleteFlag, CommonConstant.DEL_FLAG_TRUE)
+                .in(Video::getChapterId, chapterIds);
 
+        update(updateWrapper);
+        //更新课程对应时长
+        updateCurriculumVideoDuration(curriculumId);
+        //更新课程对应观看次数
+        updateCurriculumWatchAmount(curriculumId);
     }
 }

@@ -1,6 +1,5 @@
 package com.dingxin.web.service.impl;
 
-import com.alibaba.druid.pool.WrapperAdapter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -15,6 +14,7 @@ import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.ProjectCurriculum;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.CurriculumInsertRequest;
+import com.dingxin.pojo.request.CurriculumUpdateRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.ChapterAndVideoInfo;
@@ -178,12 +178,22 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         update(disableQuery);
     }
 
-    @Override//这里用两个方法删除因为需要事务,两个方法需要同时成功
+    @Override
     @Transactional
     public void deleteCurriculumAndRelated(List<Integer> curriculumIds) {
 
+        //课程信息删除
         deleteCurriculum(curriculumIds);
+
+        //课程相关视频删除
         videoService.deleteCurriculumRelatedVideo(curriculumIds);
+
+        //对应章节删除
+        LambdaUpdateWrapper<Chapter> deleteChapterWrapper = Wrappers.<Chapter>lambdaUpdate()
+                .set(Chapter::getDeleteFlag, CommonConstant.DEL_FLAG_TRUE)
+                .in(Chapter::getCurriculumId, curriculumIds);
+
+        chapterService.update(deleteChapterWrapper);
     }
 
     @Override
@@ -307,10 +317,12 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         //获取保存的课程的id
         Integer curriculumId = curriculumInfo.getId();
         //保存章节和对应视频信息
-        saveChapterAndVideo(curriculumChapterAndVideoInfo.getChapterAndVideoInfo(), curriculumId,true,null);
+        saveCurrentCurriculumChapterAndVideo(curriculumChapterAndVideoInfo.getChapterAndVideoInfo(), curriculumId,true,null);
+        //更新对应课程的观看时长
+        videoService.updateCurriculumVideoDuration(curriculumId);
     }
 
-    private void saveChapterAndVideo(List<ChapterAndVideoInfo> chapterAndVideoInfo, Integer curriculumId,boolean firstLayer,Integer parentChapterId) {
+    private void saveCurrentCurriculumChapterAndVideo(List<ChapterAndVideoInfo> chapterAndVideoInfo, Integer curriculumId, boolean firstLayer, Integer parentChapterId) {
         if (CollectionUtils.isEmpty(chapterAndVideoInfo)){
             if (log.isWarnEnabled())
                 log.warn("保存的当前视频没有对应的章节及视频信息 课程id为 {}",curriculumId);
@@ -331,15 +343,45 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                 if (video!=null){
                     video.setChapterId(chapter.getId());
                     video.setCurriculumId(curriculumId);
-                    videoService.saveVideoRelated(video);
+                    videoService.saveOrUpdate(video);
                 }
                 List<ChapterAndVideoInfo> childChapter = perChapterAndVideoInfo.getChildChapter();
                 if (childChapter!=null){
                     //如果还存在子章节递归保存
-                    saveChapterAndVideo(childChapter,curriculumId,false,chapter.getId());
+                    saveCurrentCurriculumChapterAndVideo(childChapter,curriculumId,false,chapter.getId());
                 }
             }
         }
+    }
+    @Override
+    public void updateCurriculumInfo(CurriculumUpdateRequest curriculumUpdateRequest) {
+        Curriculum curriculumInfo = Curriculum.builder()
+                .id(curriculumUpdateRequest.getCurriculumId())
+                .curriculumImage(curriculumUpdateRequest.getCurriculumImage())
+                .classTypeId(curriculumUpdateRequest.getClassTypeId())
+                .curriculumName(curriculumUpdateRequest.getCurriculumName())
+                .curriculumType(curriculumUpdateRequest.getCurriculumType())
+                .topicName(curriculumUpdateRequest.getTopicName())
+                .topicId(curriculumUpdateRequest.getTopicId())
+                .teacherName(curriculumUpdateRequest.getTeacherName())
+                .teacherId(curriculumUpdateRequest.getTeacherId())
+                .build();
+        //更新课程本身的信息
+        updateById(curriculumInfo);
+        //删除要被递归删除的章节
+        chapterService.removeChapterRecursively(curriculumUpdateRequest.getDeleteParentChapterIds());
+        //删除只删除子章节的章节
+        chapterService.onlyRemoveChildChapterSelf(curriculumUpdateRequest.getDeleteChildChapterIds());
+        //删除章节对应的视频信息
+        List<Integer> allDeleteVideoChapterIds = chapterService.loadChildrenIdByParentIds(curriculumUpdateRequest.getDeleteParentChapterIds());
+        allDeleteVideoChapterIds.addAll(curriculumUpdateRequest.getDeleteChildChapterIds());
+        videoService.deleteVideoByChapterId(allDeleteVideoChapterIds,curriculumUpdateRequest.getCurriculumId());
+        //保存新增的章节及视频信息
+        List<ChapterAndVideoInfo> chapterAndVideoWillBeSaved = curriculumUpdateRequest.getChapterAndVideoWillBeSaved();
+        saveCurrentCurriculumChapterAndVideo(chapterAndVideoWillBeSaved,curriculumUpdateRequest.getCurriculumId(),true,null);
+        //更新对应课程的观看时长
+        videoService.updateCurriculumVideoDuration(curriculumUpdateRequest.getCurriculumId());
+
     }
 
     @Override

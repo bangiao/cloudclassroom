@@ -42,12 +42,7 @@ public interface IVideoService extends IService<Video> {
      * 保存视频
      * @param video
      */
-    void saveVideoRelated(Video video);
-    /**
-     * 修改视频
-     * @param video
-     */
-    void updateVideoRelated(Video video);
+//    void updateVideoRelatedCurriculumInfo(Video video);
     /**
      * 更新视频对应课程的课程时长
      * @param curriculumId
@@ -98,4 +93,8 @@ public interface IVideoService extends IService<Video> {
      *  启用视频
      */
     void enableVideos(List<Integer> videoIds);
+    /**
+     * 根据章节信息删除视频
+     */
+    void deleteVideoByChapterId(List<Integer> chapterIds,Integer curriculumId);
 }

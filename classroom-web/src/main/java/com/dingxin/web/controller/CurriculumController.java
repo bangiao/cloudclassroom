@@ -8,10 +8,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
-import com.dingxin.pojo.request.CurriculumInsertRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
 import com.dingxin.pojo.vo.CurriculumListVo;
 import com.dingxin.pojo.vo.CurriculumVo;
@@ -129,9 +126,9 @@ public class CurriculumController {
      */
     @PostMapping("/update")
     @ApiOperation(value = "修改课程信息")
-    public BaseResult update(@RequestBody Curriculum curriculum){
-        boolean retFlag= curriculumService.updateById(curriculum);
-        return BaseResult.success(retFlag);
+    public BaseResult update(@RequestBody@Validated CurriculumUpdateRequest curriculum){
+        curriculumService.updateCurriculumInfo(curriculum);
+        return BaseResult.success();
     }
 
     /**
