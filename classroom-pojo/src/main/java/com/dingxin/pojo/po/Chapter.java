@@ -1,13 +1,16 @@
 package com.dingxin.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *  实体类
@@ -50,6 +53,21 @@ public class Chapter extends Model<Chapter> {
      */
     private Integer deleteFlag;
 
+    @ApiModelProperty("视频名称")
+    @TableField(exist = false)
+    private String videoName;
+
+    @ApiModelProperty("文件ID")
+    @TableField(exist = false)
+    private String fileId;
+
+    @ApiModelProperty("审核状态")
+    @TableField(exist = false)
+    private Integer auditFlag;
+
+    @ApiModelProperty("节")
+    @TableField(exist = false)
+    private List<Chapter> childChapter;
 
 
     @Override

@@ -25,4 +25,7 @@ public class CurriculumAuditListRequest extends BaseQuery4List {
     @ApiModelProperty(value = "课程状态（1通过-1未通过0审核中）")
     private Integer auditFlag;
 
+    @ApiModelProperty("课程ID")
+    private Integer curriculumId;
+
 }
