@@ -73,7 +73,7 @@ public class VideoAuditController {
 
     @PostMapping("/searchevaluatebycurrid")
     @ApiOperation(value = "根据课程ID获取评论")
-    public BaseResult<Page<ClassEvaluate>>searchevaluatebycurrid(@RequestBody CurriculumAuditListRequest query){
+    public BaseResult<List<ClassEvaluate>>searchevaluatebycurrid(@RequestBody CurriculumAuditListRequest query){
         return videoAuditService.searchevaluatebycurrid(query);
     }
 

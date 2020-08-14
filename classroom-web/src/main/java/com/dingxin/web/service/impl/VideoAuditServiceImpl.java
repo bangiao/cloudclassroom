@@ -123,15 +123,14 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
     }
 
     @Override
-    public BaseResult<Page<ClassEvaluate>> searchevaluatebycurrid(CurriculumAuditListRequest query) {
+    public BaseResult<List<ClassEvaluate>> searchevaluatebycurrid(CurriculumAuditListRequest query) {
         if (Objects.isNull(query.getCurriculumId())){
             throw new BusinessException(PARAMTER_ERROR);
         }
         LambdaQueryWrapper<ClassEvaluate> eq = Wrappers.<ClassEvaluate>lambdaQuery().eq(ClassEvaluate::getClassId, query.getCurriculumId())
                 .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
-        Page<ClassEvaluate> page = new Page<>(query.getCurrentPage(), query.getPageSize());
-        IPage<ClassEvaluate> evaluateIPage = evaluateService.page(page, eq);
-        return BaseResult.success(evaluateIPage,"查询评论成功");
+        List<ClassEvaluate> list = evaluateService.list(eq);
+        return BaseResult.success(list,"查询评论成功");
     }
 
     private List<Chapter> treeChapter(List<Chapter> list){

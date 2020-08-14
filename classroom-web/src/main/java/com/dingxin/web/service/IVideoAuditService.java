@@ -22,5 +22,5 @@ public interface IVideoAuditService extends IService<Video> {
 
     BaseResult<List<Chapter>> searchchapterbycurrid(CurriculumAuditListRequest query);
 
-    BaseResult<Page<ClassEvaluate>> searchevaluatebycurrid(CurriculumAuditListRequest query);
+    BaseResult<List<ClassEvaluate>> searchevaluatebycurrid(CurriculumAuditListRequest query);
 }
