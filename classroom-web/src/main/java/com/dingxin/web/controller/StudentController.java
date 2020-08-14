@@ -36,7 +36,7 @@ public class StudentController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生信息表列表")
-    public BaseResult<Page<Student>>list(@RequestBody StudentStudyStudentListRequest query){
+    public BaseResult list(@RequestBody StudentStudyStudentListRequest query){
         IPage pageList = studentService.queryPageList(query);
         return BaseResult.success(pageList);
     }

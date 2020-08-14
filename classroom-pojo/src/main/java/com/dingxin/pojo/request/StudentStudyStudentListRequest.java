@@ -21,5 +21,4 @@ public class StudentStudyStudentListRequest extends BaseQuery4List {
     @ApiModelProperty(value = "本科生-1，研究生-2")
     private Integer type;
 
-
 }
