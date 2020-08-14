@@ -7,17 +7,21 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.utils.DateUtils;
+import com.dingxin.dao.mapper.ProjectCurriculumMapper;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
+import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.pojo.vo.HotListVo;
 import com.dingxin.pojo.vo.ProjectCurrilumVo;
-import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,9 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,9 +50,10 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     private ICasDeptsService deptsService;
     @Autowired
     private IMajorService majorService;
-
-
-
+    @Autowired
+    private ProjectCurriculumMapper projectCurriculumMapper;
+    @Autowired
+    private ProjectManagementMapper projectManagementMapper;
     @Override
     public List<ProjectManagement> like(ProjectManagement data) {
         LambdaQueryWrapper<ProjectManagement> query = Wrappers.<ProjectManagement>lambdaQuery()
@@ -101,7 +104,11 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 .like(
                         Objects.nonNull(data.getModifyTime()),
                         ProjectManagement::getModifyTime,
-                        data.getModifyTime());
+                        data.getModifyTime())
+                .like(
+                        Objects.nonNull(data.getProjectWatchNum()),
+                        ProjectManagement::getProjectWatchNum,
+                        data.getProjectWatchNum());
         return this.baseMapper.selectList(query);
 
 
@@ -123,19 +130,25 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                         query.getQueryStr())
                 .or().like(
                         ProjectManagement::getLecturerName,
-                        query.getQueryStr()));
+                        query.getQueryStr()))
+        .orderByAsc(ProjectManagement::getCreateTime);
         IPage<ProjectManagement> managementIPage = this.baseMapper.selectPage(page, projectQw);
         //查询视频观看次数
         List<ProjectManagement> records = managementIPage.getRecords();
         if (CollectionUtils.isNotEmpty(records)){
             List<Integer> projectIdList = records.stream().map(ProjectManagement::getId).collect(Collectors.toList());
-            //查询出所有的中间课程数据
-            LambdaQueryWrapper<ProjectCurriculum> projectCurriculumQw = Wrappers.<ProjectCurriculum>lambdaQuery()
-                    .eq(projectIdList.size() > 0, ProjectCurriculum::getProjectId, projectIdList);
-            List<ProjectCurriculum> projectCurriculumList = projectCurriculumService.list(projectCurriculumQw);
-
+            //查询出所有的中间课程数据,将次数更新
+            List<ProjectCurrilumVo> amoutMap = projectCurriculumMapper.watchAmoutByIds(projectIdList);
+            Map<Integer, Long> collect = amoutMap.stream().collect(Collectors.toMap(ProjectCurrilumVo::getProjectId, ProjectCurrilumVo::getWatchAmount));
+            records.stream().forEach(s->{
+                amoutMap.stream().forEach(d->{
+                    if (s.getId().equals(d.getProjectId())){
+                        s.setWatchNum(d.getWatchAmount());
+                        s.setCourseNum(d.getCourseNum());
+                    }
+                });
+            });
         }
-
         return managementIPage;
     }
 
@@ -159,7 +172,23 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                         CommonConstant.DEL_FLAG)
                 .eq(
                         ProjectManagement::getEnable,
-                        CommonConstant.DISABLE_FALSE));
+                        CommonConstant.DISABLE_FALSE)
+                .orderByAsc(ProjectManagement::getCreateTime));
+        //查询视频观看次数
+        List<ProjectManagement> records = pageList.getRecords();
+        if (CollectionUtils.isNotEmpty(records)){
+            List<Integer> projectIdList = records.stream().map(ProjectManagement::getId).collect(Collectors.toList());
+            //查询出所有的中间课程数据,将次数更新
+            List<ProjectCurrilumVo> amoutMap = projectCurriculumMapper.PCwatchAmoutByIds(projectIdList);
+            records.stream().forEach(s->{
+                amoutMap.stream().forEach(d->{
+                    if (s.getId().equals(d.getProjectId())){
+                        s.setWatchNum(d.getWatchAmount());
+                        s.setCourseNum(d.getCourseNum());
+                    }
+                });
+            });
+        }
         return pageList;
     }
 
@@ -210,11 +239,38 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
      * @return
      */
     @Override
-    public IPage<ProjectManagement> queryPCPageByCount(CommQueryListRequest query) {
-        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+    public List<HotListVo> queryPCPageByCount(CommQueryListRequest query) {
+        //热门专题
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), CommonConstant.HOTSIZE);
         LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
-        qw.orderByDesc(ProjectManagement::getWatchNum);
-        return page(page, qw);
+        qw
+                .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG)
+                .eq(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE)
+                .orderByDesc(ProjectManagement::getWatchNum);
+        IPage<ProjectManagement> projectManagementIPage = this.page(page, qw);
+        HotListVo hotProject = HotListVo.builder().name(CommonConstant.HOTPROJECT).list(projectManagementIPage.getRecords()).type(CommonConstant.HOTPROJECTTYPE).build();
+        //热门课程
+        Page<Curriculum> curriculumPage = new Page(query.getCurrentPage(), CommonConstant.HOTSIZE);
+        LambdaQueryWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaQuery()
+                .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                .orderByAsc(Curriculum::getWatchAmount);
+        IPage<Curriculum> curriculumIPage = curriculumService.page(curriculumPage, curriculumQw);
+        IPage<CurriculumVo> curriculumVoIPage = CurriculumVo.convertToVoWithPage(curriculumIPage);
+        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(curriculumVoIPage.getRecords()).type(CommonConstant.HOTCURRICULUMTYPE).build();
+        //最新课程
+        LambdaQueryWrapper<Curriculum> latestCurriculumQw = Wrappers.<Curriculum>lambdaQuery()
+                .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                .orderByDesc(Curriculum::getCreateTime);
+        IPage<Curriculum> latestCurriculumIPage = curriculumService.page(curriculumPage, latestCurriculumQw);
+        IPage<CurriculumVo> LeatesCurriculumVoIPage = CurriculumVo.convertToVoWithPage(latestCurriculumIPage);
+        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(LeatesCurriculumVoIPage.getRecords()).type(CommonConstant.LATESTCURRICULUMTYPE).build();
+        ArrayList<HotListVo> ret = Lists.newArrayList();
+        ret.add(hotProject);
+        ret.add(hotCurriculum);
+        ret.add(latestCurriculum);
+        return ret;
     }
 
     /**
@@ -370,7 +426,7 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
      */
     @Override
     public BaseResult watchAmout(IdRequest idRequest) {
-        this.baseMapper.watchAmout(idRequest.getId());
+        this.projectManagementMapper.watchAmout(idRequest.getId());
         return BaseResult.success().setMsg("增加专题次数成功");
     }
 
