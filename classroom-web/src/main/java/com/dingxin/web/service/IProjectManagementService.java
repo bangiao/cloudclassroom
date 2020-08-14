@@ -5,6 +5,7 @@ import com.dingxin.pojo.po.ProjectManagement;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 
 import java.util.List;
