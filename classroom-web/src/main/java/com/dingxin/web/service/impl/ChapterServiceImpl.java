@@ -164,6 +164,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         return chapters.stream().map(Chapter::getId).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<ChapterSelectVo> loadChapterAndChildren(IdRequest curriculumId) {
         if (curriculumId == null){
@@ -174,7 +175,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         LambdaQueryWrapper<Chapter> loadParentChapterQuery = Wrappers.<Chapter>lambdaQuery()
                 .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
                 .eq(Chapter::getCurriculumId, curriculumId.getId())
-                .isNull(Chapter::getParentId)
+                .isNull(Chapter::getParentId).orderByAsc(Chapter::getChapterOrderNumber)
                 .select(
                         Chapter::getId,
                         Chapter::getChapterDesc,
@@ -194,7 +195,8 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         }).collect(Collectors.toList());
     }
 
-    private List<Chapter> loadChildChapterInfo(IdRequest curriculumId,Integer parentId) {
+    @SuppressWarnings("unchecked")
+    private List<Chapter> loadChildChapterInfo(IdRequest curriculumId, Integer parentId) {
         if (parentId==null){
             return Collections.emptyList();
         }
@@ -202,6 +204,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                 .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
                 .eq(Chapter::getCurriculumId, curriculumId.getId())
                 .eq(Chapter::getParentId,parentId)
+                .orderBy(true,true,Chapter::getChapterOrderNumber)
                 .select(
                         Chapter::getId,
                         Chapter::getChapterDesc,
