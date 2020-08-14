@@ -8,7 +8,11 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.CurriculumFuzzyQuery4List;
+import com.dingxin.pojo.request.CurriculumInsertRequest;
+import com.dingxin.pojo.request.CurriculumUpdateRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.TeacherIdRequest;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
 import com.dingxin.pojo.vo.CurriculumListVo;
 import com.dingxin.pojo.vo.CurriculumVo;
@@ -113,7 +117,7 @@ public class CurriculumController {
     /**
      * 保存
      */
-    @PostMapping
+    @PostMapping("add")
     @ApiOperation(value = "新增课程信息")
     @OperationWatcher(operateDesc = "新增课程信息")
     public BaseResult save(@Validated@RequestBody CurriculumInsertRequest curriculum){

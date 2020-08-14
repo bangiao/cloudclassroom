@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ChapterMapper;
 import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ChapterAndVideoInfo;
+import com.dingxin.pojo.vo.ChapterSelectVo;
+import com.dingxin.pojo.vo.ChildChapterVo;
 import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IChapterService;
 import com.dingxin.web.service.IVideoService;
@@ -146,16 +151,62 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         if (CollectionUtils.isEmpty(childChapterIds)){
             if (log.isInfoEnabled())
                 log.info("[loadChildrenIdByParentIds]:当前父章节id为空，不能查询其对应的子章节id");
-            return null;
+            return Collections.emptyList();
         }
 
         //可以支持递归，如果之后有更多层级的章节
         LambdaQueryWrapper<Chapter> queryWrapper = Wrappers.<Chapter>lambdaQuery().in(Chapter::getParentId, childChapterIds).select(Chapter::getId);
         List<Chapter> chapters = list(queryWrapper);
         if (chapters==null) {
-            return null;
+            return Collections.emptyList();
         }
 
         return chapters.stream().map(Chapter::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ChapterSelectVo> loadChapterAndChildren(IdRequest curriculumId) {
+        if (curriculumId == null){
+            log.error("查询课程对应章节和子章节信息失败，当前课程id为空");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        // 获取所有有效父章节
+        LambdaQueryWrapper<Chapter> loadParentChapterQuery = Wrappers.<Chapter>lambdaQuery()
+                .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
+                .eq(Chapter::getCurriculumId, curriculumId.getId())
+                .isNull(Chapter::getParentId)
+                .select(
+                        Chapter::getId,
+                        Chapter::getChapterDesc,
+                        Chapter::getChapterName,
+                        Chapter::getChapterOrderNumber);
+
+        List<Chapter> parentChapters = list(loadParentChapterQuery);
+        if (CollectionUtils.isEmpty(parentChapters)){
+            return Collections.emptyList();
+        }
+        return parentChapters.stream().map(parent->{
+            ChapterSelectVo parentChapter = ChapterSelectVo.convertToVo(parent);
+            // 查询出对应的子章节及信息
+            List<Chapter> childChapters = loadChildChapterInfo(curriculumId, parent.getId());
+            parentChapter.setChildrenChapter(ChildChapterVo.convertToVos(childChapters));
+            return parentChapter;
+        }).collect(Collectors.toList());
+    }
+
+    private List<Chapter> loadChildChapterInfo(IdRequest curriculumId,Integer parentId) {
+        if (parentId==null){
+            return Collections.emptyList();
+        }
+        LambdaQueryWrapper<Chapter> loadChildrenChapterQuery = Wrappers.<Chapter>lambdaQuery()
+                .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
+                .eq(Chapter::getCurriculumId, curriculumId.getId())
+                .eq(Chapter::getParentId,parentId)
+                .select(
+                        Chapter::getId,
+                        Chapter::getChapterDesc,
+                        Chapter::getChapterName,
+                        Chapter::getChapterOrderNumber);
+        return list(loadChildrenChapterQuery);
     }
 }

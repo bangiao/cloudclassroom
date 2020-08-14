@@ -1,7 +1,10 @@
 package com.dingxin.web.service;
-import com.dingxin.pojo.po.Chapter;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.po.Chapter;
+import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ChapterAndVideoInfo;
+import com.dingxin.pojo.vo.ChapterSelectVo;
 
 import java.util.List;
 
@@ -27,5 +30,9 @@ public interface IChapterService extends IService<Chapter> {
      * 根据父章节获取其对应的子章节id
      */
     List<Integer> loadChildrenIdByParentIds(List<Integer> childChapterIds);
+    /**
+     * 根据课程id获取章节及子章节信息
+     */
+    List<ChapterSelectVo> loadChapterAndChildren(IdRequest curriculumId);
 
 }
