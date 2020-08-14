@@ -12,6 +12,7 @@ import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -344,6 +345,20 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
         });
         this.updateBatchById(dbLists);
         return new BaseResult().setMsg("删除成功");
+    }
+
+    /**
+     * 获取专题列表下拉选项
+     * @param idRequest 可根据讲师职工号查询
+     * @return
+     */
+    @Override
+    public List<ProjectManagement> listall(WidRequest idRequest) {
+        LambdaQueryWrapper<ProjectManagement> wrapper = Wrappers.<ProjectManagement>lambdaQuery().eq(StringUtils.isNoneBlank(idRequest.getWid()),
+                ProjectManagement::getLecturerId,
+                idRequest.getWid());
+        List<ProjectManagement> list = this.list(wrapper);
+        return list;
     }
 
 

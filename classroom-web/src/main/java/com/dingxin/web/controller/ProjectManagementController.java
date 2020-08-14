@@ -13,6 +13,8 @@ import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.TeacherIdRequest;
+import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectManagementService;
@@ -52,6 +54,13 @@ public class ProjectManagementController {
     public BaseResult<Page<ProjectManagement>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         return BaseResult.success(projectManagementService.queryPage(query));
+    }
+
+    @PostMapping("/listall")
+    @ApiOperation(value = "获取专题列表下拉")
+    public BaseResult<List<ProjectManagement>> listall(WidRequest idRequest) {
+        //查询列表数据
+        return BaseResult.success(projectManagementService.listall(idRequest));
     }
 
     /**
