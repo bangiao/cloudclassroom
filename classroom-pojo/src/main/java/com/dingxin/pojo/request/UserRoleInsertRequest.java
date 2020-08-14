@@ -17,14 +17,13 @@ public class UserRoleInsertRequest {
     /**
      * 用户id
      */
-    @NotBlank(message = "casUserId must not be null")
+    @NotNull(message = "casUserId must not be null")
     @ApiModelProperty(value = "用户id")
-    @Min(value = 1)
     private List<String> sid;
     /**
      * 角色id集合
      */
-    @NotNull(message = "roles must not be null")
+    @NotNull(message = "roleid must not be null")
     @ApiModelProperty(value = "角色Id")
-    private Integer roleid;
+    private Integer roleId;
 }

@@ -121,16 +121,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     public boolean saveSelf(Role convent) {
         LambdaQueryWrapper<Role> qw = Wrappers.lambdaQuery();
         qw.eq(Role::getId, convent.getId()).eq(Role::getDelFlag, CommonConstant.DEL_FLAG)
-                .eq(Role::getRoleName, convent.getRoleName());
+                .eq(Role::getRoleName, convent.getRoleName())
+                .eq(Role::getRemark,convent.getRemark());
         int count = count(qw);
         if (count >=1) {
             throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());
-        // TODO: 2020/7/29   改值 取登录人信息
-        convent.setCreateUserId(1);
-//        convent.setCreateUserName(ShiroUtils.getUserName());
-        convent.setCreateUserName("杨大大");
+        convent.setCreateUserId(ShiroUtils.getUserId());
+        convent.setCreateUserName(ShiroUtils.getUserName());
         return saveOrUpdate(convent);
 
     }

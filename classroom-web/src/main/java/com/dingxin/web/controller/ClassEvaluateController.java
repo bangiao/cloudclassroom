@@ -11,6 +11,7 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.ThumbsUpRequest;
 import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.web.service.IClassEvaluateService;
+import com.dingxin.web.shiro.ShiroUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class ClassEvaluateController {
     @PostMapping("/insert")
     @ApiOperation(value = "新增课程评价表信息")
     public BaseResult save(@Validated @RequestBody ClassEvaluateInsertRequest insertRequest) {
-        ClassEvaluate covent = ClassEvaluateInsertRequest.covent(insertRequest);
+        ClassEvaluate covent = ClassEvaluateInsertRequest.covent(insertRequest, ShiroUtils.getUser());
         classEvaluateService.saveEvaluation(covent);
         return BaseResult.success();
     }

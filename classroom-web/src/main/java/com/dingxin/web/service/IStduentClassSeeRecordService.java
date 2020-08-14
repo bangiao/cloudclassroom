@@ -39,7 +39,7 @@ public interface IStduentClassSeeRecordService extends IService<StduentClassSeeR
      * @param id
      * @return
      */
-    StduentClassSeeRecord getOneSelf(IdRequest id);
+    IPage getOneSelf(WidRequest id);
 
     /**
      * 删除

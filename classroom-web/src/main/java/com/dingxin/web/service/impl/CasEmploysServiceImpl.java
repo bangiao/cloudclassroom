@@ -4,23 +4,34 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.CasEmploysMapper;
 import com.dingxin.pojo.po.CasEmploys;
+import com.dingxin.pojo.request.IdRoleRequest;
 import com.dingxin.web.service.ICasEmploysService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.web.service.IUserRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  *  服务接口实现类
  */
 @Service
+@Slf4j
 public class CasEmploysServiceImpl extends ServiceImpl<CasEmploysMapper, CasEmploys> implements ICasEmploysService {
 
     @Autowired
     private CasEmploysMapper casEmploysMapper;
+    @Autowired
+    private IUserRoleService userRoleService;
 
 
     @Override
@@ -70,33 +81,38 @@ public class CasEmploysServiceImpl extends ServiceImpl<CasEmploysMapper, CasEmpl
 
     /**
      * 根据部门id查询下面所有人员信息
-     * @param ids 部门id
+     * @param idRoleRequest
      * @return
      */
     @Override
-    public List<CasEmploys> selectByDeptId(List<Integer> ids,String queryStr) {
+    public List<CasEmploys> selectByDeptId(IdRoleRequest idRoleRequest) {
         LambdaQueryWrapper<CasEmploys> qw = Wrappers.lambdaQuery();
-        qw.eq(CasEmploys::getDisable, CommonConstant.DEL_FLAG);
-
-        if (CollectionUtils.isNotEmpty(ids)){
-            LambdaQueryWrapper<CasEmploys> qe = Wrappers.lambdaQuery();
-            for (int i = 0; i < ids.size(); i++) {
-                Integer integer = ids.get(i);
-                if(i==0){
-                    qe.like(CasEmploys::getDepts,integer);
-                }else {
-                    qe.or().like(CasEmploys::getDepts,integer);
-                }
-
-            }
-            qw.and(Wrappers->qe);
-
-        }
-
+        String queryStr = idRoleRequest.getQueryStr();
         if (StringUtils.isNotEmpty(queryStr)){
             qw.and(Wrappers->Wrappers.like(CasEmploys::getName,queryStr).or().like(CasEmploys::getSid,queryStr)
             );
+        }else {
+            qw.eq(CasEmploys::getDisable, CommonConstant.DEL_FLAG);
+            qw.like(CasEmploys::getDepts,idRoleRequest.getDeptId());
         }
+        List<String> uids=userRoleService.selectUserIdsByRoleId(idRoleRequest.getRoleId());
+        qw.notIn(CollectionUtils.isNotEmpty(uids),CasEmploys::getSid,uids);
+        return list(qw);
+    }
+    /**
+     * 通过用户ids 获取用户
+     * @param collect
+     * @return
+     */
+    @Override
+    public List<CasEmploys> queryByIds(List<String> collect) {
+        if (CollectionUtils.isEmpty(collect)){
+            log.error("查询人员信息所需ids为空");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaQueryWrapper<CasEmploys> qw = Wrappers.lambdaQuery();
+        qw.eq(CasEmploys::getDisable,CommonConstant.DEL_FLAG)
+                .in(CasEmploys::getSid,collect);
         return list(qw);
     }
 

@@ -12,6 +12,7 @@ import lombok.*;
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  实体类
@@ -50,11 +51,6 @@ public class EmploysRoleVo extends Model<EmploysRoleVo> {
 	 */
 	@ApiModelProperty(value = "职位")
 	private String zw;
-	/**
-	 * 是否被选中
-	 */
-	@ApiModelProperty(value = "是否被选中")
-	private boolean check=false;
 
 	public static EmploysRoleVo convent(CasEmploys source){
 		return EmploysRoleVo.builder().zw(source.getZw()).email(source.getEmail())
@@ -67,11 +63,7 @@ public class EmploysRoleVo extends Model<EmploysRoleVo> {
 		if (CollectionUtils.isEmpty(source)){
 			throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
 		}
-		ArrayList<EmploysRoleVo> var = Lists.newArrayList();
-		for (CasEmploys casEmploys : source) {
-			var.add(EmploysRoleVo.convent(casEmploys));
-		}
-		return var;
+		return source.stream().map(EmploysRoleVo::convent).collect(Collectors.toList());
 	}
 
 }

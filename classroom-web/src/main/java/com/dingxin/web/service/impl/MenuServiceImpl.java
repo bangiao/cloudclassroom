@@ -151,4 +151,15 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
         return update(qw);
     }
 
+    /**
+     * 根据菜单id获取菜单
+     * @param menus
+     * @return
+     */
+    @Override
+    public List<Menu> menus(List<Integer> menus) {
+        LambdaQueryWrapper<Menu> qw = Wrappers.lambdaQuery();
+        return list(qw.in(CollectionUtils.isNotEmpty(menus),Menu::getId,menus));
+    }
+
 }

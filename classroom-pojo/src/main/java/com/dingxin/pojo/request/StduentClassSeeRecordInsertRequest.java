@@ -91,7 +91,6 @@ public class StduentClassSeeRecordInsertRequest {
      */
     @ApiModelProperty(value = "学习时长")
     @NotNull
-    @Min(1)
     private Long studyLength;
 
     public static StduentClassSeeRecord convent(StduentClassSeeRecordInsertRequest request){

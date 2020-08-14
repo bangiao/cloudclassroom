@@ -2,6 +2,7 @@ package com.dingxin.pojo.request;
 
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.ClassEvaluate;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -73,15 +74,15 @@ public class ClassEvaluateInsertRequest {
     @NotBlank(message = "evaluateContent must not be null")
     private String evaluateContent;
 
-    public static ClassEvaluate covent(ClassEvaluateInsertRequest request) {
+    public static ClassEvaluate covent(ClassEvaluateInsertRequest request, CasEmploys employs) {
         if (Objects.isNull(request)){
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
         return ClassEvaluate.builder().classId(request.getClassId()).className(request.getClassName())
                 .classType(request.getClassType())
                 .classTypeStr(request.getClassTypeStr()).teacherId(request.getTeacherId()).teacherName(request.getTeacherName())
-                .studyLength(request.getStudyLength()).studentId("1")
-                .studentName("杨大少").studentCode("0000").evaluateTime(LocalDateTime.now())
+                .studyLength(request.getStudyLength()).studentId(employs.getCasid())
+                .studentName(employs.getName()).studentCode(employs.getSid()).evaluateTime(LocalDateTime.now())
                 .evaluateContent(request.getEvaluateContent()).build();
     }
 }

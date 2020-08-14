@@ -1,13 +1,16 @@
 package com.dingxin.web.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.UserRole;
 import com.dingxin.pojo.request.IdRoleRequest;
+import com.dingxin.pojo.request.RoleIdRequest;
 import com.dingxin.pojo.request.UserRoleInsertRequest;
 import com.dingxin.pojo.vo.EmploysRoleVo;
 import com.dingxin.pojo.vo.MenuVo;
@@ -72,6 +75,19 @@ public class UserRoleController {
         boolean retFlag = userRoleService.saveSelf(userRole);
         return BaseResult.success(retFlag);
     }
+    /**
+     * 保存
+     */
+    @PostMapping("/havaPwoerList")
+    @ApiOperation(value = "角色对应人员权限 ")
+    public BaseResult havaPwoerList(@Validated @RequestBody RoleIdRequest id) {
+        List<CasEmploys> list =userRoleService.havaPwoerList(id);
+        List<EmploysRoleVo> employsRoleVos=null;
+        if (CollectionUtils.isNotEmpty(list)){
+            employsRoleVos = EmploysRoleVo.listConvent(list);
+        }
+        return BaseResult.success(employsRoleVos);
+    }
 
     /**
      * 批量删除删除
@@ -97,10 +113,14 @@ public class UserRoleController {
      * 部门列表 树状结构
      */
     @PostMapping("/employs")
-    @ApiOperation(value = "部门列表 树状结构")
+    @ApiOperation(value = "部门下人员数据")
     public BaseResult employs(@Validated @RequestBody IdRoleRequest id) {
-        List<EmploysRoleVo> list = userRoleService.employs(id);
-        return BaseResult.success(list);
+        List<CasEmploys> list = userRoleService.employs(id);
+        List<EmploysRoleVo> employsRoleVos=null;
+        if (CollectionUtils.isNotEmpty(list)) {
+            employsRoleVos= EmploysRoleVo.listConvent(list);
+        }
+        return BaseResult.success(employsRoleVos);
     }
 
 }

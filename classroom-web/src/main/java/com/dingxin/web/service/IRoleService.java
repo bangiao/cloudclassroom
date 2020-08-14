@@ -32,7 +32,7 @@ public interface IRoleService extends IService<Role> {
     Role getOneSelf(IdRequest idRequest);
 
     /**
-     * 新增或修改橘色信息
+     * 新增或修改角色信息
      *
      * @param convent
      * @return

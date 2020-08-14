@@ -54,4 +54,11 @@ public interface IMenuService extends IService<Menu> {
      * @return
      */
     boolean deleteBatch(List<Integer> list);
+
+    /**
+     * 根据菜单id获取菜单
+     * @param menus
+     * @return
+     */
+    List<Menu> menus(List<Integer> menus);
 }

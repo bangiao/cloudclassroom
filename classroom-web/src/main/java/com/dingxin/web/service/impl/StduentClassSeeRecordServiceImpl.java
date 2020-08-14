@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
@@ -147,10 +148,11 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      * @return
      */
     @Override
-    public StduentClassSeeRecord getOneSelf(IdRequest id) {
-        LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
-        qw.eq(StduentClassSeeRecord::getId, id.getId()).eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
-        return getOne(qw);
+    public IPage getOneSelf(WidRequest id) {
+        StudentStudyStudentListRequest request=new StudentStudyStudentListRequest();
+        request.setQueryStr(id.getWid());
+        return studentService.queryPageList(request);
+
     }
 
     /**

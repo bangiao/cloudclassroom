@@ -2,6 +2,7 @@ package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
@@ -12,10 +13,9 @@ import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
 import com.dingxin.pojo.po.UserRole;
-import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.IdRoleRequest;
+import com.dingxin.pojo.request.RoleIdRequest;
 import com.dingxin.pojo.request.UserRoleInsertRequest;
-import com.dingxin.pojo.vo.EmploysRoleVo;
 import com.dingxin.pojo.vo.TreeVo;
 import com.dingxin.web.service.*;
 import com.dingxin.web.shiro.ShiroUtils;
@@ -24,7 +24,6 @@ import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -105,12 +104,12 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     public boolean saveSelf(UserRoleInsertRequest userRole) {
         LambdaQueryWrapper<UserRole> casUser_id = Wrappers.lambdaQuery();
         casUser_id.eq(UserRole::getCasUserId, userRole.getSid())
-        .eq(UserRole::getRoleId,userRole.getRoleid());
+        .eq(UserRole::getRoleId,userRole.getRoleId());
         remove(casUser_id);
         ArrayList<UserRole> userRoles = Lists.newArrayList();
         List<String> users = userRole.getSid();
         users.forEach(e -> {
-            UserRole build = UserRole.builder().casUserId(e).roleId(userRole.getRoleid()).build();
+            UserRole build = UserRole.builder().casUserId(e).roleId(userRole.getRoleId()).build();
             userRoles.add(build);
         });
         return saveBatch(userRoles);
@@ -125,8 +124,8 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
     @Override
     public boolean deleteBatch(UserRoleInsertRequest request) {
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
-        qw.eq(UserRole::getRoleId,request.getRoleid())
-                .in(UserRole::getCasUserId, request.getSid());
+        qw.eq(UserRole::getRoleId,request.getRoleId())
+                .in(CollectionUtils.isNotEmpty(request.getSid()),UserRole::getCasUserId, request.getSid());
         return remove(qw);
     }
 
@@ -159,22 +158,70 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
      */
 
     @Override
-    public List<EmploysRoleVo> employs(IdRoleRequest id) {
-        List<CasEmploys>  employs=employsService.selectByDeptId(id.getDeptIds(),id.getQueryStr());
-        if (CollectionUtils.isEmpty(employs)||employs.size()==0){
+    public List<CasEmploys> employs(IdRoleRequest id) {
+
+        return employsService.selectByDeptId(id);
+    }
+
+    /**
+     * 获取角色对应的人员列表
+     * @param id
+     * @return
+     */
+
+    @Override
+    public List<CasEmploys> havaPwoerList(RoleIdRequest id) {
+        LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
+        qw.eq(UserRole::getRoleId,id.getRoleId()).eq(UserRole::getDelFlag,CommonConstant.DEL_FLAG)
+                .select(UserRole::getCasUserId);
+        List<String> collect = list(qw).stream().map(userRole -> userRole.getCasUserId()).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(collect)){
             return null;
         }
-        List<EmploysRoleVo> var = EmploysRoleVo.listConvent(employs);
-        Integer roleId = id.getRoleId();
+
+        return employsService.queryByIds(collect);
+    }
+
+    /**
+     * 根据登录人获取人员的菜单列表
+     * @return
+     */
+
+    @Override
+    public List<Menu> menus() {
+        String userId = ShiroUtils.getUserId();
+        if (StringUtils.isEmpty(userId)){
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
+
+        LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
+        qw.eq(UserRole::getCasUserId,userId)
+                .eq(UserRole::getDelFlag,CommonConstant.DEL_FLAG)
+                .select(UserRole::getRoleId);
+        List<Integer> collect = list(qw).stream().map(userRole -> userRole.getRoleId()).distinct().collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(collect)){
+            throw new BusinessException(ExceptionEnum.USER_NOT_CAN_BE_QUERY_USER);
+        }
+
+        return roleMenuService.selectMenus(collect);
+
+    }
+    /**
+     * 通过角色id获取角色下的人员id
+     * @param roleId
+     * @return
+     */
+
+    @Override
+    public List<String> selectUserIdsByRoleId(Integer roleId) {
+        if (Objects.isNull(roleId)){
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
         LambdaQueryWrapper<UserRole> qw = Wrappers.lambdaQuery();
         qw.eq(UserRole::getRoleId,roleId);
-        List<String> userids = list(qw).stream().map(e -> e.getCasUserId()).collect(Collectors.toList());
-        for (EmploysRoleVo employsRoleVo : var) {
-            if (userids.contains(employsRoleVo.getSid())){
-                employsRoleVo.setCheck(Boolean.TRUE);
-            }
-        }
-        return var;
+        return list(qw).stream().map(userRole -> userRole.getCasUserId()).distinct().collect(Collectors.toList());
+
+
     }
 
 

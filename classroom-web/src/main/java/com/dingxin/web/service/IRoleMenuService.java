@@ -28,4 +28,12 @@ public interface IRoleMenuService extends IService<RoleMenu> {
      * @return
      */
     boolean insertMenusByRole(RoleMenuInsertRequest request);
+
+    /**
+     *
+     * 根据角色Id获取菜单
+     * @param collect
+     * @return
+     */
+    List<Menu> selectMenus(List<Integer> collect);
 }

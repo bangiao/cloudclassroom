@@ -42,7 +42,7 @@ public class StduentClassSeeRecordController {
 
 
     /**
-     * 列表查询
+     * 获取学生记录表列表
      */
     @PostMapping("/list")
     @ApiOperation(value = "获取学生记录表列表")
@@ -52,7 +52,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 列表查询
+     * 导出学生记录
      */
     @PostMapping("/exportExcel")
     @ApiOperation(value = "导出学生记录")
@@ -61,7 +61,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 列表查询
+     * 自己获取自己的记录列表
      */
     @PostMapping("/selfList")
     @ApiOperation(value = "自己获取自己的记录列表")
@@ -71,17 +71,17 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 信息
+     * 获取学生记录表详情信息
      */
     @PostMapping("/get")
     @ApiOperation(value = "获取学生记录表详情信息")
-    public BaseResult<StduentClassSeeRecordVo> info(@RequestBody IdRequest id) {
-        StduentClassSeeRecord result = stduentClassSeeRecordService.getOneSelf(id);
-        return BaseResult.success(StduentClassSeeRecordVo.convent(result));
+    public BaseResult<StduentClassSeeRecordVo> info(@RequestBody WidRequest id) {
+        IPage page= stduentClassSeeRecordService.getOneSelf(id);
+        return BaseResult.success(StudentRecordListVo.convertToVoWithPage(page).getRecords().get(0));
     }
 
     /**
-     * 保存
+     * 新增学生记录表信息
      */
     @PostMapping("/insert")
     @ApiOperation(value = "新增学生记录表信息")
@@ -92,7 +92,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 删除
+     * 管理端 学生学习情况 删除学生记录表信息
      */
     @PostMapping("/delete")
     @ApiOperation(value = "管理端 学生学习情况 删除学生记录表信息")
@@ -102,7 +102,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 批量删除删除
+     * 管理端 学生学习情况 批量删除学生记录表信息
      */
     @PostMapping("/delete/batch")
     @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
@@ -113,7 +113,7 @@ public class StduentClassSeeRecordController {
 
 
     /**
-     * 删除
+     * 管理端 学生学习情况 依课程Id删除学生记录表信息
      */
     @PostMapping("/deleteForClass")
     @ApiOperation(value = "管理端 学生学习情况 依课程Id删除学生记录表信息")
@@ -123,7 +123,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 批量删除删除
+     * 管理端 学生学习情况 批量删除学生记录表信息
      */
     @PostMapping("/deleteForClass/batch")
     @ApiOperation(value = "管理端 学生学习情况 批量删除学生记录表信息")
@@ -133,7 +133,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 学生信息列表查询
+     * 管理端 学生学习情况 学生列表
      */
     @PostMapping("/studentList")
     @ApiOperation(value = "管理端 学生学习情况 学生列表")
@@ -143,7 +143,7 @@ public class StduentClassSeeRecordController {
     }
 
     /**
-     * 学习课程列表
+     * 管理端 学生学习情况 学习课程列表
      */
     @PostMapping("/courseList")
     @ApiOperation(value = " 管理端 学生学习情况 学习课程列表")

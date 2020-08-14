@@ -38,7 +38,7 @@ public class Role extends Model<Role> {
     /**
      * 创建者ID
      */
-    private Integer createUserId;
+    private String createUserId;
     /**
      * 创建者姓名
      */

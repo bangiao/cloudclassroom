@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.RoleMenuMapper;
 import com.dingxin.pojo.po.Menu;
 import com.dingxin.pojo.po.RoleMenu;
@@ -106,6 +108,25 @@ public class RoleMenuServiceImpl extends ServiceImpl<RoleMenuMapper, RoleMenu> i
             rms.add(build);
         });
         return saveBatch(rms);
+    }
+
+    /**
+     *
+     * 根据角色Id获取菜单
+     * @param collect
+     * @return
+     */
+    @Override
+    public List<Menu> selectMenus(List<Integer> collect) {
+        LambdaQueryWrapper<RoleMenu> qw = Wrappers.lambdaQuery();
+        qw.in(CollectionUtils.isNotEmpty(collect),RoleMenu::getRoleId,collect)
+                .eq(RoleMenu::getDelFlag,CommonConstant.DEL_FLAG)
+                .select(RoleMenu::getMenuId);
+        List<Integer> menus = list(qw).stream().map(roleMenu -> roleMenu.getMenuId()).distinct().collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(menus)){
+            throw new BusinessException(ExceptionEnum.DATA_ZERO);
+        }
+        return menuService.menus(menus);
     }
 
 }

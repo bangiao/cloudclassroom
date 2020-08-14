@@ -86,4 +86,8 @@ public class MenuVo  {
         return menu.convert(MenuVo::convent);
     }
 
+
+    public static List<MenuVo> conventList(List<Menu> mens){
+        return mens.stream().map(MenuVo::convent).collect(Collectors.toList());
+    }
 }
