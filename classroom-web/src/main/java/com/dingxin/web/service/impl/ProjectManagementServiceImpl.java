@@ -370,7 +370,7 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
      */
     @Override
     public BaseResult watchAmout(IdRequest idRequest) {
-        this.projectManagementMapper.watchAmout(idRequest.getId());
+        this.baseMapper.watchAmout(idRequest.getId());
         return BaseResult.success().setMsg("增加专题次数成功");
     }
 
