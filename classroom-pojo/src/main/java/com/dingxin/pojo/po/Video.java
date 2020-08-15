@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  *  实体类
@@ -99,6 +100,11 @@ public class Video extends Model<Video> {
      * 视频大小(KB)
      */
     private Long videoSize;
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
 
 
     @Override

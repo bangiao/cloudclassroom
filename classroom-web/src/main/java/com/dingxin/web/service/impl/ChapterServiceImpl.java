@@ -88,6 +88,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         if (CollectionUtils.isNotEmpty(allParents)){
             for (Chapter parent : allParents) {
                 ChapterAndVideoInfo perChapterAndVideoInfo = ChapterAndVideoInfo.builder()
+                        .id(parent.getId())
                         .chapterDesc(parent.getChapterDesc())
                         .chapterName(parent.getChapterName())
                         .chapterOrderNumber(parent.getChapterOrderNumber())

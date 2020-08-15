@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -306,6 +307,10 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 	public static LocalDateTime longToLocalDateTime(@NotNull Long time){
 			return LocalDateTime.ofInstant(Instant.ofEpochMilli(time), ZoneId.systemDefault());
 	}
+
+	public static String localDatetimeToString(LocalDateTime time){
+	    return time == null ? null:DateTimeFormatter.ofPattern("yyyy年-MM月-dd日 HH:mm:ss").format(time);
+    }
 
 	/**
 	 * 将秒转换为时间 示例：6000 => 1小时40分钟

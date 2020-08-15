@@ -25,6 +25,12 @@ import java.util.Objects;
 @NoArgsConstructor
 public class ChapterAndVideoInfo {
     /**
+     * 章节表主键
+     */
+    @ApiModelProperty(value = "章节表主键",example = "1")
+    private Integer id;
+
+    /**
      * 章节描述
      */
     @ApiModelProperty(value = "章节描述",example = "LBWNB")
@@ -73,6 +79,7 @@ public class ChapterAndVideoInfo {
         if (Objects.isNull(chapterPo))
             return null;
         return ChapterAndVideoInfo.builder()
+                .id(chapterPo.getId())
                 .chapterDesc(chapterPo.getChapterDesc())
                 .chapterName(chapterPo.getChapterName())
                 .chapterOrderNumber(chapterPo.getChapterOrderNumber())

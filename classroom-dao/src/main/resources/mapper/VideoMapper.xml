@@ -19,6 +19,7 @@
                     <result column="delete_flag" property="deleteFlag" />
                     <result column="watch_amount" property="watchAmount" />
                     <result column="video_size" property="videoSize" />
+                    <result column="create_time" property="createTime" />
         </resultMap>
 
 </mapper>

@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -86,6 +87,7 @@ public class VideoVo {
                 .deleteFlag(CommonConstant.DEL_FLAG)
                 .disableFlag(CommonConstant.DISABLE_FALSE)
                 .auditFlag(CommonConstant.STATUS_NOAUDIT)
+                .createTime(LocalDateTime.now())
                 .build();
 
 

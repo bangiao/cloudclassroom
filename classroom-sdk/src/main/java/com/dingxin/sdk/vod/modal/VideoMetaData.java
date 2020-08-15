@@ -1,5 +1,6 @@
 package com.dingxin.sdk.vod.modal;
 
+import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.Video;
 import com.tencentcloudapi.vod.v20180717.models.MediaInfo;
 import lombok.Data;
@@ -103,7 +104,12 @@ public class VideoMetaData {
         }
         VideoMetaData data = new VideoMetaData();
         data.setName(video.getVideoName());
-        data.setFileId(video.getLiveVideoField());
+        data.setCreateTime(DateUtils.localDatetimeToString(video.getCreateTime()));
+        if (video.getLiveVideoField()!=null){
+            data.setFileId(video.getLiveVideoField());
+        }else {
+            data.setFileId(video.getVideoField());
+        }
         Long duration = video.getVideoDuration();
         if (Objects.isNull(duration)) {
             data.setDuration(UNKNOWN);

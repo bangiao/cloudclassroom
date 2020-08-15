@@ -236,7 +236,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     @Override
     public CurriculumDetailsVo loadCurriculumDetails(IdRequest id) {
         //查出当前课程信息
-        LambdaQueryWrapper<Curriculum> deleteQuery = Wrappers.<Curriculum>lambdaQuery()
+        LambdaQueryWrapper<Curriculum> loadCurriculumQuery = Wrappers.<Curriculum>lambdaQuery()
                 .ne(
                         Curriculum::getDeleteFlag,
                         CommonConstant.DEL_FLAG_TRUE)
@@ -257,7 +257,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         //查询出当前课程对应的章节及章节对应的视频信息
         List<ChapterAndVideoInfo> chapterAndVideoInfos = chapterService.loadChapterAndVideoInfo(id.getId());
         //课程信息
-        Curriculum curriculum = getOne(deleteQuery);
+        Curriculum curriculum = getOne(loadCurriculumQuery);
         CurriculumDetailsVo curriculumDetailsVo = CurriculumDetailsVo.convertToVo(curriculum);
         if (curriculumDetailsVo != null)
             curriculumDetailsVo.setChapter(chapterAndVideoInfos);
@@ -346,6 +346,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                 .topicId(curriculumChapterAndVideoInfo.getTopicId())
                 .auditFlag(CommonConstant.STATUS_NOAUDIT)
                 .disableFlag(CommonConstant.DISABLE_FALSE)
+                .curriculumDesc(curriculumChapterAndVideoInfo.getCurriculumDesc())
                 .teacherName(curriculumChapterAndVideoInfo.getTeacherName())
                 .teacherId(curriculumChapterAndVideoInfo.getTeacherId())
                 .watchAmount(CommonConstant.WATCH_AMOUNT_INITIAL_VALUE)

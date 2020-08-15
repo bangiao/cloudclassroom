@@ -31,6 +31,12 @@ public class CurriculumInsertRequest {
     @NotNull(message = "课程类型不能为空")
     private String curriculumType;
     /**
+     * 课程介绍
+     */
+    @ApiModelProperty(value = "课程介绍",example = "大力学")
+    @NotNull(message = "课程介绍不能为空")
+    private String curriculumDesc;
+    /**
      * 课程类型主键
      */
     @ApiModelProperty(value = "课程类型主键",example = "1")
@@ -56,7 +62,7 @@ public class CurriculumInsertRequest {
     /**
      * 所属专题
      */
-    @ApiModelProperty(value = "所属专题",example = "1")
+    @ApiModelProperty(value = "所属专题id",example = "1")
     private Integer topicId;
     /**
      * 专题名
