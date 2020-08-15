@@ -22,6 +22,12 @@ public class TeacherVo {
     @ApiModelProperty(value = "头像url")
     private String Url;
 
+    /**
+     * 是否禁用 0：启用 -1：禁用
+     */
+    @ApiModelProperty(value = "是否禁用 0：启用 -1：禁用")
+    private Integer enable;
+
     @ApiModelProperty(value = "课程相关列表")
     private List<Curriculum> curriculumList;
 

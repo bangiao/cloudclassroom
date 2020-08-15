@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.dao.mapper.ProjectCurriculumMapper;
+import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
@@ -428,6 +429,17 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     public BaseResult watchAmout(IdRequest idRequest) {
         this.projectManagementMapper.watchAmout(idRequest.getId());
         return BaseResult.success().setMsg("增加专题次数成功");
+    }
+
+    @Override
+    public BaseResult<ProjectManagementVo> projectNameList(BaseQuery<ProjectManagement> query) {
+        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
+        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.<ProjectManagement>lambdaQuery()
+            .groupBy(ProjectManagement::getProjectName)
+            .select(ProjectManagement::getProjectName,ProjectManagement::getId)
+            .eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG)
+            .eq(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE);
+        return BaseResult.success(ProjectManagementVo.convertToVoWithPage(this.page(page,qw)),"查询专题名称列表成功");
     }
 
 

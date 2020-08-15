@@ -86,4 +86,7 @@ public interface CommonConstant {
 	 *最近课程类型
 	 */
 	Integer LATESTCURRICULUMTYPE=2;
+
+
+	Integer DURATIONCURRICULUMTYPE=0;
 }

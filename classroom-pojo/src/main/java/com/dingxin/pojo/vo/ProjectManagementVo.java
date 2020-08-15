@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ProjectManagement;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -18,8 +19,11 @@ import java.util.Objects;
 @Data
 @Builder
 public class ProjectManagementVo {
-
-
+    /**
+     * id
+     */
+    @ApiModelProperty(value = "专题id")
+    private Integer id;
     /**
      * 专题名称
      */
@@ -33,6 +37,7 @@ public class ProjectManagementVo {
         ProjectManagementVo build = ProjectManagementVo
                 .builder()
                 .projectName(projectManagement.getProjectName())
+                .id(projectManagement.getId())
                 .build();
         return build;
     }

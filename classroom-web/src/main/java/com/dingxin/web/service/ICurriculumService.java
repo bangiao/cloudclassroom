@@ -1,11 +1,17 @@
 package com.dingxin.web.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.po.ProjectCurriculum;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
+import com.dingxin.pojo.vo.CurriculumPcVo;
+import com.dingxin.pojo.vo.CurriculumVo;
 
 import java.util.List;
 
@@ -73,6 +79,14 @@ public interface ICurriculumService extends IService<Curriculum> {
      * @param statusCode
      */
     void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode);
+
+    /**
+     * pc查询最新课程列表
+     * @param
+     */
+    BaseResult<Page<CurriculumPcVo>> leatestList(IdRequest idRequest);
+
+    BaseResult<Page<CurriculumVo>> ListbyDept(IdRequest idRequest);
     /**
      * 根据课程id获取当前课程下的教师信息
      * @param curriculumId

@@ -2,7 +2,9 @@ package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
@@ -14,6 +16,9 @@ import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.ProjectCurriculum;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.po.Video;
+import com.dingxin.pojo.basic.BaseQuery;
+import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.po.*;
 import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.CurriculumUpdateRequest;
 import com.dingxin.pojo.request.IdRequest;
@@ -26,6 +31,9 @@ import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectCurriculumService;
 import com.dingxin.web.service.ITeachersService;
 import com.dingxin.web.service.IVideoService;
+import com.dingxin.pojo.vo.*;
+import com.dingxin.web.service.*;
+import com.dingxin.web.shiro.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +43,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 /**
  *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
@@ -51,6 +60,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     private IChapterService chapterService;
     @Autowired
     private IProjectCurriculumService projectCurriculumService;
+    @Autowired
+    private IClassCollectionService classCollectionService;
     @Autowired
     private ITeachersService teachersService;
 
@@ -431,6 +442,95 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
 
         update(updateCurriculumAuditFlag);
     }
+
+    /**
+     * pc获取最新课程列表
+     * @param
+     */
+    @Override
+    public BaseResult<Page<CurriculumPcVo>> leatestList(IdRequest idRequest){
+        Page<Curriculum> page = new Page(idRequest.getCurrentPage(),idRequest.getPageSize());
+        LambdaQueryWrapper<Curriculum> qw = null;
+        if (idRequest.getId().equals(CommonConstant.LATESTCURRICULUMTYPE)){
+            qw = Wrappers.<Curriculum>lambdaQuery()
+                    .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                    .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                    .orderByDesc(Curriculum::getCreateTime);
+        }else if (idRequest.getId().equals(CommonConstant.DURATIONCURRICULUMTYPE)){
+            qw = Wrappers.<Curriculum>lambdaQuery()
+                    .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                    .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                    .orderByDesc(Curriculum::getVideoDuration);
+        }else {
+            log.error("获取课程失败，参数出错");
+            throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
+        }
+        IPage<Curriculum> curriculumIPage = this.page(page, qw);
+        List<Curriculum> records = curriculumIPage.getRecords();
+        if (CollectionUtils.isEmpty(records)){
+            return BaseResult.success().setMsg("查询课程成功");
+        }
+        IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
+        //查询收藏信息
+        LambdaQueryWrapper<ClassCollection> callssQw = Wrappers.<ClassCollection>lambdaQuery()
+                .eq(ClassCollection::getPersonId, ShiroUtils.getUserId())
+                .eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
+        List<ClassCollection> list = classCollectionService.list(callssQw);
+        if (CollectionUtils.isNotEmpty(list)){
+            curriculumPcVoIPage.getRecords().stream().forEach(s->{
+                list.stream().forEach(f->{
+                    if (s.getId().equals(f.getClassId())){
+                        s.setIsCollection(true);
+                    }else {
+                        s.setIsCollection(false);
+                    }
+
+                });
+            });
+        }
+
+        return BaseResult.success((curriculumPcVoIPage));
+    }
+
+    /**
+     * pc根据院系获取课程列表
+     * @param
+     */
+    @Override
+    public BaseResult<Page<CurriculumVo>> ListbyDept(IdRequest idRequest){
+        Page<Curriculum> page = new Page(idRequest.getCurrentPage(),idRequest.getPageSize());
+        LambdaQueryWrapper<Curriculum> qw = Wrappers.<Curriculum>lambdaQuery()
+                .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
+                .eq(null != idRequest.getId(),Curriculum::getDepartmentId,idRequest.getId())
+                .orderByDesc(Curriculum::getCreateTime);
+        IPage<Curriculum> curriculumIPage = this.page(page, qw);
+        List<Curriculum> records = curriculumIPage.getRecords();
+        if (CollectionUtils.isEmpty(records)){
+            return BaseResult.success().setMsg("查询课程成功");
+        }
+        IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
+        //查询收藏信息
+        LambdaQueryWrapper<ClassCollection> callssQw = Wrappers.<ClassCollection>lambdaQuery()
+                .eq(ClassCollection::getPersonId, ShiroUtils.getUserId())
+                .eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
+        List<ClassCollection> list = classCollectionService.list(callssQw);
+        if (CollectionUtils.isNotEmpty(list)){
+            curriculumPcVoIPage.getRecords().stream().forEach(s->{
+                list.stream().forEach(f->{
+                    if (s.getId().equals(f.getClassId())){
+                        s.setIsCollection(true);
+                    }else {
+                        s.setIsCollection(false);
+                    }
+
+                });
+            });
+        }
+
+        return BaseResult.success((curriculumPcVoIPage));
+    }
+
 
     @Override
     public Teachers loadCurrentCurriculumTeacherInfo(Integer curriculumId) {

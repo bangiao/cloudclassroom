@@ -27,6 +27,7 @@ public enum ExceptionEnum {
     MULTIPARTFILE_TYPE_ERROR("3004","上传图片类型不正确"),
 
 
+
     //4.业务流程异常
     DUPLICATE_DATA("4001","重复的数据"),
     COVENT_NULLPOINT("4002","转换源对象为空"),

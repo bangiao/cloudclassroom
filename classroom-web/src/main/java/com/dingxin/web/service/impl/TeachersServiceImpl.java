@@ -164,9 +164,11 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         if (Objects.isNull(getOne)){
             teacherVo.setZgh(idRequest.getWid());
             teacherVo.setIntroduction(null);
+            teacherVo.setEnable(CommonConstant.DISABLE_FALSE);
         }else {
             teacherVo.setZgh(getOne.getZgh());
             teacherVo.setIntroduction(getOne.getIntroduction());
+            teacherVo.setEnable(getOne.getEnable());
         }
         teacherVo.setUrl(photo.getData().toString());
         //查出对应的课程列表
@@ -175,7 +177,8 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         teacherVo.setCurriculumList(curriculumService.list(curriculumQw));
         //查出对应的专题列表
         LambdaQueryWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaQuery()
-                .eq(ProjectManagement::getLecturerId, idRequest.getWid());
+                .eq(ProjectManagement::getLecturerId, idRequest.getWid())
+                .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
         teacherVo.setProjectManagementList(projectManagementService.list(projectQw));
         return teacherVo;
     }
