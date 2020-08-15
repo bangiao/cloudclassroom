@@ -224,6 +224,14 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         return null;
     }
 
+    @Override
+    public void audit(Integer id, Integer auditStatus) {
+        LambdaUpdateWrapper<Chapter> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(Chapter::getAuditFlag,auditStatus)
+                .eq(Chapter::getId,id);
+        chapterMapper.update(null,updateWrapper);
+    }
+
     @SuppressWarnings("unchecked")
     //todo 这个方法暂时不需要，但是请不要删除，业务扩展的时候有用
     private List<Chapter> loadNoVideoChildChapterInfo(IdRequest curriculumId, Integer parentId) {

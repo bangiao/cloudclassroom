@@ -40,4 +40,6 @@ public interface IChapterService extends IService<Chapter> {
     List<ChapterSelectVo> loadNoVideoChapterAndChildren(IdRequest curriculumId);
 
 
+    void audit(Integer id,Integer auditStatus);
+
 }

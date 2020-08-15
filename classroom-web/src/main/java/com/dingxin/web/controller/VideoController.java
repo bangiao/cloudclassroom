@@ -8,8 +8,8 @@ import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.VideoDeleteRequest;
 import com.dingxin.pojo.request.VideoInsertRequest;
 import com.dingxin.pojo.request.VideoUpdateRequest;
-import com.dingxin.pojo.vo.ChapterSelectVo;
 import com.dingxin.pojo.vo.VideoVo;
+import com.dingxin.sdk.vod.modal.VideoMetaData;
 import com.dingxin.sdk.vod.service.VodControlService;
 import com.dingxin.sdk.vod.service.VodSearchService;
 import com.dingxin.web.service.IVideoService;
@@ -116,8 +116,8 @@ public class VideoController {
 
     @PostMapping("/load/byChapter")
     @ApiOperation(value = "根据章节获取视频")
-    public BaseResult<ChapterSelectVo> loadVideoByChapterId(@RequestBody@Validated IdRequest id){
+    public BaseResult<VideoMetaData> loadVideoByChapterId(@RequestBody@Validated IdRequest id){
         Video video = videoService.loadByChapterId(id);
-        return BaseResult.success(VideoVo.convertToVo(video));
+        return BaseResult.success(VideoMetaData.of(video));
     }
 }

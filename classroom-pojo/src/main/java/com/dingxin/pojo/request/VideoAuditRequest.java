@@ -33,6 +33,6 @@ public class VideoAuditRequest {
      * 审核内容
      */
     @ApiModelProperty(value = "审核内容")
-    private Integer auditComments;
+    private String auditComments;
 
 }

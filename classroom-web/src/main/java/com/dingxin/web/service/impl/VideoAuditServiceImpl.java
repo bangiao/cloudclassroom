@@ -137,7 +137,9 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
         if (Objects.isNull(query.getCurriculumId())){
             throw new BusinessException(PARAMTER_ERROR);
         }
-        LambdaQueryWrapper<ClassEvaluate> eq = Wrappers.<ClassEvaluate>lambdaQuery().eq(ClassEvaluate::getClassId, query.getCurriculumId())
+        LambdaQueryWrapper<ClassEvaluate> eq = Wrappers.<ClassEvaluate>lambdaQuery()
+                .eq(ClassEvaluate::getClassId, query.getCurriculumId())
+                .eq(Objects.nonNull(query.getAuditFlag()),ClassEvaluate::getStatus,query.getAuditFlag())
                 .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG);
         List<ClassEvaluate> list = evaluateService.list(eq);
         return BaseResult.success(list,"查询评论成功");
