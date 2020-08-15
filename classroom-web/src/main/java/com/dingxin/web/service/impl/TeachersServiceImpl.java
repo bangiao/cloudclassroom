@@ -122,6 +122,19 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
                     }
                 }
             });
+            //获取是否禁用
+            List<Object> zghList = records.stream().map(p->p.get("zgh")).collect(Collectors.toList());
+            LambdaUpdateWrapper<Teachers> qw = Wrappers.<Teachers>lambdaUpdate()
+                    .in(Teachers::getZgh, zghList);
+            List<Teachers> teachers = this.teachersMapper.selectList(qw);
+            Map<String, Integer> teacherMap = teachers.stream().collect(Collectors.toMap(Teachers::getZgh, Teachers::getEnable));
+            records.stream().forEach(s->{
+                if (teacherMap.containsKey(s.get("zgh"))){
+                    s.put("enable",teacherMap.get(s.get("zgh")).toString());
+                }else {
+                    s.put("enanle","0");
+                }
+            });
             int total = Integer.parseInt((String)data.get("total"));
             int size = Integer.parseInt((String)data.get("size"));
             int current = Integer.parseInt((String)data.get("current"));

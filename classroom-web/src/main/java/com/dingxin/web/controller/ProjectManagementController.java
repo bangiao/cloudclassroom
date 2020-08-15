@@ -11,11 +11,8 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.po.Teachers;
-import com.dingxin.pojo.request.CommQueryListRequest;
-import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.HotListVo;
-import com.dingxin.pojo.request.TeacherIdRequest;
-import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectManagementService;
@@ -137,7 +134,7 @@ public class ProjectManagementController {
     }
 
     /**
-     * 删除
+     * 增加专题次数
      */
     @PostMapping("/watchAmout")
     @ApiOperation(value = "增加专题次数")
@@ -145,5 +142,13 @@ public class ProjectManagementController {
         return projectManagementService.watchAmout(idRequest);
     }
 
+    /**
+     * 增加专题次数
+     */
+    @PostMapping("/enable")
+    @ApiOperation(value = "禁用，启用")
+    public BaseResult isEnable(@RequestBody @Validated EnableRequest enableRequest) {
+        return projectManagementService.isEnable(enableRequest);
+    }
 
 }

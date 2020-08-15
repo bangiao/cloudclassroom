@@ -62,6 +62,9 @@ public class CurriculumPcVo {
     @ApiModelProperty(value = "是否已经收藏")
     private Boolean isCollection;
 
+    @ApiModelProperty(value = "是否已经收藏")
+    private String  collectionNum;
+
     public static CurriculumPcVo convertToVo(Curriculum curriculumVoPo){
         if (Objects.isNull(curriculumVoPo))
             return null;

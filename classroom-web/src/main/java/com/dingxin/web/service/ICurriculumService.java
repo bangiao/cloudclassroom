@@ -93,4 +93,7 @@ public interface ICurriculumService extends IService<Curriculum> {
      * @return
      */
     Teachers loadCurrentCurriculumTeacherInfo(Integer curriculumId);
+
+
+    IPage<CurriculumPcVo> getCollection( IPage<Curriculum> curriculumIPage);
 }

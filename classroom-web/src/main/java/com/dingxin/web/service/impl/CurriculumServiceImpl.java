@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.logging.Logger;
@@ -469,30 +470,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
             throw new BusinessException(ExceptionEnum.PARAMTER_ERROR);
         }
         IPage<Curriculum> curriculumIPage = this.page(page, qw);
-        List<Curriculum> records = curriculumIPage.getRecords();
-        if (CollectionUtils.isEmpty(records)){
-            return BaseResult.success().setMsg("查询课程成功");
-        }
-        IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
-        //查询收藏信息
-        LambdaQueryWrapper<ClassCollection> callssQw = Wrappers.<ClassCollection>lambdaQuery()
-                .eq(ClassCollection::getPersonId, ShiroUtils.getUserId())
-                .eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-        List<ClassCollection> list = classCollectionService.list(callssQw);
-        if (CollectionUtils.isNotEmpty(list)){
-            curriculumPcVoIPage.getRecords().stream().forEach(s->{
-                list.stream().forEach(f->{
-                    if (s.getId().equals(f.getClassId())){
-                        s.setIsCollection(true);
-                    }else {
-                        s.setIsCollection(false);
-                    }
-
-                });
-            });
-        }
-
-        return BaseResult.success((curriculumPcVoIPage));
+        return BaseResult.success((getCollection(curriculumIPage)));
     }
 
     /**
@@ -508,30 +486,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                 .eq(null != idRequest.getId(),Curriculum::getDepartmentId,idRequest.getId())
                 .orderByDesc(Curriculum::getCreateTime);
         IPage<Curriculum> curriculumIPage = this.page(page, qw);
-        List<Curriculum> records = curriculumIPage.getRecords();
-        if (CollectionUtils.isEmpty(records)){
-            return BaseResult.success().setMsg("查询课程成功");
-        }
-        IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
-        //查询收藏信息
-        LambdaQueryWrapper<ClassCollection> callssQw = Wrappers.<ClassCollection>lambdaQuery()
-                .eq(ClassCollection::getPersonId, ShiroUtils.getUserId())
-                .eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-        List<ClassCollection> list = classCollectionService.list(callssQw);
-        if (CollectionUtils.isNotEmpty(list)){
-            curriculumPcVoIPage.getRecords().stream().forEach(s->{
-                list.stream().forEach(f->{
-                    if (s.getId().equals(f.getClassId())){
-                        s.setIsCollection(true);
-                    }else {
-                        s.setIsCollection(false);
-                    }
-
-                });
-            });
-        }
-
-        return BaseResult.success((curriculumPcVoIPage));
+        return BaseResult.success((getCollection(curriculumIPage)));
     }
 
 
@@ -552,5 +507,30 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         LambdaQueryWrapper<Teachers> loadTeacherQuery = Wrappers.<Teachers>lambdaQuery()
                 .eq(Teachers::getZgh, teacherId);
         return teachersService.getOne(loadTeacherQuery);
+    }
+
+
+    @Override
+    public IPage<CurriculumPcVo> getCollection( IPage<Curriculum> curriculumIPage){
+        List<Curriculum> records = curriculumIPage.getRecords();
+        if (CollectionUtils.isEmpty(records)){
+            return null;
+        }
+        IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
+        //查询收藏信息
+        List<Integer> idList = curriculumIPage.getRecords().stream().map(Curriculum::getId).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(idList)){
+            Map<String, Object> map = classCollectionService.selectCountByCurriculumIds(idList);
+            curriculumPcVoIPage.getRecords().stream().forEach(s->{
+                if (map.containsKey(s.getId())){
+                    s.setIsCollection(true);
+                    s.setCollectionNum(map.get(s.getId()).toString());
+                }else {
+                    s.setIsCollection(false);
+                    s.setCollectionNum(CommonConstant.DEFAULTCOLLECTIONNUM);
+                }
+            });
+        }
+        return curriculumPcVoIPage;
     }
 }

@@ -5,6 +5,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.EnableRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.HotListVo;
@@ -44,6 +45,8 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
     BaseResult watchAmout(IdRequest idRequest);
 
     BaseResult<ProjectManagementVo> projectNameList(BaseQuery<ProjectManagement> query);
+
+    BaseResult isEnable(EnableRequest enableRequest);
 }
 
 

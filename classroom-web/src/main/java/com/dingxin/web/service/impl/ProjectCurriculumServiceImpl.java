@@ -90,26 +90,7 @@ public class ProjectCurriculumServiceImpl extends ServiceImpl<ProjectCurriculumM
             if (com.dingxin.common.utils.CollectionUtils.isEmpty(records)){
                 return BaseResult.success().setMsg("查询课程成功");
             }
-            IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
-            //查询收藏信息
-            LambdaQueryWrapper<ClassCollection> callssQw = Wrappers.<ClassCollection>lambdaQuery()
-                    .eq(ClassCollection::getPersonId, ShiroUtils.getUserId())
-                    .eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-            List<ClassCollection> collectionList = classCollectionService.list(callssQw);
-            if (com.dingxin.common.utils.CollectionUtils.isNotEmpty(list)){
-                curriculumPcVoIPage.getRecords().stream().forEach(s->{
-                    collectionList.stream().forEach(f->{
-                        if (s.getId().equals(f.getClassId())){
-                            s.setIsCollection(true);
-                        }else {
-                            s.setIsCollection(false);
-                        }
-
-                    });
-                });
-            }
-
-            return BaseResult.success((curriculumPcVoIPage));
+            return BaseResult.success((curriculumService.getCollection(curriculumIPage)));
         }
         return BaseResult.success().setMsg("根据专题名称获取课程成功");
     }

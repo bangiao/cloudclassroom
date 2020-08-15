@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.constant.CommonConstant;
+import com.dingxin.common.enums.ExceptionEnum;
+import com.dingxin.common.exception.BusinessException;
 import com.dingxin.common.utils.DateUtils;
 import com.dingxin.dao.mapper.ProjectCurriculumMapper;
 import com.dingxin.pojo.basic.BaseQuery;
@@ -14,6 +16,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.*;
 import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
+import com.dingxin.pojo.request.EnableRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.CurriculumVo;
@@ -23,6 +26,7 @@ import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +42,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
+@Slf4j
 public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementMapper, ProjectManagement> implements IProjectManagementService {
 
 
@@ -440,6 +445,33 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
             .eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG)
             .eq(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE);
         return BaseResult.success(ProjectManagementVo.convertToVoWithPage(this.page(page,qw)),"查询专题名称列表成功");
+    }
+
+    @Override
+    public BaseResult isEnable(EnableRequest enableRequest) {
+        LambdaUpdateWrapper<ProjectManagement> projectQw = null;
+        if (enableRequest.getEnableState().equals(1)){
+            LambdaQueryWrapper<Teachers> qw = Wrappers.<Teachers>lambdaQuery()
+                    .eq(Teachers::getEnable, CommonConstant.DISABLE_TRUE)
+                    .eq(Teachers::getZgh, enableRequest.getZgh());
+            List<Teachers> list = teachersService.list(qw);
+            if (CollectionUtils.isNotEmpty(list)){
+                projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+                        .set(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE)
+                        .eq(ProjectManagement::getId,enableRequest.getId())
+                        .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
+                this.update(projectQw);
+            }else {
+                throw new BusinessException(ExceptionEnum.ENABLE_ERROR);
+            }
+        }else {
+            projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+                    .set(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE)
+                    .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
+            this.update(projectQw);
+        }
+
+        return BaseResult.success();
     }
 
 

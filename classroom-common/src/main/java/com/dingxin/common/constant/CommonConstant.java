@@ -87,6 +87,13 @@ public interface CommonConstant {
 	 */
 	Integer LATESTCURRICULUMTYPE=2;
 
-
+	/**
+	 * 时长课程类型
+	 */
 	Integer DURATIONCURRICULUMTYPE=0;
+
+	/**
+	 * 默认收藏数
+	 */
+	String DEFAULTCOLLECTIONNUM="0";
 }
