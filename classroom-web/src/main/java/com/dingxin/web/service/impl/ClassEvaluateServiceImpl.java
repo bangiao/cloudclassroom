@@ -11,14 +11,13 @@ import com.dingxin.common.constant.CommonConstant;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.enums.RoleEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.common.utils.ExcelUtils;
 import com.dingxin.dao.mapper.ClassEvaluateMapper;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
-import com.dingxin.pojo.request.ClassEvaluateRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.ThumbsUpRequest;
-import com.dingxin.pojo.request.VideoAuditRequest;
+import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.vo.ClassEvaluateVo;
+import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.shiro.ShiroUtils;
@@ -28,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -346,5 +347,35 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
         IPage pageList = page(page, qw);
         return pageList;
+    }
+
+
+
+
+    /**
+     * 通过课程id导出评价
+     * @param request
+     */
+    @Override
+    public void export(ClassIdRequest request, HttpServletResponse response) {
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.eq(ClassEvaluate::getClassId,request.getClassId())
+                .eq(ClassEvaluate::getDelFlag,CommonConstant.DEL_FLAG)
+                .eq(ClassEvaluate::getStatus,CommonConstant.STATUS_AUDIT)
+                .select(ClassEvaluate::getClassName,ClassEvaluate::getClassTypeStr
+                ,ClassEvaluate::getTeacherName,ClassEvaluate::getStudyLength
+                ,ClassEvaluate::getStudentName,ClassEvaluate::getStudentCode
+                ,ClassEvaluate::getEvaluateTime,ClassEvaluate::getEvaluateContent);
+        List<ClassEvaluate> list = list(qw);
+        if (Objects.isNull(list) && list.size() == 0) {
+            throw new BusinessException(ExceptionEnum.DATA_ZERO);
+        }
+        try {
+            ExcelUtils.exportXlsx(response, "学生评价信息", ClassEvaluateVo.class,ClassEvaluateVo.conventList(list));
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("导出学生评价失败",e.getStackTrace());
+        }
+
     }
 }

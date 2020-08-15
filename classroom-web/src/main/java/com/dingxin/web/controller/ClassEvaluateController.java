@@ -6,10 +6,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.ClassEvaluateInsertRequest;
-import com.dingxin.pojo.request.ClassEvaluateListRequest;
-import com.dingxin.pojo.request.IdRequest;
-import com.dingxin.pojo.request.ThumbsUpRequest;
+import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.shiro.ShiroUtils;
@@ -22,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,5 +100,15 @@ public class ClassEvaluateController {
         boolean retFlag = classEvaluateService.deleteBatch(list);
         return BaseResult.success(retFlag);
     }
+
+    /**
+     * 通过课程id导出课程评价
+     */
+    @PostMapping("/export")
+    @ApiOperation(value = "批量删除课程评价表信息")
+    public void export(@RequestBody ClassIdRequest request, HttpServletResponse response) {
+        classEvaluateService.export(request,response);
+    }
+
 
 }
