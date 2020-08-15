@@ -6,7 +6,9 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.request.ClassCollectionInsertRequest;
+import com.dingxin.pojo.request.ClassIdRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ClassCollectionListVo;
@@ -43,7 +45,7 @@ public class ClassCollectionController {
     @ApiOperation(value = "获取课程收藏表列表")
     public BaseResult<Page<ClassCollectionListVo>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
-        IPage<ClassCollection> pageList = classCollectionService.queryList(query);
+        IPage<Curriculum> pageList = classCollectionService.queryList(query);
         return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
     }
 
@@ -52,8 +54,8 @@ public class ClassCollectionController {
      */
     @PostMapping("/search")
     @ApiOperation(value = "获取课程收藏表详情信息")
-    public BaseResult<ClassCollectionListVo> search(@RequestBody IdRequest id) {
-        ClassCollection result = classCollectionService.getByIdSelf(id);
+    public BaseResult<ClassCollectionListVo> search(@RequestBody ClassIdRequest id) {
+        Curriculum result = classCollectionService.getByIdSelf(id);
         return BaseResult.success(ClassCollectionListVo.convertToVo(result));
     }
 
@@ -63,8 +65,7 @@ public class ClassCollectionController {
     @PostMapping("/insertOrUpdate")
     @ApiOperation(value = "新增或者修改课程收藏表信息")
     public BaseResult save(@Validated @RequestBody ClassCollectionInsertRequest classCollection) {
-        ClassCollection convent = ClassCollectionInsertRequest.convent(classCollection);
-        boolean retFlag = classCollectionService.insert(convent);
+        boolean retFlag = classCollectionService.insert(classCollection);
         return BaseResult.success(retFlag);
     }
 
@@ -73,7 +74,7 @@ public class ClassCollectionController {
      */
     @PostMapping("/delete")
     @ApiOperation(value = "删除课程收藏表信息")
-    public BaseResult delete(@RequestBody IdRequest id) {
+    public BaseResult delete(@RequestBody ClassIdRequest id) {
         boolean retFlag = classCollectionService.deleteById(id);
         return BaseResult.success(retFlag);
     }

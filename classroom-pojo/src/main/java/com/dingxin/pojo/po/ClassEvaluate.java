@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -52,19 +53,19 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      * 课程类型
      */
     @ApiModelProperty(value = "课程类型")
-    @NotNull(message = "classTypeStr must not be null")
+    @NotBlank(message = "classTypeStr must not be null")
     private String classTypeStr;
     /**
      * 讲师id
      */
     @ApiModelProperty(value = "讲师id")
-    @NotNull(message = "teacherId must not be null")
+    @NotBlank(message = "teacherId must not be null")
     private String teacherId;
     /**
      * 讲师姓名
      */
     @ApiModelProperty(value = "讲师姓名")
-    @NotNull(message = "teacherName must not be null")
+    @NotBlank(message = "teacherName must not be null")
     private String teacherName;
     /**
      * 学习时长
@@ -75,7 +76,6 @@ public class ClassEvaluate extends Model<ClassEvaluate> {
      * 学生id
      */
     @ApiModelProperty(value = "学生id")
-    @NotNull(message = "studentId must not be null")
     private String studentId;
     /**
      * 学生姓名

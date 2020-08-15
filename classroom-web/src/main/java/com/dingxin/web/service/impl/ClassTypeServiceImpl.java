@@ -16,6 +16,7 @@ import com.dingxin.pojo.po.ClassType;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IClassTypeService;
+import com.dingxin.web.shiro.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,15 +131,16 @@ public class ClassTypeServiceImpl extends ServiceImpl<ClassTypeMapper, ClassType
     @Override
     public boolean saveSelf(ClassType convent) {
         LambdaQueryWrapper<ClassType> qw = Wrappers.lambdaQuery();
-        qw.eq(ClassType::getTypeName, convent.getTypeName()).eq(ClassType::getDelFlag, CommonConstant.DEL_FLAG);
+        qw.eq(ClassType::getTypeName, convent.getTypeName())
+                .eq(ClassType::getDelFlag, CommonConstant.DEL_FLAG)
+                .eq(ClassType::getDataName,convent.getDataName());
         int count = count(qw);
         if (count >= 1) {
             throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
         convent.setModifyTime(LocalDateTime.now());
-        //todo 修改设置值的信息  改为去登录人的信息
-        convent.setCreatePersonId(1);
-        convent.setCreatePersonName("杨大大");
+        convent.setCreatePersonId(ShiroUtils.getUserId());
+        convent.setCreatePersonName(ShiroUtils.getUserName());
         return saveOrUpdate(convent);
 
     }

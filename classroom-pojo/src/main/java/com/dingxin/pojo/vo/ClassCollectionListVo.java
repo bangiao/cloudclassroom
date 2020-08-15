@@ -5,6 +5,7 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.po.ClassEvaluate;
+import com.dingxin.pojo.po.Curriculum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,12 +26,6 @@ import java.util.Objects;
 public class ClassCollectionListVo {
 
     private static final long serialVersionUID=1L;
-
-    /**
-     * 主键
-     */
-    @ApiModelProperty(value = "主键")
-    private Integer id;
     /**
      * 课程id
      */
@@ -56,17 +51,22 @@ public class ClassCollectionListVo {
      */
     @ApiModelProperty(value = "讲师姓名")
     private String teacherName;
+    /**
+     * url
+     */
+    @ApiModelProperty(value = "课程封面")
+    private String url;
 
-    public static ClassCollectionListVo convertToVo(ClassCollection classCollection){
-        if (Objects.isNull(classCollection))
+    public static ClassCollectionListVo convertToVo(Curriculum curriculum){
+        if (Objects.isNull(curriculum))
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
-        return ClassCollectionListVo.builder().id(classCollection.getId()).teacherName(classCollection.getTeacherName())
-               .classTypeStr(classCollection.getClassTypeStr()).classType(classCollection.getClassType())
-                .className(classCollection.getClassName()).classId(classCollection.getClassId())
+        return ClassCollectionListVo.builder().classId(curriculum.getId()).teacherName(curriculum.getTeacherName())
+               .classTypeStr(curriculum.getCurriculumName()).classType(curriculum.getClassTypeId())
+                .className(curriculum.getCurriculumName()).url(curriculum.getCurriculumImage())
                 .build();
     }
 
-    public static IPage<ClassCollectionListVo> convertToVoWithPage(IPage<ClassCollection> classEvaluate){
+    public static IPage<ClassCollectionListVo> convertToVoWithPage(IPage<Curriculum> classEvaluate){
 
         return classEvaluate.convert(ClassCollectionListVo::convertToVo);
     }

@@ -35,6 +35,7 @@ public enum ExceptionEnum {
     CHAPTER_CAN_ONLY_WITH_ONE_VIDEO_INFO("4005","个章节下只能选择挂一个视频或直播视频，不能同时拥有多个视频"),
     PARENT_CHAPTER_CANNOT_ADD_VIDEO("4006","当前为父章节，不能添加视频，视频应该在当前章节的子章节"),
     CANNOT_ENABLE_CAUSE_TEACHER_DISABLE("4007","当前课程不能被启用,因为课程对应的讲师已经被禁用"),
+    NO_COLLECTION("4008","无收藏课程"),
 
 
 

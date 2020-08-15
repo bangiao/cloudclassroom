@@ -10,6 +10,7 @@ import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.ClassTypeVo;
 import com.dingxin.web.service.IClassTypeService;
+import com.dingxin.web.shiro.ShiroUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class ClassTypeController {
     @PostMapping("/insert")
     @ApiOperation(value = "新增/修改课程类型信息")
     public BaseResult save(@Validated @RequestBody ClassTypeInsertRequest classType) {
-        ClassType convent = ClassTypeInsertRequest.convent(classType);
+        ClassType convent = ClassTypeInsertRequest.convent(classType, ShiroUtils.getUser());
         boolean falg = classTypeService.saveSelf(convent);
         return BaseResult.success(falg);
     }

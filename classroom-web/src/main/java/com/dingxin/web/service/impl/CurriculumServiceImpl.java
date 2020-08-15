@@ -148,6 +148,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     }
 
     @Override
+    @Transactional
     public void enableCurriculum(List<Integer> curriculumIds) {
         if(CollectionUtils.isEmpty(curriculumIds)){
 
@@ -440,6 +441,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         // 根据课程id获取当前课程下的教师id
         LambdaQueryWrapper<Curriculum> getTeacherId = Wrappers.<Curriculum>lambdaQuery()
                 .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getId,curriculumId)
                 .select(Curriculum::getTeacherId);
         Curriculum curriculumTeacherInfo = getOne(getTeacherId);
         String teacherId = curriculumTeacherInfo.getTeacherId();

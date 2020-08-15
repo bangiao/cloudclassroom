@@ -2,6 +2,7 @@ package com.dingxin.pojo.request;
 
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.StduentClassSeeRecord;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,42 +27,7 @@ import java.util.Objects;
 public class StduentClassSeeRecordInsertRequest {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * 学生id
-     */
-    @NotNull(message = "studentId must not be null")
-    @ApiModelProperty(value = "学生id")
-    private String studentId;
-    /**
-     * 学生姓名
-     */
-    @NotBlank(message = "studentName must not be null")
-    @ApiModelProperty(value = "学生姓名")
-    private String studentName;
-    /**
-     * 学校
-     */
-    @NotBlank(message = "studentCode must not be null")
-    @ApiModelProperty(value = "学校")
-    private String studentCode;
-    /**
-     * 院校
-     */
-    @NotBlank(message = "studentColleges must not be null")
-    @ApiModelProperty(value = "院校")
-    private String studentColleges;
-    /**
-     * 专业
-     */
-    @NotBlank(message = "studentMajor must not be null")
-    @ApiModelProperty(value = "专业")
-    private String studentMajor;
-    /**
-     * 班级
-     */
-    @NotBlank(message = "studentClass must not be null")
-    @ApiModelProperty(value = "班级")
-    private String studentClass;
+
     /**
      * 教师ID
      */
@@ -98,9 +64,8 @@ public class StduentClassSeeRecordInsertRequest {
            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
         return StduentClassSeeRecord.builder().studyLength(request.getStudyLength()).className(request.getClassName()).classId(request.getClassId())
-                .teacherName(request.getTeacherName()).teacherId(request.getTeacherId()).studentClass(request.getStudentClass())
-                .studentMajor(request.getStudentMajor()).studentColleges(request.getStudentColleges())
-                .studentCode(request.getStudentCode()).studentName(request.getStudentName()).studentId(request.getStudentId()).build();
+                .teacherName(request.getTeacherName()).teacherId(request.getTeacherId()).
+                build();
     }
 
 }
