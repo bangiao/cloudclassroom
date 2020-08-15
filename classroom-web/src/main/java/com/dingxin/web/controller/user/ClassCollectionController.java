@@ -1,8 +1,9 @@
-package com.dingxin.web.controller;
+package com.dingxin.web.controller.user;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
+import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.request.ClassCollectionInsertRequest;
@@ -24,7 +25,7 @@ import java.util.List;
 /**
  * 课程收藏表
  */
-@ManTag
+@UserTag
 @RestController
 @RequestMapping("/classCollection")
 @Api(tags = {"课程收藏接口"})
