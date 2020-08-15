@@ -55,7 +55,7 @@ public class VideoVo {
      * 视频大小
      */
     @ApiModelProperty(value = "视频大小",example = "5.4G")
-    private String videoSize;
+    private Long videoSize;
 
 
     public static VideoVo convertToVo(Video videoPo){

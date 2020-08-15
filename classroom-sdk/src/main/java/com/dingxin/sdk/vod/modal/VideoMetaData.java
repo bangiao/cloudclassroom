@@ -117,9 +117,9 @@ public class VideoMetaData {
         if(Objects.isNull(video.getVideoSize())){
             data.setSize(UNKNOWN);
         }else{
-            Long size = Long.parseLong(video.getVideoSize());
+            Long size = video.getVideoSize();
             data.setSize(formatSize(BigDecimal.valueOf(size),0));
-            data.setSizeNum(Long.parseLong(video.getVideoSize()));
+            data.setSizeNum(video.getVideoSize());
         }
         return data;
     }
