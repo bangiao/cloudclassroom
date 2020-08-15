@@ -65,7 +65,7 @@ public class StduentClassSeeRecordController {
      * 自己获取自己的记录列表
      */
     @PostMapping("/selfList")
-    @ApiOperation(value = "自己获取自己的记录列表")
+    @ApiOperation(value = "PC 自己获取自己的记录列表")
     public BaseResult<Page<StduentClassSeeRecordVo>> selfList(@RequestBody CommQueryListRequest query) {
         IPage<StduentClassSeeRecord> pageList = stduentClassSeeRecordService.selfList(query);
         return BaseResult.success(StduentClassSeeRecordVo.convertToVoWithPage(pageList));

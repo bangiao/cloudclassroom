@@ -1,6 +1,7 @@
 package com.dingxin.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -148,6 +150,27 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
         qw.eq(Curriculum::getId, id.getClassId()).eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
                 .eq(Curriculum::getDisableFlag,CommonConstant.DISABLE_FALSE);
         return curriculumService.getOne(qw);
+    }
+
+
+    /**
+     * 根据课程id获取课程id收藏次数
+     * @param cids
+     * @return
+     */
+
+    @Override
+    public Map<String, Object> selectCountByCurriculumIds(List<Integer> cids) {
+        if (CollectionUtils.isEmpty(cids)){
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        QueryWrapper<ClassCollection> qw = Wrappers.query();
+        qw.in("class_id",cids).eq("del_flag",CommonConstant.DEL_FLAG)
+                .select("class_id","count(class_id) counts")
+                .groupBy("class_id");
+        List<Map<String, Object>> maps = listMaps(qw);
+        return maps.stream().collect(Collectors.toMap(map -> map.get("class_id").toString(), map -> map.get("counts")));
+
     }
 
 }

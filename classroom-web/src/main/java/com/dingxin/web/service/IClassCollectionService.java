@@ -10,6 +10,7 @@ import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 课程收藏表 服务接口
@@ -57,4 +58,11 @@ public interface IClassCollectionService extends IService<ClassCollection> {
      * @return
      */
     Curriculum getByIdSelf(ClassIdRequest id);
+
+    /**
+     * 根据课程id获取课程id收藏次数
+     * @param cids
+     * @return
+     */
+    Map<String,Object> selectCountByCurriculumIds(List<Integer> cids);
 }
