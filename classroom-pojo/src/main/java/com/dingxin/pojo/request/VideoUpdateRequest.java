@@ -61,5 +61,5 @@ public class VideoUpdateRequest {
      * 视频大小
      */
     @ApiModelProperty(value = "视频大小",example = "5.4G")
-    private String videoSize;
+    private Long videoSize;
 }

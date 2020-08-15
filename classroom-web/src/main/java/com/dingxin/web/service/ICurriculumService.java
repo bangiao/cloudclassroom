@@ -56,7 +56,7 @@ public interface ICurriculumService extends IService<Curriculum> {
      * 课程列表全部数据
      * @return
      */
-    List<Curriculum> listall(TeacherIdRequest idRequest);
+    List<Curriculum> listAll(TeacherIdRequest idRequest);
     /**
      * 根据讲师查询课程
      * @param id

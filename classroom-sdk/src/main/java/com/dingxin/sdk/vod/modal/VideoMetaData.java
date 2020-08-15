@@ -1,5 +1,6 @@
 package com.dingxin.sdk.vod.modal;
 
+import com.dingxin.pojo.po.Video;
 import com.tencentcloudapi.vod.v20180717.models.MediaInfo;
 import lombok.Data;
 
@@ -35,6 +36,11 @@ public class VideoMetaData {
     private String duration;
 
     /**
+     * 时长  long   second
+     */
+    private Long durationNum;
+
+    /**
      * url
      */
     @Deprecated
@@ -44,6 +50,11 @@ public class VideoMetaData {
      * 大小  GB-MB-KB
      */
     private String size;
+
+    /**
+     * 大小    long    byte
+     */
+    private Long sizeNum;
 
     /**
      * 创建时间
@@ -74,11 +85,41 @@ public class VideoMetaData {
                             ZoneId.of("UTC"))
                     .format(DateTimeFormatter.ofPattern("HH时mm分ss秒")));
         }
+        data.setDurationNum(duration.longValue());
         Long size = info.getMetaData().getSize();
         if(Objects.isNull(size)){
             data.setSize(UNKNOWN);
         }else{
             data.setSize(formatSize(BigDecimal.valueOf(size),0));
+        }
+        data.setSizeNum(size);
+        return data;
+    }
+
+
+    public static VideoMetaData of(Video video) {
+        if (Objects.isNull(video)) {
+            return null;
+        }
+        VideoMetaData data = new VideoMetaData();
+        data.setName(video.getVideoName());
+        data.setFileId(video.getLiveVideoField());
+        Long duration = video.getVideoDuration();
+        if (Objects.isNull(duration)) {
+            data.setDuration(UNKNOWN);
+        } else {
+            data.setDuration(LocalDateTime
+                    .ofInstant(Instant.ofEpochMilli(duration * 1000),
+                            ZoneId.of("UTC"))
+                    .format(DateTimeFormatter.ofPattern("HH时mm分ss秒")));
+        }
+        data.setDurationNum(duration);
+        if(Objects.isNull(video.getVideoSize())){
+            data.setSize(UNKNOWN);
+        }else{
+            Long size = video.getVideoSize();
+            data.setSize(formatSize(BigDecimal.valueOf(size),0));
+            data.setSizeNum(video.getVideoSize());
         }
         return data;
     }

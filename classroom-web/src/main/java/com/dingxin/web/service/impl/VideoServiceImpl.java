@@ -187,7 +187,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     //todo 需要改成异步的方法
     @Override
     public void updateCurriculumVideoDuration(Integer curriculumId){
-        if (curriculumId!=null){
+        if (Objects.isNull(curriculumId)){
             log.error("更新当前视频时长失败，传参为 curriculumIds:{}",curriculumId);
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
@@ -199,7 +199,7 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
             totalVideoDuration +=(videoDuration == null ? CommonConstant.WATCH_AMOUNT_INITIAL_VALUE : videoDuration);
         }
 
-        curriculumService.updateCurrentCurriculumVideoDurationOrWatchAmount(totalVideoDuration,curriculumId,null);
+        curriculumService.updateCurrentCurriculumVideoDurationOrWatchAmount(totalVideoDuration,curriculumId,0L);
     }
 
     @Override
@@ -415,10 +415,11 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     @Override
     public void audit(VideoAuditRequest videoAudit) {
         LambdaUpdateWrapper<Video> wrapper = Wrappers.lambdaUpdate();
-        wrapper.set(Video::getAuditFlag,videoAudit.getAuditStatus());
-        wrapper.eq(Video::getId,videoAudit.getId());
-        wrapper.eq(Video::getCurriculumId,videoAudit.getCurriculumId());
-        this.update(wrapper);
+        wrapper.set(Video::getAuditFlag,videoAudit.getAuditStatus())
+                .set(Video::getAuditComments,videoAudit.getAuditComments())
+                .eq(Video::getChapterId,videoAudit.getId())
+                .eq(Video::getCurriculumId,videoAudit.getCurriculumId());
+        videoMapper.update(null,wrapper);
         //同时修改/更新对应课程的审核状态
         videoService.updateVideoRelatedCurriculumAuditFlag(videoAudit.getCurriculumId());
     }
