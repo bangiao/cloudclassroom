@@ -84,4 +84,11 @@ public interface IClassEvaluateService extends IService<ClassEvaluate> {
      * 更新课程对应的课程评价状态
      */
     void updateCurriculumRelatedEvaluateStatus(Integer curriculumId);
+
+    /**
+     * PC端获取课程评价
+     * @param query
+     * @return
+     */
+    IPage<ClassEvaluate> queryUserPage(ClassEvaluateListRequest query);
 }

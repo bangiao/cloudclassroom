@@ -40,31 +40,7 @@ public class ClassCollection extends Model<ClassCollection> {
      */
     @ApiModelProperty(value = "课程id")
     private Integer classId;
-    /**
-     * 课程名称
-     */
-    @ApiModelProperty(value = "课程名称")
-    private String className;
-    /**
-     * 课程类型
-     */
-    @ApiModelProperty(value = "课程类型")
-    private Integer classType;
-    /**
-     * 课程类型字符串
-     */
-    @ApiModelProperty(value = "课程类型字符串")
-    private String classTypeStr;
-    /**
-     * 讲师Id
-     */
-    @ApiModelProperty(value = "讲师Id")
-    private String teacherId;
-    /**
-     * 讲师姓名
-     */
-    @ApiModelProperty(value = "讲师姓名")
-    private String teacherName;
+
     private LocalDateTime createTime;
     private LocalDateTime modifyTime;
     private Integer delFlag;

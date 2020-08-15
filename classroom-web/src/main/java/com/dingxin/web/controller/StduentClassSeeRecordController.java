@@ -12,6 +12,7 @@ import com.dingxin.pojo.vo.StduentClassSeeRecordVo;
 import com.dingxin.pojo.vo.StudentClassListVo;
 import com.dingxin.pojo.vo.StudentRecordListVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
+import com.dingxin.web.shiro.ShiroUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

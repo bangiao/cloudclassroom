@@ -3,6 +3,9 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.ClassCollectionInsertRequest;
+import com.dingxin.pojo.request.ClassIdRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 
@@ -13,7 +16,7 @@ import java.util.List;
  */
 public interface IClassCollectionService extends IService<ClassCollection> {
 
-    List<ClassCollection> like(ClassCollection data);
+
 
     /**
      * 查询收场课程列表
@@ -29,7 +32,7 @@ public interface IClassCollectionService extends IService<ClassCollection> {
      * @param classCollection
      * @return
      */
-    boolean insert(ClassCollection classCollection);
+    boolean insert(ClassCollectionInsertRequest classCollection);
 
     /**
      * 删除课程收藏
@@ -37,7 +40,7 @@ public interface IClassCollectionService extends IService<ClassCollection> {
      * @param id
      * @return
      */
-    boolean deleteById(IdRequest id);
+    boolean deleteById(ClassIdRequest id);
 
     /**
      * 批量删除
@@ -53,5 +56,5 @@ public interface IClassCollectionService extends IService<ClassCollection> {
      * @param id
      * @return
      */
-    ClassCollection getByIdSelf(IdRequest id);
+    Curriculum getByIdSelf(ClassIdRequest id);
 }

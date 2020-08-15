@@ -135,7 +135,7 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
     }
 
     /**
-     * 查询数据列表根据不同的条件
+     * 管理端查看课程的相关评价
      *
      * @param query
      * @return
@@ -143,7 +143,6 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
     @Override
     public IPage queryPage(ClassEvaluateListRequest query) {
         //查询列表数据
-        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
         qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
                 ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
@@ -160,29 +159,12 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
             log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-
-        //        管理员
-        if (userType.getCode()==CommonConstant.NORMAL_USER){
-            qw.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
-        }
-//        老师查看老师的评价且已经审核通过的
-        else if (userType.getCode()==CommonConstant.TEACHER) {
-            qw.eq(ClassEvaluate::getTeacherId, ShiroUtils.getUserId()).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).eq(ClassEvaluate::getClassId, query.getClassId());
-        }
-//        学生查看课程相关的 评价不管有没有
-        else if (userType.getCode()==CommonConstant.ADMINISTRATOR) {
-            qw.eq(ClassEvaluate::getClassId, query.getClassId()).and((a) -> {
-                        LambdaQueryWrapper<ClassEvaluate> q = Wrappers.lambdaQuery();
-                        return q.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT).or((b) -> {
-                            LambdaQueryWrapper<ClassEvaluate> qe = Wrappers.lambdaQuery();
-                            return qe.eq(ClassEvaluate::getStudentId, ShiroUtils.getUserId()).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_NOAUDIT);
-                        });
-                    }
-            );
-        } else {
-            return new Page();
-        }
-        IPage pageList = page(page, qw.eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG).orderByDesc(ClassEvaluate::getCreateTime));
+        qw.eq(ClassEvaluate::getClassId, query.getClassId())
+                .eq(ClassEvaluate::getStatus,CommonConstant.STATUS_AUDIT)
+                .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG)
+                .orderByDesc(ClassEvaluate::getCreateTime);
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
+        IPage pageList = page(page, qw);
         return pageList;
     }
 
@@ -278,6 +260,9 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveEvaluation(ClassEvaluate classEvaluate) {
+        classEvaluate.setStudentId(ShiroUtils.getUserId());
+        classEvaluate.setStudentName(ShiroUtils.getUserName());
+        classEvaluate.setStudentCode(ShiroUtils.getUserId());
         save(classEvaluate);
         updateCurriculumRelatedEvaluateStatus(classEvaluate.getClassId());
     }
@@ -314,5 +299,52 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
 
             curriculumService.update(updateCurriculumAuditFlag);
         }
+    }
+
+
+
+
+
+    /**
+     * PC端获取课程评价
+     * @param query
+     * @return
+     */
+    @Override
+    public IPage<ClassEvaluate> queryUserPage(ClassEvaluateListRequest query) {
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
+                ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
+        if (StringUtils.isNotBlank(query.getQueryStr())) {
+            qw.and(Wrappers->Wrappers.like(ClassEvaluate::getStudentName, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getStudentCode, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getClassName, query.getQueryStr()));
+        }
+        RoleEnum userType = ShiroUtils.getUserType();
+        if (Objects.isNull(userType)) {
+            log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
+        qw.eq(ClassEvaluate::getClassId, query.getClassId())
+                .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG)
+                .orderByDesc(ClassEvaluate::getCreateTime);
+        switch (userType){
+            case NORMAL_USER:
+                        qw.and(Wrappers->Wrappers.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT)
+                                .or(a->a.eq(ClassEvaluate::getStudentId, ShiroUtils.getUserId())
+                                .eq(ClassEvaluate::getStatus, CommonConstant.STATUS_NOAUDIT))
+                        );
+                        break;
+            case TEACHER:
+                qw.eq(ClassEvaluate::getTeacherId, ShiroUtils.getUserId()).eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT);
+                break;
+            default:throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+
+        }
+        Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
+        IPage pageList = page(page, qw);
+        return pageList;
     }
 }

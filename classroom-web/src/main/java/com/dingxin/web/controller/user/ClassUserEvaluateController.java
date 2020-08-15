@@ -1,8 +1,7 @@
-package com.dingxin.web.controller;
+package com.dingxin.web.controller.user;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.dingxin.common.annotation.ManTag;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
@@ -28,11 +27,11 @@ import java.util.Objects;
 /**
  * 课程评价表
  */
-@ManTag
+@UserTag
 @RestController
-@RequestMapping("/classEvaluate")
+@RequestMapping("/userclassEvaluate")
 @Api(tags = {"课程评价表接口"})
-public class ClassEvaluateController {
+public class ClassUserEvaluateController {
 
 
     @Autowired
@@ -42,9 +41,9 @@ public class ClassEvaluateController {
      * 列表查询
      */
     @PostMapping("/alllist")
-    @ApiOperation(value = "获取所有课程评价表列表")
+    @ApiOperation(value = "PC端 获取课程评价表列表")
     public BaseResult<Page<ClassEvaluateVo>> list(@RequestBody ClassEvaluateListRequest query) {
-        IPage<ClassEvaluate> pageList = classEvaluateService.queryPage(query);
+        IPage<ClassEvaluate> pageList = classEvaluateService.queryUserPage(query);
         return BaseResult.success(ClassEvaluateVo.convertToVoWithPage(pageList));
     }
 
@@ -71,36 +70,6 @@ public class ClassEvaluateController {
         ClassEvaluate covent = ClassEvaluateInsertRequest.covent(insertRequest, ShiroUtils.getUser());
         classEvaluateService.saveEvaluation(covent);
         return BaseResult.success();
-    }
-
-    /**
-     * 修改  点赞数
-     */
-    @PostMapping(value = "/upOrDown")
-    @ApiOperation(value = "修改课程评价表点赞信息")
-    public BaseResult updateUp(@RequestBody ThumbsUpRequest request) {
-        boolean retFlag = classEvaluateService.updateUp(request);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 删除
-     */
-    @PostMapping("/delete")
-    @ApiOperation(value = "删除课程评价表信息")
-    public BaseResult delete(@Validated @RequestBody IdRequest id) {
-        boolean retFlag = classEvaluateService.delete(id);
-        return BaseResult.success(retFlag);
-    }
-
-    /**
-     * 批量删除删除
-     */
-    @PostMapping("/delete/batch")
-    @ApiOperation(value = "批量删除课程评价表信息")
-    public BaseResult deleteBatch(@RequestBody List<Integer> list) {
-        boolean retFlag = classEvaluateService.deleteBatch(list);
-        return BaseResult.success(retFlag);
     }
 
 }

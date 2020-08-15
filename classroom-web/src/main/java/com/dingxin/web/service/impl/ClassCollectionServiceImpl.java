@@ -13,9 +13,13 @@ import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
 import com.dingxin.dao.mapper.ClassCollectionMapper;
 import com.dingxin.pojo.po.ClassCollection;
+import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.request.ClassCollectionInsertRequest;
+import com.dingxin.pojo.request.ClassIdRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.web.service.IClassCollectionService;
+import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.shiro.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * 课程收藏表 服务接口实现类
@@ -35,60 +40,8 @@ import java.util.logging.Logger;
 public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMapper, ClassCollection> implements IClassCollectionService {
 
     @Autowired
-    private ClassCollectionMapper classCollectionMapper;
+    private ICurriculumService curriculumService;
 
-
-    @Override
-    public List<ClassCollection> like(ClassCollection data) {
-        LambdaQueryWrapper<ClassCollection> query = Wrappers.<ClassCollection>lambdaQuery()
-                .like(
-                        Objects.nonNull(data.getId()),
-                        ClassCollection::getId,
-                        data.getId())
-                .like(
-                        Objects.nonNull(data.getPersonId()),
-                        ClassCollection::getPersonId,
-                        data.getPersonId())
-                .like(
-                        Objects.nonNull(data.getClassId()),
-                        ClassCollection::getClassId,
-                        data.getClassId())
-                .like(
-                        Objects.nonNull(data.getClassName()),
-                        ClassCollection::getClassName,
-                        data.getClassName())
-                .like(
-                        Objects.nonNull(data.getClassType()),
-                        ClassCollection::getClassType,
-                        data.getClassType())
-                .like(
-                        Objects.nonNull(data.getClassTypeStr()),
-                        ClassCollection::getClassTypeStr,
-                        data.getClassTypeStr())
-                .like(
-                        Objects.nonNull(data.getTeacherId()),
-                        ClassCollection::getTeacherId,
-                        data.getTeacherId())
-                .like(
-                        Objects.nonNull(data.getTeacherName()),
-                        ClassCollection::getTeacherName,
-                        data.getTeacherName())
-                .like(
-                        Objects.nonNull(data.getCreateTime()),
-                        ClassCollection::getCreateTime,
-                        data.getCreateTime())
-                .like(
-                        Objects.nonNull(data.getModifyTime()),
-                        ClassCollection::getModifyTime,
-                        data.getModifyTime())
-                .like(
-                        Objects.nonNull(data.getDelFlag()),
-                        ClassCollection::getDelFlag,
-                        data.getDelFlag());
-        return classCollectionMapper.selectList(query);
-
-
-    }
 
     /**
      * 查询收藏课程列表
@@ -106,39 +59,47 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
         LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
         qw.eq(ClassCollection::getPersonId,userId);
         qw.eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-        if ( StringUtils.isNotEmpty(query.getQueryStr())) {
-            qw.and(Wrappers->Wrappers.like(ClassCollection::getClassName, query.getQueryStr())
-                    .or().like(ClassCollection::getTeacherName, query.getQueryStr())
-                    .or().like(ClassCollection::getClassTypeStr, query.getQueryStr())
-                    .orderByDesc(ClassCollection::getCreateTime));
+        List<Integer> classIds = list(qw).stream().map(e -> e.getClassId()).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(classIds)){
+            throw new BusinessException(ExceptionEnum.NO_COLLECTION);
         }
-        Page<ClassCollection> page = new Page(query.getCurrentPage(), query.getPageSize());
-        return page(page, qw);
+//        查询课程信息
+        LambdaQueryWrapper<Curriculum> qc = Wrappers.lambdaQuery();
+        qc.in(Curriculum::getId,classIds).eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getDisableFlag,CommonConstant.DISABLE_FALSE);
+        if ( StringUtils.isNotEmpty(query.getQueryStr())) {
+            qc.and(Wrappers->Wrappers.like(Curriculum::getCurriculumName, query.getQueryStr())
+                    .or().like(Curriculum::getTeacherName, query.getQueryStr())
+                    .or().like(Curriculum::getCurriculumType, query.getQueryStr()));
+        }
+        Page<Curriculum> page = new Page(query.getCurrentPage(), query.getPageSize());
+        return curriculumService.page(page, qc);
     }
 
     /**
      * 新增课程收藏
      *
-     * @param classCollection
+     * @param request
      * @return
      */
     @Override
-    public boolean insert(ClassCollection classCollection) {
+    public boolean insert(ClassCollectionInsertRequest request) {
         String userId = ShiroUtils.getUserId();
         if (StringUtils.isEmpty(userId)) {
             log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        classCollection.setPersonId(userId);
-        classCollection.setModifyTime(LocalDateTime.now());
         LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
         qw.eq(ClassCollection::getDelFlag,CommonConstant.DEL_FLAG)
                 .eq(ClassCollection::getPersonId,userId)
-                .eq(ClassCollection::getClassId,classCollection.getClassId())
+                .eq(ClassCollection::getClassId,request.getClassId())
                 .select(ClassCollection::getId);
-        ClassCollection one = getOne(qw);
-        classCollection.setId(Objects.isNull(one)?null:one.getId());
-        return saveOrUpdate(classCollection);
+        int count = count(qw);
+        if (count>0){
+            throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
+        }
+        ClassCollection build = ClassCollection.builder().personId(userId).modifyTime(LocalDateTime.now()).build();
+        return save(build);
 
     }
 
@@ -149,9 +110,13 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
      * @return
      */
     @Override
-    public boolean deleteById(IdRequest id) {
+    public boolean deleteById(ClassIdRequest id) {
+        String userId = ShiroUtils.getUserId();
+        if (StringUtils.isEmpty(userId)){
+            throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
+        }
         LambdaUpdateWrapper<ClassCollection> qw = Wrappers.lambdaUpdate();
-        qw.set(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getId()), ClassCollection::getId, id.getId());
+        qw.set(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG_TRUE).eq(!Objects.isNull(id.getClassId()), ClassCollection::getPersonId, userId);
         return update(qw);
     }
 
@@ -178,10 +143,11 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
      * @return
      */
     @Override
-    public ClassCollection getByIdSelf(IdRequest id) {
-        LambdaQueryWrapper<ClassCollection> qw = Wrappers.lambdaQuery();
-        qw.eq(ClassCollection::getId, id.getId()).eq(ClassCollection::getDelFlag, CommonConstant.DEL_FLAG);
-        return getOne(qw);
+    public Curriculum getByIdSelf(ClassIdRequest id) {
+        LambdaQueryWrapper<Curriculum> qw = Wrappers.lambdaQuery();
+        qw.eq(Curriculum::getId, id.getClassId()).eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .eq(Curriculum::getDisableFlag,CommonConstant.DISABLE_FALSE);
+        return curriculumService.getOne(qw);
     }
 
 }

@@ -15,7 +15,6 @@ import java.util.Map;
  * 学生记录表 服务接口
  */
 public interface IStduentClassSeeRecordService extends IService<StduentClassSeeRecord> {
-    List<StduentClassSeeRecord> like(StduentClassSeeRecord data);
 
     /**
      * 记录新增

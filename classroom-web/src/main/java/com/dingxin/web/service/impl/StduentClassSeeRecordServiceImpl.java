@@ -26,6 +26,7 @@ import com.dingxin.pojo.vo.StudentRecordListVo;
 import com.dingxin.web.service.IStduentClassSeeRecordService;
 import com.dingxin.web.service.IStudentService;
 import com.dingxin.web.shiro.ShiroUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
+@Slf4j
 public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSeeRecordMapper, StduentClassSeeRecord> implements IStduentClassSeeRecordService {
 
     @Autowired
@@ -51,73 +53,7 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
     @Autowired
     private IStudentService studentService;
 
-    @Override
-    public List<StduentClassSeeRecord> like(StduentClassSeeRecord data) {
-        LambdaQueryWrapper<StduentClassSeeRecord> query = Wrappers.<StduentClassSeeRecord>lambdaQuery()
-                .like(
-                        Objects.nonNull(data.getId()),
-                        StduentClassSeeRecord::getId,
-                        data.getId())
-                .like(
-                        Objects.nonNull(data.getStudentId()),
-                        StduentClassSeeRecord::getStudentId,
-                        data.getStudentId())
-                .like(
-                        Objects.nonNull(data.getStudentName()),
-                        StduentClassSeeRecord::getStudentName,
-                        data.getStudentName())
-                .like(
-                        Objects.nonNull(data.getStudentCode()),
-                        StduentClassSeeRecord::getStudentCode,
-                        data.getStudentCode())
-                .like(
-                        Objects.nonNull(data.getStudentColleges()),
-                        StduentClassSeeRecord::getStudentColleges,
-                        data.getStudentColleges())
-                .like(
-                        Objects.nonNull(data.getStudentMajor()),
-                        StduentClassSeeRecord::getStudentMajor,
-                        data.getStudentMajor())
-                .like(
-                        Objects.nonNull(data.getStudentClass()),
-                        StduentClassSeeRecord::getStudentClass,
-                        data.getStudentClass())
-                .like(
-                        Objects.nonNull(data.getTeacherId()),
-                        StduentClassSeeRecord::getTeacherId,
-                        data.getTeacherId())
-                .like(
-                        Objects.nonNull(data.getTeacherName()),
-                        StduentClassSeeRecord::getTeacherName,
-                        data.getTeacherName())
-                .like(
-                        Objects.nonNull(data.getClassId()),
-                        StduentClassSeeRecord::getClassId,
-                        data.getClassId())
-                .like(
-                        Objects.nonNull(data.getClassName()),
-                        StduentClassSeeRecord::getClassName,
-                        data.getClassName())
-                .like(
-                        Objects.nonNull(data.getStudyLength()),
-                        StduentClassSeeRecord::getStudyLength,
-                        data.getStudyLength())
-                .like(
-                        Objects.nonNull(data.getCreateTime()),
-                        StduentClassSeeRecord::getCreateTime,
-                        data.getCreateTime())
-                .like(
-                        Objects.nonNull(data.getModifyTime()),
-                        StduentClassSeeRecord::getModifyTime,
-                        data.getModifyTime())
-                .like(
-                        Objects.nonNull(data.getDelFlag()),
-                        StduentClassSeeRecord::getDelFlag,
-                        data.getDelFlag());
-        return stduentClassSeeRecordMapper.selectList(query);
 
-
-    }
 
     /**
      * 查询学生记录列表 管理端
@@ -201,12 +137,10 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
             LambdaQueryWrapper<StduentClassSeeRecord> qw = Wrappers.lambdaQuery();
             qw.eq(StduentClassSeeRecord::getDelFlag, CommonConstant.DEL_FLAG);
             RoleEnum userType = ShiroUtils.getUserType();
-            if (userType.getCode() == CommonConstant.NORMAL_USER) {
-                qw.eq(StduentClassSeeRecord::getStudentId, userId);
-            } else if (userType.getCode() == CommonConstant.TEACHER) {
-                qw.eq(StduentClassSeeRecord::getTeacherId, userId);
-            } else {
-                throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+            switch (userType){
+                case NORMAL_USER:qw.eq(StduentClassSeeRecord::getStudentId, userId);break;
+                case TEACHER: qw.eq(StduentClassSeeRecord::getTeacherId, userId);break;
+                default:throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
             }
             String queryStr = query.getQueryStr();
             if (StringUtils.isNotEmpty(queryStr)) {
@@ -352,6 +286,17 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
         }else {
 //        学习时长格式化
             stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
+        }
+        stduentClassSeeRecord.setStudentId(ShiroUtils.getUserId());
+        stduentClassSeeRecord.setStudentName(ShiroUtils.getUserName());
+        stduentClassSeeRecord.setStudentCode(ShiroUtils.getUserId());
+        try {
+            Map<String,String> map = (Map) getOneSelf(WidRequest.builder().wid(ShiroUtils.getUserId()).build()).getRecords().get(0);
+            stduentClassSeeRecord.setStudentColleges(map.get("yxmc"));
+            stduentClassSeeRecord.setStudentMajor(map.get("zymc"));
+            stduentClassSeeRecord.setStudentClass(map.get("bjmc"));
+        }catch (Exception e){
+            log.error("保存课程记录获取人员信息失败");
         }
 
         return saveOrUpdate(stduentClassSeeRecord);

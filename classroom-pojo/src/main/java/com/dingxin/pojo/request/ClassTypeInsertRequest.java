@@ -2,6 +2,7 @@ package com.dingxin.pojo.request;
 
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.pojo.po.ClassType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -40,11 +41,11 @@ public class ClassTypeInsertRequest {
     @NotBlank(message = "dataName must not be null")
     private String dataName;
 
-    public static ClassType convent(ClassTypeInsertRequest request) {
+    public static ClassType convent(ClassTypeInsertRequest request, CasEmploys employs) {
         if (Objects.isNull(request)){
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return ClassType.builder().createPersonId(1).id(request.getId()).createPersonName("先写死").modifyTime(LocalDateTime.now())
+        return ClassType.builder().createPersonId(employs.getSid()).id(request.getId()).createPersonName(employs.getName()).modifyTime(LocalDateTime.now())
                 .dataName(request.getDataName()).typeName(request.getTypeName()).build();
 
     }

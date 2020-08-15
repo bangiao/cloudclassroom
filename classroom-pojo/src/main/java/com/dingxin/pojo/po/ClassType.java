@@ -46,7 +46,7 @@ public class ClassType extends Model<ClassType> {
      * 创建人id
      */
     @ApiModelProperty(value = "创建人id")
-    private Integer createPersonId;
+    private String createPersonId;
     /**
      * 创建人名称
      */

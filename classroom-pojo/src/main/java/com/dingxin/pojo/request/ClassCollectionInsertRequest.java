@@ -24,56 +24,16 @@ import java.util.Objects;
 public class ClassCollectionInsertRequest {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * 主键ID传修改 不传新增
-     */
-    @ApiModelProperty(value = "主键id,修改 不传新增")
-    private Integer id;
+
     /**
      * 课程id
      */
     @ApiModelProperty(value = "课程id")
     @NotNull(message = "classId must not be null")
     private Integer classId;
-    /**
-     * 课程名称
-     */
-    @NotBlank(message = "className must not be null")
-    @ApiModelProperty(value = "课程名称")
-    private String className;
-    /**
-     * 课程类型
-     */
-    @NotNull(message = "classType must not be null")
-    @ApiModelProperty(value = "课程类型")
-    private Integer classType;
-    /**
-     * 课程类型字符串
-     */
-    @NotBlank(message = "classTypeStr must not be null")
-    @ApiModelProperty(value = "课程类型字符串")
-    private String classTypeStr;
-    /**
-     * 讲师Id
-     */
-    @NotNull(message = "teacherId must not be null")
-    @ApiModelProperty(value = "讲师Id")
-    private String teacherId;
-    /**
-     * 讲师姓名
-     */
-    @NotBlank(message = "teacherName must not be null")
-    @ApiModelProperty(value = "讲师姓名")
-    private String teacherName;
 
 
-    public static ClassCollection convent(ClassCollectionInsertRequest request) {
-        if (Objects.isNull(request))
-            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
-        return ClassCollection.builder().classId(request.getClassId()).className(request.getClassName())
-                .classType(request.getClassType()).classTypeStr(request.getClassTypeStr())
-                .teacherId(request.getTeacherId()).teacherName(request.getTeacherName()).modifyTime(LocalDateTime.now()).id(request.getId()).build();
-    }
+
 
 
 }
