@@ -5,6 +5,7 @@ import com.dingxin.common.annotation.ManTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.po.Menu;
+import com.dingxin.pojo.request.CoursesStudentRequest;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.MenuVo;
 import com.dingxin.web.service.ICasDeptsService;
@@ -48,8 +49,8 @@ public class CommonDataController {
 
     @PostMapping("/courses")
     @ApiOperation(value = "获取学生课程表")
-    public BaseResult courses(@RequestBody WidRequest request){
-        return commonDataService.courses(request.getWid());
+    public BaseResult courses(@RequestBody CoursesStudentRequest request){
+        return commonDataService.courses(request);
     }
 
     @PostMapping("/menu")

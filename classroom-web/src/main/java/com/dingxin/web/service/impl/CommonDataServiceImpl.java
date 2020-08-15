@@ -3,6 +3,7 @@ package com.dingxin.web.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.pojo.basic.BaseResult;
+import com.dingxin.pojo.request.CoursesStudentRequest;
 import com.dingxin.web.service.ICommonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -16,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("DuplicatedCode")
+@SuppressWarnings({"DuplicatedCode", "Duplicates"})
 @Service
 public class CommonDataServiceImpl implements ICommonDataService {
     @Autowired
@@ -48,14 +49,16 @@ public class CommonDataServiceImpl implements ICommonDataService {
     }
 
     @Override
-    public BaseResult courses(String id) {
+    public BaseResult courses(CoursesStudentRequest request) {
         String token = tokenApiService.getToken();
         String url = "https://api.sustech.edu.cn/" +
                 "/api/studentStudyInfo/educational/courses/student/{id}";
+        url = url+"?endDate="+request.getEndDate()+"&startDate="+request.getStartDate();
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", "Bearer " + token);
         HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class,id);
+        ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.GET, entity, JSONObject.class,request.getWid());
         JSONObject jsonObject = response.getBody();
         if (Objects.nonNull(jsonObject) && Objects.nonNull(jsonObject.get("data"))) {
             LinkedHashMap<String, Object> data = (LinkedHashMap<String, Object>) jsonObject.get("data");
