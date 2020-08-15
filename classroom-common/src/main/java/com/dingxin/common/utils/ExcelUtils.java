@@ -27,24 +27,17 @@ public class ExcelUtils {
      */
     public static <T extends BaseRowModel> void exportXlsx(
             HttpServletResponse res, @Nonnull String filenameWithoutExtension, Class<T> clazz, List<T> data) throws IOException {
-        try {
-            setDownloadHeader(res, filenameWithoutExtension + ".xlsx");
-            ExcelWriter writer = new ExcelWriter(res.getOutputStream(), ExcelTypeEnum.XLSX);
-            Sheet sheet = new Sheet(1, 0, clazz);
-            sheet.setSheetName("sheet1");
-            writer.write(data, sheet);
-            writer.finish();
-            res.getOutputStream().flush();
-        }catch (IOException  e){
-            LogUtils.error(e.getMessage());
-        }finally {
-        }
-
-
+        setDownloadHeader(res, filenameWithoutExtension + ".xlsx");
+        ExcelWriter writer = new ExcelWriter(res.getOutputStream(), ExcelTypeEnum.XLSX);
+        Sheet sheet = new Sheet(1, 0, clazz);
+        sheet.setSheetName("sheet1");
+        writer.write(data, sheet);
+        writer.finish();
     }
 
     /**
      * 导出模板
+     *
      * @param res
      * @param filenameWithoutExtension
      * @param titles
@@ -65,6 +58,7 @@ public class ExcelUtils {
 
     /**
      * 设置Content-Type为文件流
+     *
      * @param filenameWithExtension 支持中文和特殊 字符
      */
     private static void setDownloadHeader(HttpServletResponse res, String filenameWithExtension) {

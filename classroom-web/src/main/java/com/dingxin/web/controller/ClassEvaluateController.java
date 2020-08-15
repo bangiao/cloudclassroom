@@ -3,10 +3,13 @@ package com.dingxin.web.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.ManTag;
-import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.ClassEvaluate;
-import com.dingxin.pojo.request.*;
+import com.dingxin.pojo.request.ClassEvaluateInsertRequest;
+import com.dingxin.pojo.request.ClassEvaluateListRequest;
+import com.dingxin.pojo.request.ClassIdRequest;
+import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.ThumbsUpRequest;
 import com.dingxin.pojo.vo.ClassEvaluateVo;
 import com.dingxin.web.service.IClassEvaluateService;
 import com.dingxin.web.shiro.ShiroUtils;
@@ -14,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,12 +105,13 @@ public class ClassEvaluateController {
         return BaseResult.success(retFlag);
     }
 
+
     /**
      * 通过课程id导出课程评价
      */
-    @PostMapping("/export")
+    @GetMapping("/export")
     @ApiOperation(value = "批量删除课程评价表信息")
-    public void export(@RequestBody ClassIdRequest request, HttpServletResponse response) {
+    public void test(ClassIdRequest request, HttpServletResponse response) {
         classEvaluateService.export(request,response);
     }
 
