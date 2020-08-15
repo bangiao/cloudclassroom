@@ -3,6 +3,7 @@ package com.dingxin.web.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dingxin.pojo.po.Curriculum;
+import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.*;
 import com.dingxin.pojo.vo.CurriculumDetailsVo;
 
@@ -23,7 +24,7 @@ public interface ICurriculumService extends IService<Curriculum> {
      */
     void disableCurriculum(List<Integer> curriculumIds);
     /**
-     *  启用课程
+     *  启用课程(如果课程对应的讲师被禁用，则当前课程启用失败)
      */
     void enableCurriculum(List<Integer> curriculumIds);
     /**
@@ -72,4 +73,10 @@ public interface ICurriculumService extends IService<Curriculum> {
      * @param statusCode
      */
     void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode);
+    /**
+     * 根据课程id获取当前课程下的教师信息
+     * @param curriculumId
+     * @return
+     */
+    Teachers loadCurrentCurriculumTeacherInfo(Integer curriculumId);
 }

@@ -12,6 +12,7 @@ import com.dingxin.dao.mapper.CurriculumMapper;
 import com.dingxin.pojo.po.Chapter;
 import com.dingxin.pojo.po.Curriculum;
 import com.dingxin.pojo.po.ProjectCurriculum;
+import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.po.Video;
 import com.dingxin.pojo.request.CurriculumInsertRequest;
 import com.dingxin.pojo.request.CurriculumUpdateRequest;
@@ -23,6 +24,7 @@ import com.dingxin.pojo.vo.VideoVo;
 import com.dingxin.web.service.IChapterService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.service.IProjectCurriculumService;
+import com.dingxin.web.service.ITeachersService;
 import com.dingxin.web.service.IVideoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *  服务接口实现类(公共实现类，该类的实现方法不会根据角色不同而差异化功能)
@@ -48,6 +51,8 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
     private IChapterService chapterService;
     @Autowired
     private IProjectCurriculumService projectCurriculumService;
+    @Autowired
+    private ITeachersService teachersService;
 
     @Override
     public List<Curriculum> like(Curriculum data) {
@@ -148,13 +153,33 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
 
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
         }
+        curriculumIds.forEach(perCurriculumId->{
+            //获取当前课程的讲师信息
+            Teachers teachers = loadCurrentCurriculumTeacherInfo(perCurriculumId);
+            //1.当前课程的讲师为空 可以启用
+            if (Objects.isNull(teachers)){
+                enableCurriculum(perCurriculumId);
+            }//当前课程有教师信息且教师没有被禁用则也可以启用
+            else if (teachers.getEnable()==CommonConstant.DISABLE_FALSE){
+                enableCurriculum(perCurriculumId);
+            }//当教师不为空且当前讲师为禁用状态时，当前课程不能被启用
+            else {
+               throw new BusinessException(ExceptionEnum.CANNOT_ENABLE_CAUSE_TEACHER_DISABLE);
+            }
+        });
+    }
+
+    private void enableCurriculum(Integer curriculumId) {
+        if (curriculumId==null){
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
         LambdaUpdateWrapper<Curriculum> disableQuery = Wrappers.<Curriculum>lambdaUpdate().
                 set(
                         Curriculum::getDisableFlag,
                         CommonConstant.DISABLE_FALSE)
-                .in(
+                .eq(
                         Curriculum::getId,
-                        curriculumIds);
+                        curriculumId);
 
         update(disableQuery);
     }
@@ -404,5 +429,23 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                         curriculumId);
 
         update(updateCurriculumAuditFlag);
+    }
+
+    @Override
+    public Teachers loadCurrentCurriculumTeacherInfo(Integer curriculumId) {
+        if (curriculumId ==null){
+            log.error("根据课程id获取当前课程下的教师信息失败，当前课程id为空");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        // 根据课程id获取当前课程下的教师id
+        LambdaQueryWrapper<Curriculum> getTeacherId = Wrappers.<Curriculum>lambdaQuery()
+                .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
+                .select(Curriculum::getTeacherId);
+        Curriculum curriculumTeacherInfo = getOne(getTeacherId);
+        String teacherId = curriculumTeacherInfo.getTeacherId();
+
+        LambdaQueryWrapper<Teachers> loadTeacherQuery = Wrappers.<Teachers>lambdaQuery()
+                .eq(Teachers::getZgh, teacherId);
+        return teachersService.getOne(loadTeacherQuery);
     }
 }
