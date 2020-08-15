@@ -234,13 +234,15 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
                 .select(
                         Curriculum::getId,
                         Curriculum::getTeacherName,
+                        Curriculum::getTeacherId,
                         Curriculum::getCurriculumName,
                         Curriculum::getCurriculumType,
-                        Curriculum::getCurriculumDesc,
                         Curriculum::getClassTypeId,
+                        Curriculum::getCurriculumDesc,
                         Curriculum::getTopicName,
-                        Curriculum::getTeacherName,
-                        Curriculum::getCurriculumImage);
+                        Curriculum::getTopicId,
+                        Curriculum::getCurriculumImage,
+                        Curriculum::getDisableFlag);
         //查询出当前课程对应的章节及章节对应的视频信息
         List<ChapterAndVideoInfo> chapterAndVideoInfos = chapterService.loadChapterAndVideoInfo(id.getId());
         //课程信息
@@ -289,7 +291,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
      * @return
      */
     @Override
-    public List<Curriculum> listall(TeacherIdRequest idRequest) {
+    public List<Curriculum> listAll(TeacherIdRequest idRequest) {
         LambdaQueryWrapper<Curriculum> qw = Wrappers.lambdaQuery();
         qw.select(Curriculum::getId,Curriculum::getCurriculumName)
         .eq(Objects.nonNull(idRequest.getJg0101id()),Curriculum::getTeacherId,idRequest.getJg0101id())

@@ -88,8 +88,8 @@ public class CurriculumController {
      */
     @PostMapping("/listall")
     @ApiOperation(value = "获取所有课程列表下拉")
-    public BaseResult<List<CurriculumVo>>listall(TeacherIdRequest idRequest){
-        List<Curriculum> list=curriculumService.listall(idRequest);
+    public BaseResult<List<CurriculumVo>>listAll(TeacherIdRequest idRequest){
+        List<Curriculum> list=curriculumService.listAll(idRequest);
         return BaseResult.success(CurriculumListVo.convertToVoWithPage(list));
     }
 

@@ -76,43 +76,66 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
                 .eq(Chapter::getDeleteFlag, CommonConstant.DEL_FLAG)
                 .isNull(Chapter::getParentId)
                 .orderBy(true,true,Chapter::getChapterOrderNumber)
-                .select(Chapter::getId,Chapter::getChapterName,Chapter::getChapterDesc,Chapter::getChapterOrderNumber);
-
+                .select(
+                        Chapter::getId,
+                        Chapter::getChapterName,
+                        Chapter::getChapterDesc,
+                        Chapter::getChapterOrderNumber,
+                        Chapter::getCurriculumId);
+        //查询出所有父章节信息
         List<Chapter> allParents = list(parentChapterQuery);
         List<ChapterAndVideoInfo> chapterAndVideoVos = new ArrayList<>();
-        for (Chapter parent : allParents) {
-            ChapterAndVideoInfo perChapterAndVideoInfo = ChapterAndVideoInfo.builder()
-                    .chapterDesc(parent.getChapterDesc())
-                    .chapterName(parent.getChapterName())
-                    .chapterOrderNumber(parent.getChapterOrderNumber())
-                    .childChapter(new ArrayList<>()).build();
-            Integer parentId = parent.getId();
-            //获取子章节
-            LambdaQueryWrapper<Chapter> childrenChapterQuery = Wrappers.<Chapter>lambdaQuery()
-                    .eq(Chapter::getParentId, parentId)
-                    .eq(Chapter::getDeleteFlag, CommonConstant.DEL_FLAG)
-                    .orderBy(true,true,Chapter::getChapterOrderNumber)
-                    .select(Chapter::getId,Chapter::getChapterName,Chapter::getChapterDesc,Chapter::getChapterOrderNumber,Chapter::getParentId,Chapter::getCurriculumId);
-            List<Chapter> childrenChapter = list(childrenChapterQuery);
-            List<ChapterAndVideoInfo> childChapter = perChapterAndVideoInfo.getChildChapter();
-            //获取子章节对应视频或者是直播视频
-            for (Chapter child : childrenChapter) {
-                LambdaQueryWrapper<Video> videoQuery = Wrappers.<Video>lambdaQuery()
-                        .eq(Video::getChapterId,child.getId())
-                        .eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG)
-                        .select(Video::getId,Video::getVideoName,Video::getVideoDuration,Video::getVideoSize,Video::getDisableFlag,Video::getVideoField,Video::getLiveVideoField);
-                //目前业务是只支持一节对应一个视频
-                Video videoPo = videoService.getOne(videoQuery);
-                VideoVo videoVo = VideoVo.convertToVo(videoPo);
-                ChapterAndVideoInfo chapterAndVideoInfo = ChapterAndVideoInfo.convertToVo(child);
-                if (chapterAndVideoInfo!=null){
+        if (CollectionUtils.isNotEmpty(allParents)){
+            for (Chapter parent : allParents) {
+                ChapterAndVideoInfo perChapterAndVideoInfo = ChapterAndVideoInfo.builder()
+                        .chapterDesc(parent.getChapterDesc())
+                        .chapterName(parent.getChapterName())
+                        .chapterOrderNumber(parent.getChapterOrderNumber())
+                        .curriculumId(parent.getCurriculumId())
+                        .childChapter(new ArrayList<>()).build();
+                Integer parentId = parent.getId();
+                //获取子章节
+                LambdaQueryWrapper<Chapter> childrenChapterQuery = Wrappers.<Chapter>lambdaQuery()
+                        .eq(Chapter::getParentId, parentId)
+                        .eq(Chapter::getDeleteFlag, CommonConstant.DEL_FLAG)
+                        .orderBy(true,true,Chapter::getChapterOrderNumber)
+                        .select(
+                                Chapter::getId,
+                                Chapter::getChapterName,
+                                Chapter::getChapterDesc,
+                                Chapter::getChapterOrderNumber,
+                                Chapter::getParentId,
+                                Chapter::getCurriculumId);
+                List<Chapter> childrenChapter = list(childrenChapterQuery);
+                List<ChapterAndVideoInfo> childChapter = perChapterAndVideoInfo.getChildChapter();
+                //获取子章节对应视频或者是直播视频
+                if (CollectionUtils.isNotEmpty(childrenChapter)){
+                    for (Chapter child : childrenChapter) {
+                        LambdaQueryWrapper<Video> videoQuery = Wrappers.<Video>lambdaQuery()
+                                .eq(Video::getChapterId,child.getId())
+                                .eq(Video::getDeleteFlag,CommonConstant.DEL_FLAG)
+                                .select(
+                                        Video::getId,
+                                        Video::getVideoName,
+                                        Video::getVideoDuration,
+                                        Video::getVideoSize,
+                                        Video::getDisableFlag,
+                                        Video::getVideoField,
+                                        Video::getLiveVideoField);
+                        //目前业务是只支持一节对应一个视频
+                        Video videoPo = videoService.getOne(videoQuery);
+                        VideoVo videoVo = VideoVo.convertToVo(videoPo);
+                        ChapterAndVideoInfo chapterAndVideoInfo = ChapterAndVideoInfo.convertToVo(child);
+                        if (chapterAndVideoInfo!=null){
 
-                    chapterAndVideoInfo.setVideoInfo(videoVo);
-                    childChapter.add(chapterAndVideoInfo);
+                            chapterAndVideoInfo.setVideoInfo(videoVo);
+                            childChapter.add(chapterAndVideoInfo);
+                        }
+                    }
                 }
-            }
 
-            chapterAndVideoVos.add(perChapterAndVideoInfo);
+                chapterAndVideoVos.add(perChapterAndVideoInfo);
+            }
         }
 
         return chapterAndVideoVos;

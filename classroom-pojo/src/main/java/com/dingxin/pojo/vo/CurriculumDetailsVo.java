@@ -56,10 +56,30 @@ public class CurriculumDetailsVo {
     @ApiModelProperty(value = "讲师",example = "LBWNB")
     private String teacherName;
     /**
+     * 讲师id
+     */
+    @ApiModelProperty(value = "讲师id",example = "LBWNB")
+    private String teacherId;
+    /**
      * 专题名
      */
     @ApiModelProperty(value = "专题名",example = "vue从入门到精通")
     private String topicName;
+    /**
+     * 所属专题id
+     */
+    @ApiModelProperty(value = "所属专题id",example = "vue从入门到精通")
+    private Integer topicId;
+    /**
+     * 课程图片
+     */
+    @ApiModelProperty(value = "课程图片url",example = "dev/static/134afd.png")
+    private String curriculumImage;
+    /**
+     * 是否禁用(是否有效)
+     */
+    @ApiModelProperty(value = "是否禁用",example = "0 未禁用，1 禁用")
+    private Integer disableFlag;
     /**
      * 章节信息
      */
@@ -76,7 +96,11 @@ public class CurriculumDetailsVo {
                 .curriculumType(curriculumPo.getCurriculumType())
                 .classTypeId(curriculumPo.getClassTypeId())
                 .teacherName(curriculumPo.getTeacherName())
+                .teacherId(curriculumPo.getTeacherId())
                 .topicName(curriculumPo.getTopicName())
+                .topicId(curriculumPo.getTopicId())
+                .curriculumImage(curriculumPo.getCurriculumImage())
+                .disableFlag(curriculumPo.getDisableFlag())
                 .build();
 
     }
