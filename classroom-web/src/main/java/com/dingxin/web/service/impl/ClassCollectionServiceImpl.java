@@ -19,6 +19,7 @@ import com.dingxin.pojo.request.ClassCollectionInsertRequest;
 import com.dingxin.pojo.request.ClassIdRequest;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.vo.ClassCollectionListVo;
 import com.dingxin.web.service.IClassCollectionService;
 import com.dingxin.web.service.ICurriculumService;
 import com.dingxin.web.shiro.ShiroUtils;
@@ -65,6 +66,7 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
         if (CollectionUtils.isEmpty(classIds)){
             throw new BusinessException(ExceptionEnum.NO_COLLECTION);
         }
+
 //        查询课程信息
         LambdaQueryWrapper<Curriculum> qc = Wrappers.lambdaQuery();
         qc.in(Curriculum::getId,classIds).eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG)
@@ -75,7 +77,16 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
                     .or().like(Curriculum::getCurriculumType, query.getQueryStr()));
         }
         Page<Curriculum> page = new Page(query.getCurrentPage(), query.getPageSize());
-        return curriculumService.page(page, qc);
+        curriculumService.page(page, qc);
+        IPage<ClassCollectionListVo> classCollectionListVoIPage = ClassCollectionListVo.convertToVoWithPage(page);
+        Map<String, Object> stringObjectMap = selectCountByCurriculumIds(classIds);
+
+        classCollectionListVoIPage.getRecords().forEach(e->{
+            e.setCollectionNum(stringObjectMap.get(String.valueOf(e.getClassId())));
+        });
+
+
+        return classCollectionListVoIPage;
     }
 
     /**
@@ -100,7 +111,11 @@ public class ClassCollectionServiceImpl extends ServiceImpl<ClassCollectionMappe
         if (count>0){
             throw new BusinessException(ExceptionEnum.DUPLICATE_DATA);
         }
-        ClassCollection build = ClassCollection.builder().personId(userId).modifyTime(LocalDateTime.now()).build();
+        ClassCollection build = ClassCollection.builder()
+                .personId(userId)
+                .modifyTime(LocalDateTime.now())
+                .classId(request.getClassId())
+                .build();
         return save(build);
 
     }

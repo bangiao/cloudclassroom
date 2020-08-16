@@ -3,6 +3,7 @@ package com.dingxin.pojo.vo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.dingxin.common.enums.ExceptionEnum;
 import com.dingxin.common.exception.BusinessException;
+import com.dingxin.common.utils.DateUtils;
 import com.dingxin.pojo.po.ClassCollection;
 import com.dingxin.pojo.po.ClassEvaluate;
 import com.dingxin.pojo.po.Curriculum;
@@ -56,13 +57,26 @@ public class ClassCollectionListVo {
      */
     @ApiModelProperty(value = "课程封面")
     private String url;
+    /**
+     * videoDuration
+     */
+    @ApiModelProperty(value = "课时")
+    private String videoDuration;
+
+    @ApiModelProperty(value = "课程收藏次数")
+    private Object collectionNum;
 
     public static ClassCollectionListVo convertToVo(Curriculum curriculum){
         if (Objects.isNull(curriculum))
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
-        return ClassCollectionListVo.builder().classId(curriculum.getId()).teacherName(curriculum.getTeacherName())
-               .classTypeStr(curriculum.getCurriculumName()).classType(curriculum.getClassTypeId())
-                .className(curriculum.getCurriculumName()).url(curriculum.getCurriculumImage())
+        return ClassCollectionListVo.builder()
+                .classId(curriculum.getId())
+                .teacherName(curriculum.getTeacherName())
+               .classTypeStr(curriculum.getCurriculumName())
+                .classType(curriculum.getClassTypeId())
+                .className(curriculum.getCurriculumName())
+                .url(curriculum.getCurriculumImage())
+                .videoDuration(DateUtils.formatDateTimeStr(curriculum.getVideoDuration()==null?0:curriculum.getVideoDuration()))
                 .build();
     }
 

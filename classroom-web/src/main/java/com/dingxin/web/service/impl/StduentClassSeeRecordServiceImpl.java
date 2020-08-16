@@ -128,7 +128,6 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
      */
     @Override
     public IPage<StduentClassSeeRecord> selfList(CommQueryListRequest query) {
-        try {
             String userId = ShiroUtils.getUserId();
             if (StringUtils.isEmpty(userId)) {
                 throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
@@ -140,7 +139,7 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
             switch (userType){
                 case NORMAL_USER:qw.eq(StduentClassSeeRecord::getStudentId, userId);break;
                 case TEACHER: qw.eq(StduentClassSeeRecord::getTeacherId, userId);break;
-                default:throw new BusinessException(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+                default:qw.eq(StduentClassSeeRecord::getStudentId, userId);break;
             }
             String queryStr = query.getQueryStr();
             if (StringUtils.isNotEmpty(queryStr)) {
@@ -151,10 +150,6 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
             Page<StduentClassSeeRecord> page = new Page(query.getCurrentPage(), query.getPageSize());
             IPage pageList = page(page, qw);
             return pageList;
-        } catch (Exception e) {
-            LogUtils.error(e.getMessage());
-            throw new BusinessException(ExceptionEnum.SYSTEM_ERROR);
-        }
 
 
     }
@@ -276,17 +271,16 @@ public class StduentClassSeeRecordServiceImpl extends ServiceImpl<StduentClassSe
     public boolean saveOrUpdateRecord(StduentClassSeeRecord stduentClassSeeRecord) {
         LambdaQueryWrapper<StduentClassSeeRecord>  qw= Wrappers.lambdaQuery();
         qw.eq(StduentClassSeeRecord::getDelFlag,CommonConstant.DEL_FLAG)
-                .eq(StduentClassSeeRecord::getStudentId,stduentClassSeeRecord.getStudentId())
+                .eq(StduentClassSeeRecord::getStudentId,ShiroUtils.getUserId())
                 .eq(StduentClassSeeRecord::getClassId,stduentClassSeeRecord.getClassId());
         StduentClassSeeRecord one = getOne(qw);
         if (!Objects.isNull(one)){
-            one.setStudyLength(stduentClassSeeRecord.getStudyLength());
+            one.setStudyLength(stduentClassSeeRecord.getStudyLength()+one.getStudyLength());
             one.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
             stduentClassSeeRecord=one;
-        }else {
-//        学习时长格式化
-            stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
         }
+//        学习时长格式化
+        stduentClassSeeRecord.setStudyLengthStr(DateUtils.formatDateTimeStr(stduentClassSeeRecord.getStudyLength()));
         stduentClassSeeRecord.setStudentId(ShiroUtils.getUserId());
         stduentClassSeeRecord.setStudentName(ShiroUtils.getUserName());
         stduentClassSeeRecord.setStudentCode(ShiroUtils.getUserId());

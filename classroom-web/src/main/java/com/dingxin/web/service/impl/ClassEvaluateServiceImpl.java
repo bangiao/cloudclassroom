@@ -39,87 +39,9 @@ import java.util.Objects;
 @Transactional
 @Slf4j
 public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, ClassEvaluate> implements IClassEvaluateService {
-    @Autowired
-    private ClassEvaluateMapper classEvaluateMapper;
 
     @Autowired
     private ICurriculumService curriculumService;
-
-    @Override
-    public List<ClassEvaluate> like(ClassEvaluate data) {
-        LambdaQueryWrapper<ClassEvaluate> query = Wrappers.<ClassEvaluate>lambdaQuery()
-                .like(
-                        Objects.nonNull(data.getId()),
-                        ClassEvaluate::getId,
-                        data.getId())
-                .like(
-                        Objects.nonNull(data.getClassId()),
-                        ClassEvaluate::getClassId,
-                        data.getClassId())
-                .like(
-                        Objects.nonNull(data.getClassName()),
-                        ClassEvaluate::getClassName,
-                        data.getClassName())
-                .like(
-                        Objects.nonNull(data.getTeacherId()),
-                        ClassEvaluate::getTeacherId,
-                        data.getTeacherId())
-                .like(
-                        Objects.nonNull(data.getTeacherName()),
-                        ClassEvaluate::getTeacherName,
-                        data.getTeacherName())
-                .like(
-                        Objects.nonNull(data.getStudyLength()),
-                        ClassEvaluate::getStudyLength,
-                        data.getStudyLength())
-                .like(
-                        Objects.nonNull(data.getStudentId()),
-                        ClassEvaluate::getStudentId,
-                        data.getStudentId())
-                .like(
-                        Objects.nonNull(data.getStudentName()),
-                        ClassEvaluate::getStudentName,
-                        data.getStudentName())
-                .like(
-                        Objects.nonNull(data.getStudentCode()),
-                        ClassEvaluate::getStudentCode,
-                        data.getStudentCode())
-                .like(
-                        Objects.nonNull(data.getEvaluateTime()),
-                        ClassEvaluate::getEvaluateTime,
-                        data.getEvaluateTime())
-                .like(
-                        Objects.nonNull(data.getEvaluateContent()),
-                        ClassEvaluate::getEvaluateContent,
-                        data.getEvaluateContent())
-                .like(
-                        Objects.nonNull(data.getEvaluateScore()),
-                        ClassEvaluate::getEvaluateScore,
-                        data.getEvaluateScore())
-                .like(
-                        Objects.nonNull(data.getEvaluateCount()),
-                        ClassEvaluate::getEvaluateCount,
-                        data.getEvaluateCount())
-                .like(
-                        Objects.nonNull(data.getCreateTime()),
-                        ClassEvaluate::getCreateTime,
-                        data.getCreateTime())
-                .like(
-                        Objects.nonNull(data.getModifyTime()),
-                        ClassEvaluate::getModifyTime,
-                        data.getModifyTime())
-                .like(
-                        Objects.nonNull(data.getStatus()),
-                        ClassEvaluate::getStatus,
-                        data.getStatus())
-                .like(
-                        Objects.nonNull(data.getDelFlag()),
-                        ClassEvaluate::getDelFlag,
-                        data.getDelFlag());
-        return classEvaluateMapper.selectList(query);
-
-
-    }
 
     /**
      * 修改点赞数
@@ -143,27 +65,13 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
      */
     @Override
     public IPage queryPage(ClassEvaluateListRequest query) {
-        //查询列表数据
-        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
-        qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
-                ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
-        if (StringUtils.isNotBlank(query.getQueryStr())) {
-            qw.and(Wrappers->Wrappers.like(ClassEvaluate::getStudentName, query.getQueryStr())
-                    .or()
-                    .like(ClassEvaluate::getStudentCode, query.getQueryStr())
-                    .or()
-                    .like(ClassEvaluate::getClassName, query.getQueryStr()));
-        }
+        LambdaQueryWrapper<ClassEvaluate> qw = getClassEvaluateLambdaQueryWrapper(query);
 //        伪代码
         RoleEnum userType = ShiroUtils.getUserType();
         if (Objects.isNull(userType)) {
             log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        qw.eq(ClassEvaluate::getClassId, query.getClassId())
-                .eq(ClassEvaluate::getStatus,CommonConstant.STATUS_AUDIT)
-                .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG)
-                .orderByDesc(ClassEvaluate::getCreateTime);
         Page<ClassEvaluate> page = new Page(query.getCurrentPage(), query.getPageSize());
         IPage pageList = page(page, qw);
         return pageList;
@@ -313,24 +221,13 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
      */
     @Override
     public IPage<ClassEvaluate> queryUserPage(ClassEvaluateListRequest query) {
-        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
-        qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
-                ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
-        if (StringUtils.isNotBlank(query.getQueryStr())) {
-            qw.and(Wrappers->Wrappers.like(ClassEvaluate::getStudentName, query.getQueryStr())
-                    .or()
-                    .like(ClassEvaluate::getStudentCode, query.getQueryStr())
-                    .or()
-                    .like(ClassEvaluate::getClassName, query.getQueryStr()));
-        }
+        LambdaQueryWrapper<ClassEvaluate> qw = getClassEvaluateLambdaQueryWrapper(query);
         RoleEnum userType = ShiroUtils.getUserType();
         if (Objects.isNull(userType)) {
             log.error(ExceptionEnum.PRIVILEGE_GET_USER_FAIL.getMsg());
             throw new BusinessException(ExceptionEnum.PRIVILEGE_GET_USER_FAIL);
         }
-        qw.eq(ClassEvaluate::getClassId, query.getClassId())
-                .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG)
-                .orderByDesc(ClassEvaluate::getCreateTime);
+
         switch (userType){
             case NORMAL_USER:
                         qw.and(Wrappers->Wrappers.eq(ClassEvaluate::getStatus, CommonConstant.STATUS_AUDIT)
@@ -349,7 +246,22 @@ public class ClassEvaluateServiceImpl extends ServiceImpl<ClassEvaluateMapper, C
         return pageList;
     }
 
-
+    private LambdaQueryWrapper<ClassEvaluate> getClassEvaluateLambdaQueryWrapper(ClassEvaluateListRequest query) {
+        LambdaQueryWrapper<ClassEvaluate> qw = Wrappers.lambdaQuery();
+        qw.select(ClassEvaluate::getId, ClassEvaluate::getClassId, ClassEvaluate::getTeacherName, ClassEvaluate::getStudyLength, ClassEvaluate::getEvaluateTime,
+                ClassEvaluate::getEvaluateContent, ClassEvaluate::getStudentName, ClassEvaluate::getStudentCode, ClassEvaluate::getClassName);
+        if (StringUtils.isNotBlank(query.getQueryStr())) {
+            qw.and(Wrappers->Wrappers.like(ClassEvaluate::getStudentName, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getStudentCode, query.getQueryStr())
+                    .or()
+                    .like(ClassEvaluate::getClassName, query.getQueryStr()));
+        }
+        qw.eq(ClassEvaluate::getClassId, query.getClassId())
+                .eq(ClassEvaluate::getDelFlag, CommonConstant.DEL_FLAG)
+                .orderByDesc(ClassEvaluate::getCreateTime);
+        return qw;
+    }
 
 
     /**

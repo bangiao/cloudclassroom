@@ -13,7 +13,6 @@ import java.util.List;
  */
 public interface IClassEvaluateService extends IService<ClassEvaluate> {
 
-    List<ClassEvaluate> like(ClassEvaluate data);
 
     /**
      * 修改点赞数

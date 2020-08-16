@@ -46,7 +46,7 @@ public class ClassCollectionController {
     public BaseResult<Page<ClassCollectionListVo>> list(@RequestBody CommQueryListRequest query) {
         //查询列表数据
         IPage<Curriculum> pageList = classCollectionService.queryList(query);
-        return BaseResult.success(ClassCollectionListVo.convertToVoWithPage(pageList));
+        return BaseResult.success(pageList);
     }
 
     /**

@@ -85,16 +85,35 @@ public class StduentClassSeeRecordVo extends BaseRowModel {
     @ApiModelProperty(value = "学习时长字符串")
     @ExcelProperty(value = "学习时长", index = 7)
     private String studyLengthStr;
+    /**
+     * 课程类型
+     */
+    @ApiModelProperty(value = "课程类型")
+    @ExcelProperty(value = "课程类型", index = 8)
+    private String classTypeName;
+    /**
+     * 课程id
+     */
+    @ApiModelProperty(value = "课程id")
+    @ExcelProperty(value = "课程", index = 8)
+    private Integer classId;
 
     public static StduentClassSeeRecordVo convent(StduentClassSeeRecord vo) {
         if (Objects.isNull(vo)) {
             throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
         return StduentClassSeeRecordVo.builder().studyLengthStr(vo.getStudyLengthStr())
-                .className(vo.getClassName()).teacherName(vo.getTeacherName())
-                .studentClass(vo.getStudentClass()).studentMajor(vo.getStudentMajor())
-                .studentColleges(vo.getStudentColleges()).studentCode(vo.getStudentCode())
-                .studentName(vo.getStudentName()).id(vo.getId()).build();
+                .className(vo.getClassName())
+                .teacherName(vo.getTeacherName())
+                .studentClass(vo.getStudentClass())
+                .studentMajor(vo.getStudentMajor())
+                .studentColleges(vo.getStudentColleges())
+                .studentCode(vo.getStudentCode())
+                .studentName(vo.getStudentName())
+                .id(vo.getId())
+                .classTypeName(vo.getClassTypeName())
+                .classId(vo.getClassId())
+                .build();
     }
 
     public static IPage<StduentClassSeeRecordVo> convertToVoWithPage(IPage<StduentClassSeeRecord> record) {

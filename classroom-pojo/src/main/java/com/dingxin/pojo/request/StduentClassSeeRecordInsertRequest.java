@@ -53,6 +53,18 @@ public class StduentClassSeeRecordInsertRequest {
     @ApiModelProperty(value = "课程名字")
     private String className;
     /**
+     * 课程名字
+     */
+    @NotBlank(message = "className must not be null")
+    @ApiModelProperty(value = "课程名字")
+    private String classTypeName;
+    /**
+     * 课程名字
+     */
+    @NotBlank(message = "className must not be null")
+    @ApiModelProperty(value = "课程名字")
+    private String classTypeId;
+    /**
      * 学习时长
      */
     @ApiModelProperty(value = "学习时长")
@@ -63,9 +75,15 @@ public class StduentClassSeeRecordInsertRequest {
         if (Objects.isNull(request)){
            throw new BusinessException(ExceptionEnum.COVENT_NULLPOINT);
         }
-        return StduentClassSeeRecord.builder().studyLength(request.getStudyLength()).className(request.getClassName()).classId(request.getClassId())
-                .teacherName(request.getTeacherName()).teacherId(request.getTeacherId()).
-                build();
+        return StduentClassSeeRecord.builder()
+                .studyLength(request.getStudyLength())
+                .className(request.getClassName())
+                .classId(request.getClassId())
+                .teacherName(request.getTeacherName())
+                .teacherId(request.getTeacherId())
+                .classTypeName(request.getClassTypeName())
+                .classTypeId(request.getClassTypeId())
+                .build();
     }
 
 }
