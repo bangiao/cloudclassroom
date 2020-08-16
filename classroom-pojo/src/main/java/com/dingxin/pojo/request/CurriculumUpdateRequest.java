@@ -58,7 +58,7 @@ public class CurriculumUpdateRequest {
      * 讲师id
      */
     @ApiModelProperty(value = "讲师id",example = "156295612da")
-//    @NotBlank(message = "讲师id不能为空")
+    @NotBlank(message = "讲师id不能为空")
     private String teacherId;
     /**
      * 课程图片
