@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,10 +17,12 @@ import com.dingxin.dao.mapper.TeachersMapper;
 import com.dingxin.pojo.po.CasDepts;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.PersonInfoRequest;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.TeacherVo;
 import com.dingxin.web.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.dingxin.web.shiro.ShiroUtils;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -54,6 +57,8 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     private ICurriculumService curriculumService;
     @Autowired
     private IProjectManagementService projectManagementService;
+    @Autowired
+    private IStduentClassSeeRecordService stduentClassSeeRecordService;
     @Override
     public List<Teachers> like(Teachers data) {
         LambdaQueryWrapper<Teachers> query = Wrappers.<Teachers>lambdaQuery()
@@ -211,8 +216,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     @Override
     public BaseResult updateIntroduction(Teachers teachers) {
         teachers.setModifyTime(LocalDateTime.now());
-        this.saveOrUpdate(teachers);
-        return BaseResult.success().setMsg("编辑讲师个人信息成功");
+        return BaseResult.success(this.saveOrUpdate(teachers));
     }
 
     @Override
@@ -247,6 +251,37 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
                 .eq(ProjectManagement::getLecturerId, teachers.getZgh());
         projectManagementService.update(projectQw);
         return BaseResult.success().setMsg("启用讲师成功");
+    }
+
+    @Override
+    public Map<String,Object> techerInformation(String teachersId) {
+        CommQueryListRequest qu = new CommQueryListRequest();
+        qu.setQueryStr(teachersId);
+        IPage iPage = this.queryPage(qu);
+        List<LinkedHashMap<String,Object>> records = iPage.getRecords();
+        LinkedHashMap<String, Object> map=null;
+        if (CollectionUtils.isNotEmpty(records)){
+             map = records.get(0);
+        }
+
+        return map;
+    }
+
+    @Override
+    public String queryInfo() {
+        LambdaUpdateWrapper<Teachers> qw = Wrappers.<Teachers>lambdaUpdate()
+                .eq(Teachers::getZgh, ShiroUtils.getUserId());
+        Teachers one = this.getOne(qw);
+        return Objects.isNull(one)? " ":one.getIntroduction();
+    }
+
+    @Override
+    public Boolean UpdatePerson(PersonInfoRequest personInfoRequest) {
+        Teachers teachers = new Teachers();
+        teachers.setZgh(ShiroUtils.getUserId());
+        teachers.setIntroduction(personInfoRequest.getIntroduction());
+        teachers.setModifyTime(LocalDateTime.now());
+        return saveOrUpdate(teachers);
     }
 
 

@@ -262,16 +262,14 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByAsc(Curriculum::getWatchAmount);
         IPage<Curriculum> curriculumIPage = curriculumService.page(curriculumPage, curriculumQw);
-        IPage<CurriculumVo> curriculumVoIPage = CurriculumVo.convertToVoWithPage(curriculumIPage);
-        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(curriculumVoIPage.getRecords()).type(CommonConstant.HOTCURRICULUMTYPE).build();
+        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(curriculumService.getCollection(curriculumIPage).getRecords()).type(CommonConstant.HOTCURRICULUMTYPE).build();
         //最新课程
         LambdaQueryWrapper<Curriculum> latestCurriculumQw = Wrappers.<Curriculum>lambdaQuery()
                 .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByDesc(Curriculum::getCreateTime);
         IPage<Curriculum> latestCurriculumIPage = curriculumService.page(curriculumPage, latestCurriculumQw);
-        IPage<CurriculumVo> LeatesCurriculumVoIPage = CurriculumVo.convertToVoWithPage(latestCurriculumIPage);
-        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(LeatesCurriculumVoIPage.getRecords()).type(CommonConstant.LATESTCURRICULUMTYPE).build();
+        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(curriculumService.getCollection(latestCurriculumIPage).getRecords()).type(CommonConstant.LATESTCURRICULUMTYPE).build();
         ArrayList<HotListVo> ret = Lists.newArrayList();
         ret.add(hotProject);
         ret.add(hotCurriculum);

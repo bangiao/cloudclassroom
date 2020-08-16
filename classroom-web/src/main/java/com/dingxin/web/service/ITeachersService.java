@@ -6,6 +6,7 @@ import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.Teachers;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.IdRequest;
+import com.dingxin.pojo.request.PersonInfoRequest;
 import com.dingxin.pojo.request.WidRequest;
 import com.dingxin.pojo.vo.TeacherVo;
 
@@ -37,4 +38,19 @@ public interface ITeachersService extends IService<Teachers> {
     BaseResult disEnable(Teachers teachers);
 
     BaseResult enable(Teachers teachers);
+
+    /**
+     * pc获取个人信息
+     * @param teachersId
+     * @return
+     */
+    Map<String,Object> techerInformation (String teachersId);
+
+    /**
+     * pc获取个人介绍
+     * @return
+     */
+    String queryInfo();
+
+    Boolean UpdatePerson(PersonInfoRequest personInfoRequest);
 }

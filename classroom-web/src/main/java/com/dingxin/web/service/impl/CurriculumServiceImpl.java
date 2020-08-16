@@ -519,8 +519,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         if (CollectionUtils.isEmpty(records)){
             return null;
         }
-        List<Curriculum> records1 = curriculumIPage.getRecords();
-        List<Integer> idList =records1 .stream().map(Curriculum::getId).collect(Collectors.toList());
+        List<Integer> idList =records .stream().map(Curriculum::getId).collect(Collectors.toList());
         IPage<CurriculumPcVo> curriculumPcVoIPage = CurriculumPcVo.convertToVoWithPage(curriculumIPage);
         //查询收藏信息
         if (CollectionUtils.isNotEmpty(idList)){
