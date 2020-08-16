@@ -477,6 +477,7 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
      * pc根据院系获取课程列表
      * @param
      */
+    @SuppressWarnings("unchecked")
     @Override
     public BaseResult<Page<CurriculumVo>> ListbyDept(IdRequest idRequest){
         Page<Curriculum> page = new Page(idRequest.getCurrentPage(),idRequest.getPageSize());

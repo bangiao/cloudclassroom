@@ -70,7 +70,7 @@ public class Curriculum extends Model<Curriculum> {
     /**
      * 所属院系
      */
-    private Integer departmentId;
+    private String departmentId;
     /**
      * 所属专题
      */
