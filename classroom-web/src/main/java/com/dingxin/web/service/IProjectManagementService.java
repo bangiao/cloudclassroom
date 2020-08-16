@@ -30,8 +30,6 @@ public interface IProjectManagementService extends IService<ProjectManagement> {
 
     List<HotListVo> queryPCPageByCount(CommQueryListRequest query);
 
-    IPage<ProjectManagementVo> searchProjectNameList(CommQueryListRequest query);
-
     IPage<ProjectManagement> searchByProjectName(CommQueryListRequest query);
 
     BaseResult insertOne(ProjectManagement projectManagement);

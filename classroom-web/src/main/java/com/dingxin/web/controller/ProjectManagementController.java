@@ -79,15 +79,7 @@ public class ProjectManagementController {
         //查询列表数据
         return BaseResult.success(projectManagementService.queryPCPageByCount(query)).setMsg("获取列表成功");
     }
-    /**
-     * pc专题名称列表查询
-     */
-    @PostMapping("/pc/searchProjectNameList")
-    @ApiOperation(value = "获取pc专题管理专题名称列表")
-    public BaseResult<Page<ProjectManagementVo>> searchProjectNameList(@RequestBody CommQueryListRequest query) {
-        //查询列表数据
-        return BaseResult.success(projectManagementService.searchProjectNameList(query));
-    }
+
     /**
      * pc专题名称列表查询
      */

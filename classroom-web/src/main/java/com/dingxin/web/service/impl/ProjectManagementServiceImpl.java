@@ -280,24 +280,6 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     }
 
     /**
-     * 查询pc专题名称列表
-     *
-     * @param query
-     * @return
-     */
-    @Override
-    public IPage<ProjectManagementVo> searchProjectNameList(CommQueryListRequest query) {
-        Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
-        LambdaQueryWrapper<ProjectManagement> qw = Wrappers.lambdaQuery();
-        qw
-                .groupBy(ProjectManagement::getProjectName)
-                .select(ProjectManagement::getProjectName)
-                .eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG)
-                .eq(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE);
-        return ProjectManagementVo.convertToVoWithPage(page(page, qw));
-    }
-
-    /**
      * 根据专题名称查询列表
      *
      * @param query
@@ -440,11 +422,10 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     public BaseResult<ProjectManagementVo> projectNameList(BaseQuery<ProjectManagement> query) {
         Page<ProjectManagement> page = new Page(query.getCurrentPage(), query.getPageSize());
         LambdaQueryWrapper<ProjectManagement> qw = Wrappers.<ProjectManagement>lambdaQuery()
-            .groupBy(ProjectManagement::getProjectName)
-            .select(ProjectManagement::getProjectName,ProjectManagement::getId)
+            .select(ProjectManagement::getProjectName,ProjectManagement::getId,ProjectManagement::getProjectDescription)
             .eq(ProjectManagement::getDelFlag, CommonConstant.DEL_FLAG)
             .eq(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE);
-        return BaseResult.success(ProjectManagementVo.convertToVoWithPage(this.page(page,qw)),"查询专题名称列表成功");
+        return BaseResult.success(ProjectManagementVo.convertToVoWithPage(this.list(qw)),"查询专题名称列表成功");
     }
 
     @Override

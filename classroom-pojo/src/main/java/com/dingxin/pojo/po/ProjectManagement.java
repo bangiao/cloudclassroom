@@ -68,7 +68,7 @@ public class ProjectManagement extends Model<ProjectManagement> {
      * 是否禁用 0：启用 -1：禁用
      */
     @ApiModelProperty(value = "是否禁用 0：启用 -1：禁用")
-    private Boolean enable;
+    private Integer enable;
     /**
      * 审核状态 0：待审核 1：审核通过 -1：审核未通过
      */
