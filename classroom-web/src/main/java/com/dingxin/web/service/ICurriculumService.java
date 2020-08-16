@@ -79,14 +79,19 @@ public interface ICurriculumService extends IService<Curriculum> {
      * @param statusCode
      */
     void updateCurriculumAuditFlag(Integer curriculumId,Integer statusCode);
+    /**
+     * 修改课程的审核状态
+     * @param curriculumId
+     */
+    void updateCurriculumAuditFlag(Integer curriculumId);
 
     /**
      * pc查询最新课程列表
      * @param
      */
-    BaseResult<Page<CurriculumPcVo>> leatestList(IdRequest idRequest);
+    BaseResult<Page<CurriculumPcVo>> latestList(IdRequest idRequest);
 
-    BaseResult<Page<CurriculumVo>> ListbyDept(IdRequest idRequest);
+    BaseResult<Page<CurriculumVo>> listByDept(IdRequest idRequest);
     /**
      * 根据课程id获取当前课程下的教师信息
      * @param curriculumId

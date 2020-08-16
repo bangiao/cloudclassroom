@@ -38,7 +38,7 @@ public class ChapterController {
     @ApiOperation(value = "根据课程获取所有章节列表下拉")
     public BaseResult<List<ChapterSelectVo>> chapterSelectList(@RequestBody@Validated IdRequest id){
 
-        return BaseResult.success(chapterService.loadChapterAndChildren(id));
+        return BaseResult.success(chapterService.loadChapterAndChildren(id.getId()));
     }
 
     /**

@@ -60,6 +60,12 @@ public interface IVideoService extends IService<Video> {
      */
     List<Video> loadAllValidVideoForCurrentCurriculum(Integer curriculumId);
     /**
+     * 加在当前课程下所有没有被删除的视频的id
+     * @param curriculumId
+     * @return
+     */
+    List<Integer> loadAllNotDeleteVideoForCurrentCurriculum(Integer curriculumId);
+    /**
      * 更新当前视频对应课程的观看次数
      * @param curriculumId
      */

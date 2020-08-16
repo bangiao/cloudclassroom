@@ -74,7 +74,7 @@ public class VideoVo {
 
 
     }
-    public static Video convertToPoWhileInsert(VideoVo videoVo){
+    public static Video convertToPoWhileInsertOrUpdate(VideoVo videoVo){
         if (Objects.isNull(videoVo))
             return null;
         return Video.builder()

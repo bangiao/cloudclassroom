@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *  服务接口实现类
@@ -274,6 +275,28 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
     }
 
     @Override
+    public List<Integer> loadAllNotDeleteVideoForCurrentCurriculum(Integer curriculumId) {
+        if (curriculumId == null){
+            log.error("loadAllNotDeleteVideoForCurrentCurriculum 失败");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaQueryWrapper<Video> videoDurationQuery = Wrappers.<Video>lambdaQuery()
+                .eq(
+                        Video::getCurriculumId, curriculumId)
+                .eq(
+                        Video::getDeleteFlag,
+                        CommonConstant.DEL_FLAG)
+                .select(
+                        Video::getId);
+
+        List<Video> videos = list(videoDurationQuery);
+        if (CollectionUtils.isNotEmpty(videos)){
+            return videos.stream().map(Video::getId).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public void updateCurriculumWatchAmount(Integer curriculumId) {
         if (curriculumId == null){
             log.error("updateCurriculumWatchAmount 失败");
@@ -281,11 +304,13 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
         }
         //获取当前视频对应课程的所有视频
         List<Video> videos = loadAllValidVideoForCurrentCurriculum(curriculumId);
-        Long totalWatchAmount = 0L;
+        long totalWatchAmount = 0L;
         //todo 线程安全问题
-        for (Video video : videos) {//遍历根据当前课程id查出的所有视频，累加课程时长，最终的结果更新到对应的课程总时长
-            Long watchAmount = video.getWatchAmount();
-            totalWatchAmount += (watchAmount == null ? CommonConstant.WATCH_AMOUNT_INITIAL_VALUE : watchAmount);
+        if (videos!=null){
+            for (Video video : videos) {//遍历根据当前课程id查出的所有视频，累加课程时长，最终的结果更新到对应的课程总时长
+                Long watchAmount = video.getWatchAmount();
+                totalWatchAmount += (watchAmount == null ? CommonConstant.WATCH_AMOUNT_INITIAL_VALUE : watchAmount);
+            }
         }
 
         //更新当前视频对应课程的总观看次数
@@ -304,12 +329,14 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
                         Video::getCurriculumId,
                         Video::getChapterId);
         List<Video> listVideos = list(listQueryParams);
-        for (Video video : listVideos) {
-            Integer curriculumId = video.getCurriculumId();
-            //更新视频对应课程的观看次数
-            updateCurriculumWatchAmount(curriculumId);
-            //更新对应课程的时长
-            updateCurriculumVideoDuration(curriculumId);
+        if (CollectionUtils.isNotEmpty(listVideos)){
+            for (Video video : listVideos) {
+                Integer curriculumId = video.getCurriculumId();
+                //更新视频对应课程的观看次数
+                updateCurriculumWatchAmount(curriculumId);
+                //更新对应课程的时长
+                updateCurriculumVideoDuration(curriculumId);
+            }
         }
     }
 

@@ -179,7 +179,10 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         }
 
         //可以支持递归，如果之后有更多层级的章节
-        LambdaQueryWrapper<Chapter> queryWrapper = Wrappers.<Chapter>lambdaQuery().in(Chapter::getParentId, childChapterIds).select(Chapter::getId);
+        LambdaQueryWrapper<Chapter> queryWrapper = Wrappers.<Chapter>lambdaQuery()
+                .eq(Chapter::getDeleteFlag,CommonConstant.DEL_FLAG)
+                .in(Chapter::getParentId, childChapterIds)
+                .select(Chapter::getId);
         List<Chapter> chapters = list(queryWrapper);
         if (chapters==null) {
             return Collections.emptyList();
@@ -190,7 +193,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ChapterSelectVo> loadChapterAndChildren(IdRequest curriculumId) {
+    public List<ChapterSelectVo> loadChapterAndChildren(Integer curriculumId) {
         if (curriculumId == null){
             log.error("查询课程对应章节和子章节信息失败，当前课程id为空");
             throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
@@ -207,12 +210,28 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
             return parentChapter;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<Integer> loadCurrentCurriculumAllChapter(Integer curriculumId) {
+        if (curriculumId == null){
+            log.error("查询课程对应章节和子章节信息失败，当前课程id为空");
+            throw new BusinessException(ExceptionEnum.REQUIRED_PARAM_IS_NULL);
+        }
+        LambdaQueryWrapper<Chapter> chapterAll = Wrappers.<Chapter>lambdaQuery()
+                .eq(Chapter::getCurriculumId, curriculumId)
+                .eq(Chapter::getDeleteFlag,CommonConstant.DEL_FLAG)
+                .select(Chapter::getId);
+        List<Chapter> chapters = list(chapterAll);
+
+        return chapters.stream().map(Chapter::getId).collect(Collectors.toList());
+    }
+
     @SuppressWarnings("unchecked")
-    private List<Chapter> loadValidParentChapters(IdRequest curriculumId) {
+    private List<Chapter> loadValidParentChapters(Integer curriculumId) {
         // 获取所有有效父章节
         LambdaQueryWrapper<Chapter> loadParentChapterQuery = Wrappers.<Chapter>lambdaQuery()
                 .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
-                .eq(Chapter::getCurriculumId, curriculumId.getId())
+                .eq(Chapter::getCurriculumId, curriculumId)
                 .isNull(Chapter::getParentId).orderByAsc(Chapter::getChapterOrderNumber)
                 .select(
                         Chapter::getId,
@@ -224,13 +243,13 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
     }
 
     @SuppressWarnings("unchecked")
-    private List<Chapter> loadChildChapterInfo(IdRequest curriculumId, Integer parentId) {
+    private List<Chapter> loadChildChapterInfo(Integer curriculumId, Integer parentId) {
         if (parentId==null){
             return Collections.emptyList();
         }
         LambdaQueryWrapper<Chapter> loadChildrenChapterQuery = Wrappers.<Chapter>lambdaQuery()
                 .eq(Chapter::getDeleteFlag, CommonConstant.DISABLE_FALSE)
-                .eq(Chapter::getCurriculumId, curriculumId.getId())
+                .eq(Chapter::getCurriculumId, curriculumId)
                 .eq(Chapter::getParentId,parentId)
                 .orderBy(true,true,Chapter::getChapterOrderNumber)
                 .select(
@@ -242,7 +261,7 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
     }
 
     @Override
-    public List<ChapterSelectVo> loadNoVideoChapterAndChildren(IdRequest curriculumId) {
+    public List<ChapterSelectVo> loadNoVideoChapterAndChildren(Integer curriculumId) {
         // 根据课程id获取有效的父章节
         List<Chapter> validParentChapters = loadValidParentChapters(curriculumId);
         return null;

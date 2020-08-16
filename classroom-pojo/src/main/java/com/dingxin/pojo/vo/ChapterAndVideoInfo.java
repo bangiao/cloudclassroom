@@ -98,6 +98,18 @@ public class ChapterAndVideoInfo {
                 .deleteFlag(CommonConstant.DEL_FLAG)
                 .build();
     }
+    public static Chapter convertToPoWhileUpdate(ChapterAndVideoInfo chapterDto){
+        if (Objects.isNull(chapterDto))
+            return null;
+        return Chapter.builder()
+                .id(chapterDto.getId())
+                .chapterDesc(chapterDto.getChapterDesc())
+                .chapterName(chapterDto.getChapterName())
+                .chapterOrderNumber(chapterDto.getChapterOrderNumber())
+                .parentId(chapterDto.getParentId())
+                .deleteFlag(CommonConstant.DEL_FLAG)
+                .build();
+    }
 
     public static IPage<ChapterAndVideoInfo> convertToVoWithPage(IPage<Chapter> chapterPo){
 

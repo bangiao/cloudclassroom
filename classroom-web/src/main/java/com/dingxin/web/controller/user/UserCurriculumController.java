@@ -6,14 +6,10 @@ package com.dingxin.web.controller.user;
  * @Description
  */
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dingxin.common.annotation.UserTag;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
-import com.dingxin.pojo.po.Curriculum;
-import com.dingxin.pojo.po.ProjectCurriculum;
 import com.dingxin.pojo.po.ProjectManagement;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.vo.CurriculumPcVo;
@@ -24,7 +20,6 @@ import com.dingxin.web.service.IProjectCurriculumService;
 import com.dingxin.web.service.IProjectManagementService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +45,7 @@ public class UserCurriculumController {
     @ApiOperation(value = "根据type查询课程列表")
     public BaseResult<Page<CurriculumPcVo>> list(@RequestBody IdRequest idRequest){
         //查询列表数据
-    return curriculumService.leatestList(idRequest);
+    return curriculumService.latestList(idRequest);
     }
 
     /**
@@ -60,7 +55,7 @@ public class UserCurriculumController {
     @ApiOperation(value = "部门获取列表")
     public BaseResult<Page<CurriculumVo>> ListbyDept(@RequestBody @Validated IdRequest idRequest){
         //查询列表数据
-        return curriculumService.ListbyDept(idRequest);
+        return curriculumService.listByDept(idRequest);
     }
 
 
