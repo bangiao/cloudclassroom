@@ -116,7 +116,8 @@ public class VideoAuditServiceImpl extends ServiceImpl<VideoMapper, Video> imple
                 .eq(
                         Objects.nonNull(query.getAuditFlag()),
                         Curriculum::getEvaluateStatus,
-                        query.getAuditFlag());
+                        query.getAuditFlag())
+                .and(del->del.eq(Curriculum::getDeleteFlag,CommonConstant.DEL_FLAG));
         IPage<Curriculum> iPage = curriculumService.page(page, wrapper);
         return iPage;
     }
