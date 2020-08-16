@@ -120,4 +120,14 @@ public class VideoController {
         Video video = videoService.loadByChapterId(id);
         return BaseResult.success(VideoMetaData.of(video));
     }
+
+
+
+    @PostMapping("/format")
+    @ApiOperation(value = "格式化视频内容")
+    public BaseResult<VideoMetaData> formatVideo(@RequestBody VideoMetaData data){
+        return BaseResult.success(VideoMetaData.of(data));
+    }
+
+
 }

@@ -420,7 +420,9 @@ public abstract class CurriculumServiceImpl extends ServiceImpl<CurriculumMapper
         chapterService.onlyRemoveChildChapterSelf(curriculumUpdateRequest.getDeleteChildChapterIds());
         //删除章节对应的视频信息
         List<Integer> allDeleteVideoChapterIds = chapterService.loadChildrenIdByParentIds(curriculumUpdateRequest.getDeleteParentChapterIds());
-        allDeleteVideoChapterIds.addAll(curriculumUpdateRequest.getDeleteChildChapterIds());
+        if(CollectionUtils.isNotEmpty(curriculumUpdateRequest.getDeleteChildChapterIds())){
+            allDeleteVideoChapterIds.addAll(curriculumUpdateRequest.getDeleteChildChapterIds());
+        }
         videoService.deleteVideoByChapterId(allDeleteVideoChapterIds,curriculumUpdateRequest.getCurriculumId());
         //保存新增的章节及视频信息
         List<ChapterAndVideoInfo> chapterAndVideoWillBeSaved = curriculumUpdateRequest.getChapterAndVideoWillBeSaved();

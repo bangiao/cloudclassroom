@@ -131,6 +131,34 @@ public class VideoMetaData {
     }
 
 
+    public static VideoMetaData of(VideoMetaData video) {
+        if (Objects.isNull(video)) {
+            return null;
+        }
+        VideoMetaData data = new VideoMetaData();
+        data.setName(video.getName());
+        data.setFileId(video.getFileId());
+        Long duration = video.getDurationNum();
+        if (Objects.isNull(duration)) {
+            data.setDuration(UNKNOWN);
+        } else {
+            data.setDuration(LocalDateTime
+                    .ofInstant(Instant.ofEpochMilli(duration * 1000),
+                            ZoneId.of("UTC"))
+                    .format(DateTimeFormatter.ofPattern("HH时mm分ss秒")));
+        }
+        data.setDurationNum(duration);
+        if(Objects.isNull(video.getSizeNum())){
+            data.setSize(UNKNOWN);
+        }else{
+            Long size = video.getSizeNum();
+            data.setSize(formatSize(BigDecimal.valueOf(size),0));
+            data.setSizeNum(video.getSizeNum());
+        }
+        return data;
+    }
+
+
     private static String formatSize(BigDecimal size, int i){
         if(size.divide(SCALE).doubleValue()>1){
             return formatSize(size.divide(SCALE),++i);
