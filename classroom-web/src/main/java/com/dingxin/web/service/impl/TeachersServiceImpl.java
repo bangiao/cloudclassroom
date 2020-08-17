@@ -223,7 +223,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
     public BaseResult disEnable(Teachers teachers) {
         teachers.setModifyTime(LocalDateTime.now());
         this.saveOrUpdate(teachers);
-        //禁用讲师相关课程
+        /*//禁用讲师相关课程
         LambdaUpdateWrapper<Curriculum> curriculumQw = Wrappers.<Curriculum>lambdaUpdate()
                 .set(Curriculum::getDisableFlag, CommonConstant.DISABLE_TRUE)
                 .eq(Curriculum::getTeacherId, teachers.getZgh());
@@ -232,7 +232,7 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
         LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
                 .set(ProjectManagement::getEnable, CommonConstant.DISABLE_TRUE)
                 .eq(ProjectManagement::getLecturerId, teachers.getZgh());
-        projectManagementService.update(projectQw);
+        projectManagementService.update(projectQw);*/
         return BaseResult.success().setMsg("禁用讲师成功");
     }
 
@@ -246,10 +246,10 @@ public class TeachersServiceImpl extends ServiceImpl<TeachersMapper, Teachers> i
                 .eq(Curriculum::getTeacherId, teachers.getZgh());
         curriculumService.update(curriculumQw);*/
         //启用讲师相关专题
-        LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+       /* LambdaUpdateWrapper<ProjectManagement> projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
                 .set(ProjectManagement::getEnable, CommonConstant.DISABLE_FALSE)
                 .eq(ProjectManagement::getLecturerId, teachers.getZgh());
-        projectManagementService.update(projectQw);
+        projectManagementService.update(projectQw);*/
         return BaseResult.success().setMsg("启用讲师成功");
     }
 

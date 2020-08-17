@@ -6,25 +6,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dingxin.common.constant.CommonConstant;
-import com.dingxin.common.enums.ExceptionEnum;
-import com.dingxin.common.exception.BusinessException;
-import com.dingxin.common.utils.DateUtils;
 import com.dingxin.dao.mapper.ProjectCurriculumMapper;
+import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.basic.BaseQuery;
 import com.dingxin.pojo.basic.BaseResult;
 import com.dingxin.pojo.po.*;
-import com.dingxin.dao.mapper.ProjectManagementMapper;
 import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.EnableRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.WidRequest;
-import com.dingxin.pojo.vo.CurriculumVo;
 import com.dingxin.pojo.vo.HotListVo;
 import com.dingxin.pojo.vo.ProjectCurrilumVo;
 import com.dingxin.pojo.vo.ProjectManagementVo;
 import com.dingxin.web.service.*;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,9 +28,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -262,14 +260,14 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByAsc(Curriculum::getWatchAmount);
         IPage<Curriculum> curriculumIPage = curriculumService.page(curriculumPage, curriculumQw);
-        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(curriculumService.getCollection(curriculumIPage).getRecords()).type(CommonConstant.HOTCURRICULUMTYPE).build();
+        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(CollectionUtils.isNotEmpty(curriculumService.getCollection(curriculumIPage).getRecords())?curriculumService.getCollection(curriculumIPage).getRecords():null).type(CommonConstant.HOTCURRICULUMTYPE).build();
         //最新课程
         LambdaQueryWrapper<Curriculum> latestCurriculumQw = Wrappers.<Curriculum>lambdaQuery()
                 .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByDesc(Curriculum::getCreateTime);
         IPage<Curriculum> latestCurriculumIPage = curriculumService.page(curriculumPage, latestCurriculumQw);
-        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(curriculumService.getCollection(latestCurriculumIPage).getRecords()).type(CommonConstant.LATESTCURRICULUMTYPE).build();
+        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(CollectionUtils.isNotEmpty(curriculumService.getCollection(latestCurriculumIPage).getRecords())?curriculumService.getCollection(curriculumIPage).getRecords():null).type(CommonConstant.LATESTCURRICULUMTYPE).build();
         ArrayList<HotListVo> ret = Lists.newArrayList();
         ret.add(hotProject);
         ret.add(hotCurriculum);
@@ -429,28 +427,18 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     @Override
     public BaseResult isEnable(EnableRequest enableRequest) {
         LambdaUpdateWrapper<ProjectManagement> projectQw = null;
-        if (enableRequest.getEnableState().equals(1)){
-            LambdaQueryWrapper<Teachers> qw = Wrappers.<Teachers>lambdaQuery()
-                    .eq(Teachers::getEnable, CommonConstant.DISABLE_TRUE)
-                    .eq(Teachers::getZgh, enableRequest.getZgh());
-            List<Teachers> list = teachersService.list(qw);
-            if (CollectionUtils.isNotEmpty(list)){
-                projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
-                        .set(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE)
-                        .eq(ProjectManagement::getId,enableRequest.getId())
-                        .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
-                this.update(projectQw);
-            }else {
-                throw new BusinessException(ExceptionEnum.ENABLE_ERROR);
-            }
+        if (enableRequest.getEnableState().equals(CommonConstant.DISABLE_FALSE)){
+            projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
+                    .eq(ProjectManagement::getId,enableRequest.getId())
+                    .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG)
+                    .set(ProjectManagement::getEnable,CommonConstant.DISABLE_TRUE);
         }else {
             projectQw = Wrappers.<ProjectManagement>lambdaUpdate()
-                    .set(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE)
-                    .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG);
-            this.update(projectQw);
+                    .eq(ProjectManagement::getId,enableRequest.getId())
+                    .eq(ProjectManagement::getDelFlag,CommonConstant.DEL_FLAG)
+                    .set(ProjectManagement::getEnable,CommonConstant.DISABLE_FALSE);
         }
-
-        return BaseResult.success();
+        return BaseResult.success(this.update(projectQw));
     }
 
 
