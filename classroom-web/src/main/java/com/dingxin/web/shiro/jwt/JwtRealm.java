@@ -4,6 +4,7 @@ import com.dingxin.common.utils.TokenUtil;
 import com.dingxin.pojo.po.CasEmploys;
 import com.dingxin.web.service.ICasEmploysService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -64,6 +65,9 @@ public class JwtRealm extends AuthorizingRealm {
         // 获取token
         String token = jwtToken.getToken();
         String sid = tokenUtil.getUsernameFromToken(token);
+        if(StringUtils.isEmpty(sid)){
+            throw new AuthenticationException("token解析异常");
+        }
         CasEmploys casEmploys = casEmploysService.getById(sid);
         casEmploys.setToken(token);
         return new SimpleAuthenticationInfo(casEmploys, token, sid);
