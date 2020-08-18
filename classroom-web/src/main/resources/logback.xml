@@ -22,17 +22,17 @@
     </appender>
 
     <!-- 全量日志 -->
-    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-        </encoder>
-<!--        <file>${LOG_PATH}/all.log</file>-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/all.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
-            <maxFileSize>${LOG_FILE_MAX_SIZE:-50MB}</maxFileSize>
-            <maxHistory>${LOG_FILE_MAX_HISTORY:-0}</maxHistory>
-        </rollingPolicy>
-    </appender>
+<!--    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        <encoder>-->
+<!--            <pattern>${FILE_LOG_PATTERN}</pattern>-->
+<!--        </encoder>-->
+<!--&lt;!&ndash;        <file>${LOG_PATH}/all.log</file>&ndash;&gt;-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${LOG_PATH}/all.log.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>-->
+<!--            <maxFileSize>${LOG_FILE_MAX_SIZE:-50MB}</maxFileSize>-->
+<!--            <maxHistory>${LOG_FILE_MAX_HISTORY:-0}</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--    </appender>-->
 
     <!-- 错误日志 -->
     <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
