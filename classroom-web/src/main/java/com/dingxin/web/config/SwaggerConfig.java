@@ -58,7 +58,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("云课堂系统")
-                .description("本系统的建设，可在一定程度上提高教育资源匮乏地区的教学质量和优质教育资源的共享，增强对各类资源合理整合与集成、加大本校班与班之间的互动交流。实现线下与线上相结合的远程课堂模式。")
+                .description("本系统的建设，可在一定程度上提高教育资源匮乏地区的教学质量和优质教育资源的共享，增强对各类资源合理整合与集成、加大本校班与班之间的互动交流。实现线下与线上相结合的远程课堂模式。测试是否成功")
                 .termsOfServiceUrl("http://www.szdxsoft.com")
                 .contact("Apache")
                 .license("南科大网络建设许可证")
