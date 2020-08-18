@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends AuthenticatingFilter {
                                      ServletResponse response) {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
 
-        BaseResult failed = BaseResult.failed(ExceptionEnum.PRIVILEGE_CAS_FAIL);
+        BaseResult failed = BaseResult.failed(ExceptionEnum.TOKEN_ERROR);
 
 
 //        JSONObject jsonObject = new JSONObject();

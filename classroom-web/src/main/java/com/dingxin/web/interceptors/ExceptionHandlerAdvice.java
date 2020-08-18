@@ -7,6 +7,7 @@ import com.dingxin.common.exception.BusinessException;
 import com.dingxin.pojo.basic.BaseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+
+import static com.dingxin.common.enums.ExceptionEnum.TOKEN_ERROR;
 
 /**
  * @author changxin.yuan
@@ -73,6 +76,13 @@ public class ExceptionHandlerAdvice {
     public <T> BaseResult<T> excelException(Exception e) {
         log.error("excel异常", e);
         return BaseResult.failed(ExceptionEnum.VERIFY_EXCEL_ERROR).setMsg(e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = AuthenticationException.class)
+    public BaseResult authenticationException(AuthenticationException e){
+        log.error("token解析异常",e);
+        return BaseResult.failed(TOKEN_ERROR).setMsg(e.getMessage());
     }
 
     @ResponseBody
