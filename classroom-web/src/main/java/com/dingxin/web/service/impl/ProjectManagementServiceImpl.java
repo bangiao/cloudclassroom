@@ -29,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -307,7 +304,15 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
     public BaseResult insertOne(ProjectManagement projectManagement) {
         LocalDateTime now = LocalDateTime.now();
         projectManagement.setModifyTime(now);
-        projectManagement.setLecturerName(teachersService.getById(projectManagement.getLecturerId()).getXm());
+        CommQueryListRequest request = new CommQueryListRequest();
+        request.setQueryStr(projectManagement.getLecturerId());
+        IPage iPage = teachersService.queryPage(request);
+        String xm = "";
+        if (com.dingxin.common.utils.CollectionUtils.isNotEmpty(iPage.getRecords())){
+            LinkedHashMap map = (LinkedHashMap) iPage.getRecords().get(0);
+            xm = (String) map.get("xm");
+        }
+        projectManagement.setLecturerName(xm);
         String majorId = projectManagement.getMajorId();
         String deptId = projectManagement.getDeptId();
         Major major = majorService.getOne(Wrappers.<Major>lambdaQuery().eq(

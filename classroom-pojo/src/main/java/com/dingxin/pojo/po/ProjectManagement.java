@@ -42,7 +42,7 @@ public class ProjectManagement extends Model<ProjectManagement> {
      */
     @ApiModelProperty(value = "讲师关联id")
     @NotNull(message = "lecturerId can not be null")
-    private Integer lecturerId;
+    private String lecturerId;
     /**
      * 讲师姓名
      */
