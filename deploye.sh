@@ -1,18 +1,19 @@
 #!/bin/bash
-echo "判断docker环境，如果存在相同容器和镜像则删除****"
-PROJECT="classroom"
-if docker ps -a | grep -i $PROJECT ; then
 
-	docker rm -f $PROJECT
-	docker rmi -f $PROJECT
 
-	echo "==>>删除已存在的容器和镜像"
+pids=`ps -ef|grep classroom|grep -v grep|awk '{printf $2}'`
+echo $pids
+#|sudo xargs kill -9
+for i in $pids
+do
+        sudo kill -9  $i
+done
+ps -ef|grep classroom-web-1.0.0-SNAPSHOT.jar | grep -v grep
 
-	else
+DATE=`date +%Y-%m-%d-%H-%M` #获取当前系统时间
 
-	echo "==>>不存在工程容器"
+if [ -f /home/ykt/app/log.log ];then
+  sudo mv /home/ykt/app/log.log /home/ykt/app/bk_logs/${DATE}_log.log
 fi
-echo "build docker镜像开始..."
-docker build -t classroom .
-docker run -p 8089:8089 -it --name classroom -d classroom
-echo "****容器启动成功：云课堂：8089"
+
+nohup java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5009 /var/lib/jenkins/workspace/云课堂/classroom-web/target/classroom-web-1.0.0-SNAPSHOT.jar --spring.profiles.active=dev > /home/ykt/app/log.log 2>&1 &
