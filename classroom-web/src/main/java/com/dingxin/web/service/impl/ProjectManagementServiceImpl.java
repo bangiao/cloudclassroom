@@ -17,6 +17,7 @@ import com.dingxin.pojo.request.CommQueryListRequest;
 import com.dingxin.pojo.request.EnableRequest;
 import com.dingxin.pojo.request.IdRequest;
 import com.dingxin.pojo.request.WidRequest;
+import com.dingxin.pojo.vo.CurriculumPcVo;
 import com.dingxin.pojo.vo.HotListVo;
 import com.dingxin.pojo.vo.ProjectCurrilumVo;
 import com.dingxin.pojo.vo.ProjectManagementVo;
@@ -257,14 +258,16 @@ public class ProjectManagementServiceImpl extends ServiceImpl<ProjectManagementM
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByAsc(Curriculum::getWatchAmount);
         IPage<Curriculum> curriculumIPage = curriculumService.page(curriculumPage, curriculumQw);
-        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(CollectionUtils.isNotEmpty(curriculumService.getCollection(curriculumIPage).getRecords())?curriculumService.getCollection(curriculumIPage).getRecords():null).type(CommonConstant.HOTCURRICULUMTYPE).build();
+        List<CurriculumPcVo> records = curriculumService.getCollection(curriculumIPage).getRecords();
+        HotListVo hotCurriculum = HotListVo.builder().name(CommonConstant.HOTCURRICULUM).list(CollectionUtils.isNotEmpty(records)?records:null).type(CommonConstant.HOTCURRICULUMTYPE).build();
         //最新课程
         LambdaQueryWrapper<Curriculum> latestCurriculumQw = Wrappers.<Curriculum>lambdaQuery()
                 .eq(Curriculum::getDeleteFlag, CommonConstant.DEL_FLAG)
                 .eq(Curriculum::getDisableFlag, CommonConstant.DISABLE_FALSE)
                 .orderByDesc(Curriculum::getCreateTime);
         IPage<Curriculum> latestCurriculumIPage = curriculumService.page(curriculumPage, latestCurriculumQw);
-        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(CollectionUtils.isNotEmpty(curriculumService.getCollection(latestCurriculumIPage).getRecords())?curriculumService.getCollection(curriculumIPage).getRecords():null).type(CommonConstant.LATESTCURRICULUMTYPE).build();
+        List<CurriculumPcVo> voList = curriculumService.getCollection(latestCurriculumIPage).getRecords();
+        HotListVo latestCurriculum = HotListVo.builder().name(CommonConstant.LATESTCURRICULUM).list(CollectionUtils.isNotEmpty(voList)?voList:null).type(CommonConstant.LATESTCURRICULUMTYPE).build();
         ArrayList<HotListVo> ret = Lists.newArrayList();
         ret.add(hotProject);
         ret.add(hotCurriculum);
