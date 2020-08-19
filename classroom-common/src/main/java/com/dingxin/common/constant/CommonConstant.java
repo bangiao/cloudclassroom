@@ -96,4 +96,6 @@ public interface CommonConstant {
 	 * 默认收藏数
 	 */
 	String DEFAULTCOLLECTIONNUM="0";
+
+	String API_TOKEN = "YKT_API_TOKEN";
 }
